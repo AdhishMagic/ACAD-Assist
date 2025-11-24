@@ -206,6 +206,81 @@ export const SUBJECTS: Subject[] = [
     ]
   },
 
+  // CSE Sem 2
+  {
+    code: 'HS3251',
+    name: 'Professional English - II',
+    department: Department.CSE,
+    semester: 2,
+    syllabus_overview: 'The full syllabus is provided across five units, covering topics such as Making Comparisons, Expressing Causal Relations, Problem Solving, Reporting of Events and Research, and The Ability to Put Ideas or Information Cogently',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Making Comparisons',
+        content: 'Listening: Evaluative Listening (Advertisements, Product Descriptions), Audio/Video, Listening and filling a Graphic Organiser (Choosing a product or service by comparison). Speaking: Marketing a product, Persuasive Speech Techniques. Reading: Advertisements, user manuals, brochures. Writing: Professional emails, Email etiquette, Compare and Contrast Essay. Grammar: Mixed Tenses, Prepositional phrases. Vocabulary: Contextual meaning of words.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Expressing Causal Relations in Speaking and Writing',
+        content: 'Listening: Longer technical talks (gap filling), technical information from podcasts, process/event descriptions to identify cause & effects. Speaking: Describing and discussing reasons for accidents or disasters based on news reports. Reading: Longer technical texts, Cause and Effect Essays, Letters/emails of complaint. Writing: Writing responses to complaints. Grammar: Active Passive Voice transformations, Infinitive and Gerunds. Vocabulary: Word Formation (Noun-Verb-Adj-Adv), Adverbs.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Problem Solving',
+        content: 'Listening: Movie scenes/documentaries depicting a technical problem and suggesting solutions. Speaking: Group Discussion (based on case studies), techniques and strategies. Reading: Case Studies, excerpts from literary texts, news reports. Writing: Letter to the Editor, Checklists, Problem solution essay / Argumentative Essay. Grammar: Error correction, If conditional sentences. Vocabulary: Compound Words, Sentence Completion.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Reporting of Events and Research',
+        content: 'Listening: Listening Comprehension based on news reports and documentaries, Precis writing, Summarising. Speaking: Interviewing, Presenting an oral report, Mini presentations. Reading: Newspaper articles. Writing: Recommendations, Transcoding, Accident Report, Survey Report. Grammar: Reported Speech, Modals. Vocabulary: Conjunctions, use of prepositions.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'The Ability to Put Ideas or Information Cogently',
+        content: 'Listening: TED Talks, Presentations, Formal job interviews (analysis of the interview performance). Speaking: Participating in a Role play (interview/telephone interview), virtual interviews, Making presentations with visual aids. Reading: Company profiles, Statement of Purpose (SOP), interview excerpts. Writing: Job / Internship application, Cover letter & Resume. Grammar: Numerical adjectives, Relative Clauses. Vocabulary: Idioms.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'MA3251',
+    name: 'Statistics and Numerical Methods (BSC)',
+    department: Department.CSE,
+    semester: 2,
+    syllabus_overview: 'The full syllabus covers five units: Testing of Hypothesis, Design of Experiments, Solution of Equations and Eigenvalue Problems, Interpolation, and Numerical Solution of Ordinary Differential Equations',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Testing of Hypothesis',
+        content: 'Covers Sampling distributions, Tests for single mean, proportion, and difference of means (Large and small samples), Tests for single variance and equality of variances, Chi square test for goodness of fit, and Independence of attributes.'
+      },
+      {
+        unitNumber: 'II',
+        title: 'Design of Experiments',
+        content: 'Focuses on One way and two way classifications, Completely randomized design, Randomized block design, Latin square design, and 2^2 factorial design.'
+      },
+      {
+        unitNumber: 'III',
+        title: 'Solution of Equations and Eigenvalue Problems',
+        content: 'Includes solution methods for algebraic and transcendental equations (Fixed point iteration, Newton Raphson method), solution of linear system of equations (Gauss elimination, Pivoting, Gauss Jordan, Iterative methods like Gauss Jacobi and Gauss Seidel), and Eigenvalues of a matrix by Power method and Jacobi’s method for symmetric matrices.'
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Interpolation, Numerical Differentiation and Numerical Integration',
+        content: 'Details Lagrange’s and Newton’s divided difference interpolations, Newton’s forward and backward difference interpolation, Approximation of derivates using interpolation polynomials, and Numerical single and double integrations using Trapezoidal and Simpson’s 1/3 rules.'
+      },
+      {
+        unitNumber: 'V',
+        title: 'Numerical Solution of Ordinary Differential Equations',
+        content: 'Covers Single step methods (Taylor’s series, Euler’s, Modified Euler’s, Fourth order Runge-Kutta method) and Multi step methods (Milne’s and Adams - Bash forth predictor corrector methods) for solving first order differential equations.'
+      }
+    ]
+  },
+
   // CSE Sem 3
   { code: 'CS3351', name: 'Digital Principles and Computer Organization', department: Department.CSE, semester: 3, syllabus_overview: 'Combinational Circuits, Synchronous Sequential Circuits, Computer Fundamentals...' },
   { code: 'CS3352', name: 'Foundations of Data Science', department: Department.CSE, semester: 3, syllabus_overview: 'Data Analysis, Python, Statistics, Machine Learning Basics...' },
