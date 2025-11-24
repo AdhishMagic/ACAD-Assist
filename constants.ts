@@ -132,7 +132,78 @@ export const SUBJECTS: Subject[] = [
     name: 'Engineering Chemistry',
     department: Department.CSE,
     semester: 1,
-    syllabus_overview: 'Water and Its Treatment, Nanochemistry, Phase Rule and Composites, Fuels and Combustion, and Energy Sources and Storage Devices.'
+    syllabus_overview: 'Water and Its Treatment, Nanochemistry, Phase Rule and Composites, Fuels and Combustion, and Energy Sources and Storage Devices.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Water and Its Treatment',
+        content: 'Covers Water Sources and impurities, Water quality parameters (color, odour, turbidity, pH, hardness, alkalinity, TDS, COD, BOD, fluoride, arsenic), Municipal water treatment (primary treatment, disinfection—UV, Ozonation, break-point chlorination), Desalination (Reverse Osmosis), Boiler troubles (Scale and sludge, corrosion, embrittlement, Priming & foaming), and Treatment of boiler feed water (Internal: phosphate, colloidal, sodium aluminate, calgon conditioning; External: Ion exchange demineralization and zeolite process).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Nanochemistry',
+        content: 'Basics include distinction between molecules, nanomaterials and bulk materials, and Size-dependent properties (optical, electrical, mechanical, magnetic). Covers types of nanomaterials (nanoparticle, nanocluster, nanorod, nanowire, nanotube), Preparation methods (sol-gel, solvothermal, laser ablation, chemical vapour deposition, electrochemical deposition, electro spinning), and Applications in medicine, agriculture, energy, electronics, and catalysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Phase Rule and Composites',
+        content: 'Phase rule: Introduction, definition of terms, One component system (water system), Reduced phase rule, construction of a simple eutectic phase diagram (Thermal analysis), Two component system (lead-silver system, Pattinson process). Composites: Definition and Need, Constitution (Matrix materials: Polymer, metal, ceramic; and Reinforcement: fiber, particulates, flakes, whiskers). Properties and applications of Metal matrix composites (MMC), Ceramic matrix composites, Polymer matrix composites, and Hybrid composites.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Fuels and Combustion',
+        content: 'Fuels: Classification, Coal and coke (proximate and ultimate analysis, Carbonization, Otto Hoffmann method), Petroleum and Diesel (synthetic petrol manufacture via Bergius process, Knocking, octane/cetane number, Power alcohol, biodiesel). Combustion of fuels: Calorific value (higher/lower, theoretical calculation), Ignition temperature (spontaneous ignition temperature, Explosive range), Flue gas analysis (ORSAT Method), and CO₂ emission and carbon footprint.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Energy Sources and Storage Devices',
+        content: 'Covers Stability of nucleus (mass defect, binding energy), Nuclear energy (light water nuclear power plant, breeder reactor). Solar energy conversion (Principle, working, applications of solar cells, recent developments). Includes Wind energy, Geothermal energy, Batteries (Primary: dry cell; Secondary: lead acid, lithium-ion-battery), Electric vehicles, Fuel cells (H₂-O₂ fuel cell, microbial fuel cell), and Supercapacitors (Storage principle, types).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3151',
+    name: 'Problem Solving and Python Programming (Theory)',
+    department: Department.CSE,
+    semester: 1,
+    syllabus_overview: 'The syllabus includes Computational Thinking and Problem Solving, Data Types, Expressions, Statements, Control Flow, Functions, Strings, Lists, Tuples, Dictionaries, and Files, Modules, Packages',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Computational Thinking and Problem Solving',
+        content: 'Fundamentals of Computing, Identification of Computational Problems, Algorithms (building blocks: statements, state, control flow, functions), notation (pseudo code, flow chart, programming language), algorithmic problem solving, simple strategies for developing algorithms (iteration, recursion). Illustrative problems include: find minimum in a list, insert a card in a list of sorted cards, guess an integer number in a range, and Towers of Hanoi.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Data Types, Expressions, Statements',
+        content: 'Python interpreter and interactive mode, debugging, values and types (int, float, boolean, string, list), variables, expressions, statements, tuple assignment, precedence of operators, comments. Illustrative programs: exchange the values of two variables, circulate the values of n variables, distance between two points.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Control Flow, Functions, Strings',
+        content: 'Conditionals (Boolean values/operators, if, if-else, if-elif-else), Iteration (while, for, break, continue, pass), Fruitful functions (return values, parameters, scope, recursion, composition), Strings (slices, immutability, functions/methods, string module), Lists as arrays. Illustrative programs: square root, gcd, exponentiation, sum an array of numbers, linear search, binary search.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Lists, Tuples, Dictionaries',
+        content: 'Lists (operations, slices, methods, loop, mutability, aliasing, cloning, parameters), Tuples (assignment, return value), Dictionaries (operations and methods), advanced list processing (list comprehension). Illustrative programs: simple sorting, histogram, Students marks statement, Retail bill preparation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Files, Modules, Packages',
+        content: 'Files and exceptions (text files, reading and writing files, format operator), command line arguments, errors and exceptions, handling exceptions, modules, packages. Illustrative programs: word count, copy file, Voter’s age validation, Marks range validation (0-100)',
+        periods: 9
+      }
+    ]
   },
 
   // CSE Sem 3
