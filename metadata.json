@@ -1,0 +1,7 @@
+{
+  "name": "Acad Assist",
+  "description": "AI-Powered Educational Assistant for Anna University Students featuring curriculum-aligned study tools, exam-ready answers, and narrative voice explanations.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
