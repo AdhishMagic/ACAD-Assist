@@ -280,6 +280,162 @@ export const SUBJECTS: Subject[] = [
       }
     ]
   },
+  {
+    code: 'PH3256',
+    name: 'Physics for Information Science (BSC)',
+    department: Department.CSE,
+    semester: 2,
+    syllabus_overview: 'The syllabus is structured into five units: Electrical Properties of Materials, Semiconductor Physics, Magnetic Properties of Materials, Optical Properties of Materials, and Nanodevices and Quantum Computing',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Electrical Properties of Materials',
+        content: 'Covers the Classical free electron theory, the expression for electrical conductivity, Wiedemann-Franz law (including its success and failures), Fermi-Dirac statistics, Density of energy states, and the concept of the Energy bands in solids (including the tight binding approximation, electron effective mass, and the concept of a hole).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Semiconductor Physics',
+        content: 'Focuses on Intrinsic and Extrinsic Semiconductors, Energy band diagrams (direct and indirect band gap), Carrier concentration, the variation of Fermi level, Carrier transport (random motion, drift, mobility, and diffusion), Hall effect and devices, Ohmic contacts, and the Schottky diode.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Magnetic Properties of Materials',
+        content: 'Discusses atomic magnetic moments, magnetic permeability and susceptibility, and material classification (diamagnetism, paramagnetism, ferromagnetism, antiferromagnetism, ferrimagnetism). It details Ferromagnetism (origin, exchange interaction, saturation magnetization, Curie temperature, Domain Theory), and the application of magnetic principles in computer data storage (Magnetic hard disc/GMR sensor).',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Optical Properties of Materials',
+        content: 'Covers the classification of optical materials, carrier generation and recombination processes, light absorption, emission and scattering (concepts only), photo current in a P-N diode, solar cell, LED, Organic LED, Laser diodes, and Optical data storage techniques.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Nanodevices and Quantum Computing',
+        content: 'Introduces quantum confinement and quantum structures (wells, wires, and dots), Tunneling phenomena, Single electron phenomena (Coulomb blockade, resonant-tunneling diode, single electron transistor, quantum cellular automata). It concludes with the basics of Quantum system for information processing (quantum states, classical bits, qubits, CNOT gate, Bloch sphere, quantum gates, and the advantage of quantum computing over classical computing).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'BE3251',
+    name: 'Basic Electrical and Electronics Engineering (ESC)',
+    department: Department.CSE,
+    semester: 2,
+    syllabus_overview: 'This subject includes five units covering Electrical Circuits, Electrical Machines, Analog Electronics, Digital Electronics, and Measurements and Instrumentation',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Electrical Circuits',
+        content: 'Covers DC Circuits: Circuit Components (Conductor, Resistor, Inductor, Capacitor), Ohm’s Law, Kirchhoff’s Laws, Independent and Dependent Sources, Nodal Analysis, Mesh analysis (with Independent sources only in Steady state). Introduction to AC Circuits and Parameters (Waveforms, Average value, RMS Value, Instantaneous/real/reactive/apparent power, power factor), and Steady state analysis of RLC circuits (Simple problems only).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Electrical Machines',
+        content: 'Focuses on Construction and Working principle of DC Separately and Self excited Generators (EMF equation, Types and Applications). Working Principle of DC motors (Torque Equation, Types and Applications). Construction, Working principle and Applications of Transformer, Three phase Alternator, Synchronous motor, and Three Phase Induction Motor.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Analog Electronics',
+        content: 'Includes Resistor, Inductor and Capacitor in Electronic Circuits, Semiconductor Materials (Silicon & Germanium), PN Junction Diodes, Zener Diode (Characteristics and Applications), Bipolar Junction Transistor (Biasing), JFET, SCR, MOSFET, IGBT (Types, I-V Characteristics and Applications), Rectifier, and Inverters.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Digital Electronics',
+        content: 'Covers Review of number systems, binary codes, error detection and correction codes, Combinational logic (representation of logic functions, SOP and POS forms), and K-map representations (minimization using K maps, Simple Problems only).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Measurements and Instrumentation',
+        content: 'Details Functional elements of an instrument, Standards and calibration, Operating Principle, types of Moving Coil and Moving Iron meters, Measurement of three phase power, Energy Meter, Instrument Transformers (CT and PT), DSO (Block diagram, Data acquisition).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3251',
+    name: 'Engineering Graphics (ESC)',
+    department: Department.CSE,
+    semester: 2,
+    syllabus_overview: 'The syllabus details five units: Plane Curves and Freehand Sketching, Projection of Points/Lines/Plane Surface, Projection of Solids, Projection of Sectioned Solids and Development of Surfaces, and Isometric and Perspective Projections',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Plane Curves and Freehand Sketching',
+        content: 'Covers Basic Geometrical constructions, and curves used in engineering practices, specifically: Conics (Construction of ellipse, parabola and hyperbola by eccentricity method), Construction of cycloid, Construction of involutes of square and circle, and Drawing of tangents and normal to these curves.',
+        periods: 18
+      },
+      {
+        unitNumber: 'II',
+        title: 'Projection of Points, Lines and Plane Surface',
+        content: 'Focuses on Orthographic projection principles, Principal planes, First angle projection, projection of points, Projection of straight lines inclined to both the principal planes (by rotating line method and traces), and Projection of planes inclined to both the principal planes (by rotating object method).',
+        periods: 18
+      },
+      {
+        unitNumber: 'III',
+        title: 'Projection of Solids',
+        content: 'Details the Projection of simple solids (prisms, pyramids, cylinder, cone, and truncated solids) when the axis is inclined to one principal plane and parallel to the other (by rotating object method). Also includes Visualization concepts, Free Hand sketching of multiple views from pictorial views of objects, and practicing three-dimensional modeling by CAD Software (Not for examination).',
+        periods: 18
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Projection of Sectioned Solids and Development of Surfaces',
+        content: 'Involves the Sectioning of solids in simple vertical position when the cutting plane is inclined to one principal plane and perpendicular to the other, and obtaining the true shape of the section. Also covers the Development of lateral surfaces of simple and sectioned solids (Prisms, pyramids, cylinders, and cones). Practicing three-dimensional modeling by CAD Software is mentioned (Not for examination).',
+        periods: 18
+      },
+      {
+        unitNumber: 'V',
+        title: 'Isometric and Perspective Projections',
+        content: 'Focuses on Principles of isometric projection, isometric scale, isometric projections of simple solids, truncated solids, and the combination of two solid objects. Also includes Perspective projection of simple solids (Prisms, pyramids and cylinders by visual ray method). Practicing three-dimensional modeling of isometric projection by CAD Software is included (Not for examination).',
+        periods: 18
+      }
+    ]
+  },
+  {
+    code: 'CS3251',
+    name: 'Programming in C (PCC)',
+    department: Department.CSE,
+    semester: 2,
+    syllabus_overview: 'The syllabus is divided into five units: Basics of C Programming, Arrays and Strings, Functions and Pointers, Structures and Union, and File Processing',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Basics of C Programming',
+        content: 'Introduction to programming paradigms, Applications of C Language, Structure of C program, Data Types, Constants (including Enumeration Constants), Keywords, Operators (Precedence and Associativity), Expressions, Input/Output statements, Assignment statements, Decision making statements (including Switch statement), Looping statements, Preprocessor directives, and the Compilation process.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Arrays and Strings',
+        content: 'Introduction to Arrays: Declaration and Initialization (One dimensional array, Two dimensional arrays). String operations: length, compare, concatenate, copy. Includes the implementation of Selection sort, linear search, and binary search.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Functions and Pointers',
+        content: 'Focuses on Modular programming, Function prototype, definition, and call, Built-in functions (string functions, math functions), Recursion, Binary Search using recursive functions, Pointers, Pointer operators and arithmetic, Arrays and pointers, Array of pointers, and Parameter passing (Pass by value, Pass by reference).',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Structures and Union',
+        content: 'Covers the concepts of Structure, Nested structures, Pointer and Structures, Array of structures, Self referential structures, Dynamic memory allocation, Singly linked list, typedef, Union, Storage classes and Visibility.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'File Processing',
+        content: 'Covers Files, Types of file processing (Sequential access, Random access), Sequential access file, Random access file, and Command line arguments.',
+        periods: 9
+      }
+    ]
+  },
 
   // CSE Sem 3
   { code: 'CS3351', name: 'Digital Principles and Computer Organization', department: Department.CSE, semester: 3, syllabus_overview: 'Combinational Circuits, Synchronous Sequential Circuits, Computer Fundamentals...' },
