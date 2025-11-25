@@ -1897,6 +1897,361 @@ export const SUBJECTS: Subject[] = [
     ]
   },
 
+  // EEE Sem 4
+  {
+    code: 'GE3451',
+    name: 'Environmental Sciences and Sustainability',
+    department: Department.EEE,
+    semester: 4,
+    syllabus_overview: 'Definition, scope and importance of environment – Eco-system and Energy flow – Types of biodiversity – Environmental Pollution – Renewable Sources of Energy – Sustainability and Management – Sustainability Practices.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'ENVIRONMENT AND BIODIVERSITY',
+        content: 'Definition, scope and importance of environment – need for public awareness. Eco-system and Energy flow– ecological succession. Types of biodiversity: genetic, species and ecosystem diversity– values of biodiversity, India as a mega-diversity nation – hot-spots of biodiversity – threats to biodiversity: habitat loss, poaching of wildlife, man-wildlife conflicts – endangered and endemic species of India – conservation of biodiversity: In-situ and ex-situ.',
+        periods: 6
+      },
+      {
+        unitNumber: 'II',
+        title: 'ENVIRONMENTAL POLLUTION',
+        content: 'Causes, Effects and Preventive measures of Water, Soil, Air and Noise Pollutions. Solid, Hazardous and E-Waste management. Case studies on Occupational Health and Safety Management system (OHASMS). Environmental protection, Environmental protection acts.',
+        periods: 6
+      },
+      {
+        unitNumber: 'III',
+        title: 'RENEWABLE SOURCES OF ENERGY',
+        content: 'Energy management and conservation, New Energy Sources: Need of new sources. Different types new energy sources. Applications of- Hydrogen energy, Ocean energy resources, Tidal energy conversion. Concept, origin and power plants of geothermal energy.',
+        periods: 6
+      },
+      {
+        unitNumber: 'IV',
+        title: 'SUSTAINABILITY AND MANAGEMENT',
+        content: 'Development, GDP, Sustainability- concept, needs and challenges-economic, social and aspects of sustainability-from unsustainability to sustainability-millennium development goals, and protocols - Sustainable Development Goals-targets, indicators and intervention areas Climate change- Global, Regional and local environmental issues and possible solutions-case studies. Concept of Carbon Credit, Carbon Footprint. Environmental management in industry-A case study.',
+        periods: 6
+      },
+      {
+        unitNumber: 'V',
+        title: 'SUSTAINABILITY PRACTICES',
+        content: 'Zero waste and R concept, Circular economy, ISO 14000 Series, Material Life cycle assessment, Environmental Impact Assessment. Sustainable habitat: Green buildings, Green materials, Energy efficiency, Sustainable transports. Sustainable energy: Non-conventional Sources, Energy Cycles carbon cycle, emission and sequestration, Green Engineering: Sustainable urbanization- Socio economical and technological change.',
+        periods: 6
+      }
+    ]
+  },
+  {
+    code: 'EE3401',
+    name: 'Transmission and Distribution',
+    department: Department.EEE,
+    semester: 4,
+    syllabus_overview: 'Structure of electric power system – Parameters of transmission lines – Modelling and Performance of Transmission lines – Sag Calculation and Line Supports – Underground Cables – Distribution Systems – Trends in Transmission and Distribution.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'TRANSMISSION LINE PARAMETERS',
+        content: 'Structure of electric power system - Parameters of single and three phase transmission lines with single and double circuits -Resistance, inductance, and capacitance of solid, stranded, and bundled conductors - Typical configuration, conductor types - Symmetrical and unsymmetrical spacing and transposition – application of self and mutual GMD; skin and proximity effects - Effects of earth on the capacitance of the transmission line - interference with neighboring communication circuits.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'MODELLING AND PERFORMANCE OF TRANSMISSION LINES',
+        content: 'Performance of Transmission lines – short line, medium line and long line – equivalent circuits, phasor diagram, attenuation constant, phase constant, surge impedance – transmission efficiency and voltage regulation, real and reactive power flow in lines – Power Circle diagrams – Ferranti effect – Formation of Corona – Critical Voltages – Effect on line Performance.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'SAG CALCULATION AND LINE SUPPORTS',
+        content: 'Mechanical design of overhead lines – Line Supports – Types of towers – Tension and Sag Calculation for different weather conditions – Methods of grounding - Insulators: Types, voltage distribution in insulator string, improvement of string efficiency, testing of insulators.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'UNDERGROUND CABLES',
+        content: 'Underground cables – Types of cables – Construction of single-core and 3-core belted cables – Insulation Resistance – Potential Gradient – Capacitance of single-core and 3-core belted cables – Grading of cables – Power factor and heating of cables– DC cables.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'DISTRIBUTION SYSTEMS',
+        content: 'Distribution Systems – General Aspects – Kelvins Law – AC and DC distributions – Concentrated and Distributed loading- Techniques of Voltage Control and Power factor improvement – Distribution Loss Types of Substations – Trends in Transmission and Distribution: EHVAC, HVDC and FACTS (Qualitative treatment only).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3402',
+    name: 'Linear Integrated Circuits',
+    department: Department.EEE,
+    semester: 4,
+    syllabus_overview: 'IC Fabrication – Characteristics of Op-amp – Applications of Op-amp – Instrumentation amplifier – Active filters – Function generator – Special ICs: 555 Timer, PLL, VCO – Application ICs: Voltage regulators, Analog multiplier.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'IC FABRICATION',
+        content: 'IC classification, fundamental of monolithic IC technology, epitaxial growth, masking and etching, diffusion of impurities. Realisation of monolithic ICs and packaging. Fabrication of diodes, capacitance, resistance, FETs and PV Cell.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'CHARACTERISTICS OF OPAMP',
+        content: 'Ideal OP-AMP characteristics, DC characteristics, AC characteristics, differential amplifier; frequency response of OP-AMP; Voltage-shunt feedback and inverting amplifier - Voltage series feedback: and Non-Inverting Amplifier - Basic applications of op-amp –, summer, differentiator and Integrator-V/I & I/V converters.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'APPLICATIONS OF OPAMP',
+        content: 'Instrumentation amplifier and its applications for transducer Bridge, Log and Antilog Amplifiers- Analog multiplier & Divider, first and second order active filters, comparators, multi vibrators, waveform generators, clippers, clampers, peak detector, S/H circuit, D/A converter (R- 2R ladder and weighted resistor types), A/D converters using OP-AMPs.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'SPECIAL ICs',
+        content: 'Functional block, characteristics of 555 Timer and its PWM application - IC-566 voltage controlled oscillator IC; 565-phase locked loop IC, AD633 Analog multiplier ICs.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'APPLICATION ICs',
+        content: 'AD623 Instrumentation Amplifier and its application as load cell weight measurement - IC voltage regulators –LM78XX, LM79XX; Fixed voltage regulators its application as Linear power supply - LM317, 723 Variability voltage regulators, switching regulator- SMPS - ICL 8038 function generator IC.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3403',
+    name: 'Measurements and Instrumentation',
+    department: Department.EEE,
+    semester: 4,
+    syllabus_overview: 'Instruments classification and characteristics – Static and dynamic characteristics – Errors in measurement – Measurement of parameters in electrical systems – AC/DC Bridges – Instrumentation Amplifiers – Transducers – Digital Instrumentation.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'CONCEPTS OF MEASUREMENTS',
+        content: 'Instruments: classification, applications – Elements of a generalized measurement system - Static and dynamic characteristics - Errors in measurement - Statistical evaluation of measurement data.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'MEASUREMENT OF PARAMETERS IN ELECTRICAL SYSTEMS',
+        content: 'Classification of instruments – moving coil and moving iron meters – Induction type, dynamometer type watt meters – Energy meter – Megger – Instrument transformers (CT & PT).',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'AC/DC BRIDGES AND INSTRUMENTATION AMPLIFIERS',
+        content: 'Wheatstone bridge, Kelvin double bridge - Maxwell, Hay, Wien and Schering bridges – Errors and compensation in A.C. bridges - Instrumentation Amplifiers.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'TRANSDUCERS FOR MEASUREMENT OF NON-ELECTRICAL PARAMETERS',
+        content: 'Classification of transducers – Measurement of pressure, temperature, displacement, flow, angular velocity – Digital transducers – Smart Sensors.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'DIGITAL INSTRUMENTATION',
+        content: 'A/D converters: types and characteristics – Sampling, Errors- Measurement of voltage, Current, frequency and phase - D/A converters: types and characteristics- DSO- Data Loggers – Basics of PLC programming and Introduction to Virtual Instrumentation - Instrument standards.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3404',
+    name: 'Microprocessor and Microcontroller',
+    department: Department.EEE,
+    semester: 4,
+    syllabus_overview: '8085 Architecture – Memory interfacing – I/O ports – Timing Diagram – Interrupt structure – Instruction set and Programming – Interfacing ICs: 8255, 8259, 8251, 8279, 8254 – 8051 Microcontroller – PIC16/18 architecture.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'INTRODUCTION TO 8085 ARCHITECTURE',
+        content: 'Functional block diagram – Memory interfacing–I/O ports and data transfer concepts – Timing Diagram – Interrupt structure.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: '8085 INSTRUCTION SET AND PROGRAMMING',
+        content: 'Instruction format and addressing modes – Assembly language format – Data transfer, data manipulation & control instructions – Programming: Loop structure with counting & Indexing - Look up table - Subroutine instructions, stack.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'INTERFACING BASICS AND ICS',
+        content: 'Study of Architecture and programming of ICs: 8255 PPI, 8259PIC, 8251USART, 8279 Keyboard display controller and 8254 Timer/Counter – Interfacing with 8085 -A/D and D/A converter interfacing.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'INTRODUCTION TO 8051 MICROCONTROLLER',
+        content: 'Functional block diagram - Instruction format and addressing modes – Interrupt structure – Timer – I/O ports – Serial communication, Simple programming – keyboard and display interface – Temperature control system – stepper motor control - Usage of IDE for assembly language programming.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'INTRODUCTION TO RISC BASED ARCHITECTURE',
+        content: 'PIC16 /18 architecture, Memory organization – Addressing modes – Instruction set - Programming techniques – Timers – I/O ports – Interrupt programming.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3405',
+    name: 'Electrical Machines - II',
+    department: Department.EEE,
+    semester: 4,
+    syllabus_overview: 'Synchronous Generator – Synchronous Motor – Three Phase Induction Motor – Starting and Speed Control of Three Phase Induction Motor – Single Phase Induction Motors and Special Machines.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'SYNCHRONOUS GENERATOR',
+        content: 'Constructional details – Types of rotors – winding factors- EMF equation – Synchronous reactance – Armature reaction – Phasor diagrams of non-salient pole synchronous generator connected to infinite bus--Synchronizing and parallel operation – Synchronizing torque -Change of excitation and mechanical input- Voltage regulation – EMF, MMF, ZPF and A.S.A method – steady state power- angle characteristics– Two reaction theory – slip test -short circuit transients - Capability Curves.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'SYNCHRONOUS MOTOR',
+        content: 'Principle of operation – Torque equation – Operation on infinite bus bars - V and Inverted V curves – Power input and power developed equations – Starting methods – Current loci for constant power input, constant excitation and constant power Developed-Hunting – natural frequency of oscillations – damper windings- synchronous condenser.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'THREE PHASE INDUCTION MOTOR',
+        content: 'Constructional details – Types of rotors –- Principle of operation – Slip – cogging and crawling- Equivalent circuit – Torque-Slip characteristics - Condition for maximum torque – Losses and efficiency – Load test - No load and blocked rotor tests - Circle diagram – Separation of losses – Double cage induction motors – Induction generators – Synchronous induction motor.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'STARTING AND SPEED CONTROL OF THREE PHASE INDUCTION MOTOR',
+        content: 'Need for starting – Types of starters – DOL, Rotor resistance, Autotransformer and Star delta starters – Speed control – Voltage control, Frequency control and pole changing – Cascaded Connection-V/f control – Slip power recovery Scheme-Braking of three phase induction motor: Plugging, dynamic braking and regenerative braking.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'SINGLE PHASE INDUCTION MOTORS AND SPECIAL MACHINES',
+        content: 'Constructional details of single phase induction motor – Double field revolving theory and operation – Equivalent circuit – No load and blocked rotor test – Performance analysis – Starting methods of single-phase induction motors – Capacitor-start capacitor run Induction motor- Shaded pole induction motor - Linear induction motor – Repulsion motor - Hysteresis motor - AC series motor- Servo motors- Stepper motors - introduction to magnetic levitation systems.',
+        periods: 9
+      }
+    ]
+  },
+
+  // EEE Sem 5
+  {
+    code: 'EE3501',
+    name: 'Power System Analysis',
+    department: Department.EEE,
+    semester: 5,
+    syllabus_overview: 'Power system components, network modeling, load flow analysis, fault analysis, symmetrical components, unsymmetrical faults, power system stability, and economic operation.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'POWER SYSTEM COMPONENTS AND REPRESENTATION',
+        content: 'Structure of power systems - Single line diagram - Per unit representation - Impedance diagram - Reactance diagram - Representation of generators, transformers, transmission lines and loads - Formation of bus admittance and impedance matrices.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'LOAD FLOW ANALYSIS',
+        content: 'Importance of load flow studies - Bus classification - Formation of Y-bus matrix - Gauss-Seidel method - Newton-Raphson method - Fast decoupled load flow method - Comparison of methods - DC load flow - Voltage control methods.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'SYMMETRICAL FAULT ANALYSIS',
+        content: 'Transients in power systems - Short circuit analysis - Assumptions in fault analysis - Symmetrical three phase faults - Fault analysis using bus impedance matrix - Selection of circuit breakers.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'UNSYMMETRICAL FAULT ANALYSIS',
+        content: 'Symmetrical components - Sequence impedances and sequence networks of generators, transformers and transmission lines - Analysis of unsymmetrical faults: LG, LL, LLG faults - Open conductor faults.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'POWER SYSTEM STABILITY',
+        content: 'Steady state stability - Swing equation - Equal area criterion - Critical clearing angle and time - Transient stability - Point by point method - Modified Euler method - Runge-Kutta method - Factors affecting stability - Methods to improve stability.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3591',
+    name: 'Power Electronics',
+    department: Department.EEE,
+    semester: 5,
+    syllabus_overview: 'Power semiconductor devices, phase controlled rectifiers, AC voltage controllers, choppers, inverters, and applications of power electronics.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'POWER SEMICONDUCTOR DEVICES',
+        content: 'Power diodes - Power transistors: BJT, MOSFET, IGBT - Thyristors: SCR, TRIAC, GTO, MCT - Characteristics and specifications - Gate triggering circuits - Protection circuits - Series and parallel operation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'PHASE CONTROLLED RECTIFIERS',
+        content: 'Single phase half wave and full wave controlled rectifiers with R, RL, RLE loads - Three phase half wave and full wave controlled rectifiers - Six pulse and twelve pulse converters - Dual converters - Effect of source inductance - Power factor and harmonics.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'AC VOLTAGE CONTROLLERS',
+        content: 'Principle of AC voltage controller - Single phase voltage controllers with R and RL loads - Three phase voltage controllers - Sequence control - Integral cycle control - Applications.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'DC TO DC CONVERTERS (CHOPPERS)',
+        content: 'Principle of chopper - Step down and step up choppers - Classification of choppers - Switching techniques - Multi-phase choppers - Applications.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'INVERTERS',
+        content: 'Principle of inverter operation - Single phase voltage source inverters - Three phase voltage source inverters - PWM techniques - Sinusoidal PWM - Current source inverters - Resonant inverters - Applications.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3503',
+    name: 'Control Systems',
+    department: Department.EEE,
+    semester: 5,
+    syllabus_overview: 'Systems and their representation, time response analysis, frequency response analysis, stability analysis, state variable analysis, and compensator design.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'SYSTEMS AND THEIR REPRESENTATION',
+        content: 'Classification of systems - Mathematical modeling of physical systems - Transfer function - Block diagram representation - Signal flow graphs - Masons gain formula.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'TIME RESPONSE ANALYSIS',
+        content: 'Standard test signals - Time response of first and second order systems - Time domain specifications - Steady state errors and error constants - P, PI, PD and PID controllers - Effects of controllers on system performance.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'FREQUENCY RESPONSE ANALYSIS',
+        content: 'Frequency domain specifications - Bode plots - Polar plots - Nyquist plots - Determination of transfer function from Bode plot - All pass and minimum phase systems.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'STABILITY ANALYSIS',
+        content: 'Concept of stability - Routh-Hurwitz criterion - Root locus technique - Construction rules - Stability analysis using Nyquist criterion - Relative stability - Gain margin and phase margin.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'STATE VARIABLE ANALYSIS AND COMPENSATORS',
+        content: 'State space representation - State transition matrix - Controllability and observability - Pole placement by state feedback - Compensator design: Lead, lag and lag-lead compensators.',
+        periods: 9
+      }
+    ]
+  },
+
   // MECH Sem 5
   { code: 'ME3591', name: 'Design of Machine Elements', department: Department.MECH, semester: 5, syllabus_overview: 'Stress, Strain, Shafts, Couplings, Bearings, Gears...' },
   { code: 'ME3592', name: 'Metrology and Measurements', department: Department.MECH, semester: 5, syllabus_overview: 'Linear measurements, Angular measurements, Laser metrology...' },
