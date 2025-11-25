@@ -630,7 +630,84 @@ export const SUBJECTS: Subject[] = [
   },
 
   // CSE Sem 4
-  { code: 'CS3451', name: 'Introduction to Operating Systems', department: Department.CSE, semester: 4, syllabus_overview: 'Processes, Threads, Scheduling, Deadlocks, Memory Management...' },
+  {
+    code: 'CS3401',
+    name: 'Algorithms',
+    department: Department.CSE,
+    semester: 4,
+    syllabus_overview: 'Algorithm Analysis, Divide and Conquer, Greedy Algorithms, Dynamic Programming, Graph Algorithms, State Space Search, NP-Completeness, Approximation Algorithms.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction',
+        content: 'Algorithm analysis: Time and space complexity, Asymptotic Notations. Recurrence relations (substitution method), Lower bounds. Searching techniques: linear search, binary search, Interpolation Search. Pattern search algorithms: Naïve string-matching, Rabin-Karp, Knuth-Morris-Pratt. Sorting methods: Insertion sort, heap sort.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Graph Algorithms',
+        content: 'Graph representations and traversal techniques: DFS, BFS. Graph properties: connectivity, strong connectivity, bi-connectivity. Minimum spanning tree algorithms: Kruskal\'s algorithm, Prim\'s algorithm. Shortest path algorithms: Bellman-Ford, Dijkstra\'s algorithm, Floyd-Warshall algorithm. Network flow: Ford-Fulkerson method. Maximum bipartite matching.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Algorithm Design Techniques',
+        content: 'Divide and Conquer methodology: Finding maximum and minimum, Merge sort, Quick sort. Dynamic programming: Matrix-chain multiplication, Optimal Binary Search Trees. Greedy Technique: Activity-selection problem, Optimal Merge pattern, Huffman Trees.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'State Space Search Algorithms',
+        content: 'State space tree method. Backtracking: n-Queens problem, Hamiltonian Circuit Problem, Subset Sum Problem, Graph colouring problem. Branch and Bound: 15-Puzzle problem, Assignment problem, Knapsack Problem, Travelling Salesman Problem.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'NP-Complete and Approximation Algorithm',
+        content: 'Tractable and intractable problems. NP-algorithms, NP-hardness and NP-completeness. Problem reduction examples: TSP – 3-CNF problem. Approximation Algorithms: TSP. Randomized Algorithms: primality testing, randomized quick sort, finding kth smallest number.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CS3451',
+    name: 'Introduction to Operating Systems',
+    department: Department.CSE,
+    semester: 4,
+    syllabus_overview: 'Operating System structures and services, Process Management, CPU Scheduling, Threads, Synchronization, Deadlock, Memory Management, Virtual Memory, Storage Management, File Systems, I/O Systems, Virtual Machines, Mobile OS.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction',
+        content: 'Computer System organization and its elements. Operating System Overview: objectives, functions, and evolution. Operating System Structures: services, User Operating System Interface, System Calls, System Programs, design and implementation, structuring methods.',
+        periods: 7
+      },
+      {
+        unitNumber: 'II',
+        title: 'Process Management',
+        content: 'Processes: Process Concept, Process Scheduling, Operations on Processes, Inter-process Communication. CPU Scheduling: criteria and various scheduling algorithms. Threads: Multithread Models and Threading issues. Process Synchronization: The Critical-Section problem, Synchronization hardware, Semaphores, Mutex, Classical problems of synchronization, Monitors. Deadlock: Methods for handling deadlocks, prevention, avoidance (Banker\'s Algorithm), detection, and recovery from deadlock.',
+        periods: 11
+      },
+      {
+        unitNumber: 'III',
+        title: 'Memory Management',
+        content: 'Main Memory concepts: Swapping, Contiguous Memory Allocation, Paging, Structure of the Page Table, Segmentation, Segmentation with paging. Virtual Memory concepts: Demand Paging, Copy on Write, Page Replacement algorithms, Allocation of Frames, Thrashing.',
+        periods: 10
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Storage Management',
+        content: 'Mass Storage system: Disk Structure, Disk Scheduling and Management. File-System Interface: File concept, Access methods, Directory Structure, File system mounting, File Sharing and Protection. File System Implementation: File System Structure, Directory implementation, Allocation Methods, Free Space Management. I/O Systems: I/O Hardware, Application I/O interface, Kernel I/O subsystem.',
+        periods: 10
+      },
+      {
+        unitNumber: 'V',
+        title: 'Virtual Machines and Mobile OS',
+        content: 'Virtual Machines: History, Benefits and Features, Building Blocks, Types of Virtual Machines and their Implementations, Virtualization and Operating-System Components. Mobile OS: iOS and Android.',
+        periods: 7
+      }
+    ]
+  },
   {
     code: 'CS3452',
     name: 'Theory of Computation',
@@ -670,7 +747,123 @@ export const SUBJECTS: Subject[] = [
       }
     ]
   },
-  { code: 'CS3491', name: 'Artificial Intelligence and Machine Learning', department: Department.CSE, semester: 4, syllabus_overview: 'Search strategies, Game playing, Supervised Learning, Neural Networks...' },
+  {
+    code: 'CS3491',
+    name: 'Artificial Intelligence and Machine Learning',
+    department: Department.CSE,
+    semester: 4,
+    syllabus_overview: 'Problem Solving, Probabilistic Reasoning, Supervised Learning, Ensemble Techniques, Unsupervised Learning, Neural Networks, Deep Learning.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Problem Solving',
+        content: 'Fundamentals of AI, problem-solving agents, search algorithms. Uninformed search strategies: BFS (Breadth-First Search), DFS (Depth-First Search). Heuristic search strategies: A* algorithm. Local search algorithms. Adversarial search and game playing. Constraint Satisfaction Problems (CSP).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Probabilistic Reasoning',
+        content: 'Acting under uncertainty. Bayesian inference and naïve Bayes models. Probabilistic reasoning techniques. Bayesian networks: representation and semantics. Exact inference in Bayesian networks. Approximate inference methods. Causal networks and their applications.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Supervised Learning',
+        content: 'Introduction to machine learning. Linear Regression Models: least squares method, gradient descent optimization. Linear Classification Models: Logistic regression, Naive Bayes classifier, Support Vector Machine (SVM). Decision Tree learning algorithms. Random forests and ensemble methods.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Ensemble Techniques and Unsupervised Learning',
+        content: 'Ensemble learning methods: Voting, Bagging, Boosting, Stacking. Combining multiple learners for improved performance. Unsupervised learning techniques: K-means clustering algorithm. KNN (K-Nearest Neighbors) for instance-based learning. Gaussian mixture models. Expectation Maximization (EM) algorithm.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Neural Networks',
+        content: 'Fundamentals of neural networks. Perceptron model and learning algorithm. Multilayer perceptron architecture. Activation functions (sigmoid, tanh, ReLU). Network training: gradient descent and backpropagation algorithm. Deep neural networks. Addressing vanishing gradient problem using ReLU activation. Hyperparameter tuning strategies. Batch normalization techniques. Regularization methods. Dropout for preventing overfitting.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CS3492',
+    name: 'Database Management Systems',
+    department: Department.CSE,
+    semester: 4,
+    syllabus_overview: 'Relational Databases, Database Design, Transactions and Concurrency Control, Implementation Techniques, Advanced Topics including Distributed Databases and NoSQL.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Relational Databases',
+        content: 'Purpose of Database System and Views of data. Data Models and Database System Architecture. Introduction to relational databases and the Relational Model, including Keys. Relational Algebra. SQL fundamentals and Advanced SQL features. Embedded SQL and Dynamic SQL.',
+        periods: 10
+      },
+      {
+        unitNumber: 'II',
+        title: 'Database Design',
+        content: 'Entity-Relationship (E-R) model and E-R Diagrams. Enhanced-ER Model and ER-to-Relational Mapping. Functional Dependencies and Non-loss Decomposition. Normalization: First, Second, Third Normal Forms. Dependency Preservation, Boyce/Codd Normal Form. Multi-valued Dependencies and Fourth Normal Form. Join Dependencies and Fifth Normal Form.',
+        periods: 8
+      },
+      {
+        unitNumber: 'III',
+        title: 'Transactions',
+        content: 'Transaction Concepts and ACID Properties. Schedules and Serializability. Transaction support in SQL. Need for Concurrency and Concurrency control methods: Two Phase Locking, Timestamp, Multiversion, Validation, and Snapshot isolation. Multiple Granularity locking and Deadlock Handling. Recovery Concepts: Recovery based on deferred and immediate update, Shadow paging, and ARIES Algorithm.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Implementation Techniques',
+        content: 'RAID and File Organization. Organization of Records in Files, Data dictionary Storage, and Column Oriented Storage. Indexing and Hashing: Ordered Indices, B+ tree Index Files, B tree Index Files, Static Hashing, and Dynamic Hashing. Query Processing Overview. Algorithms for Selection, Sorting and join operations. Query optimization using Heuristics and Cost Estimation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Advanced Topics',
+        content: 'Distributed Databases: Architecture, Data Storage, Transaction Processing, Query processing and optimization. NOSQL Databases: Introduction, CAP Theorem, Document Based systems, Key value Stores, Column Based Systems, and Graph Databases. Database Security: Security issues, Access control based on privileges, Role Based access control, SQL Injection, Statistical Database security, Flow control, Encryption and Public Key infrastructures, and Challenges.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3451',
+    name: 'Environmental Sciences and Sustainability',
+    department: Department.CSE,
+    semester: 4,
+    syllabus_overview: 'Environment and Biodiversity, Environmental Pollution, Renewable Sources of Energy, Sustainability and Management, Sustainability Practices including Green Engineering and Circular Economy.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Environment and Biodiversity',
+        content: 'Definition, scope, and importance of environment. Need for public awareness. Eco-system and Energy flow. Ecological succession. Types of biodiversity: genetic, species, and ecosystem diversity. India as a mega-diversity nation. Hot-spots of biodiversity. Threats to biodiversity: habitat loss, poaching, man-wildlife conflicts. Endangered and endemic species of India. Conservation of biodiversity: In-situ and ex-situ.',
+        periods: 6
+      },
+      {
+        unitNumber: 'II',
+        title: 'Environmental Pollution',
+        content: 'Causes, effects, and preventive measures for Water, Soil, Air, and Noise Pollutions. Solid, Hazardous, and E-Waste management. Case studies on Occupational Health and Safety Management system (OHASMS). Environmental protection and Environmental protection acts.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Renewable Sources of Energy',
+        content: 'Energy management and conservation. Need of new sources and different types of new energy sources. Applications of Hydrogen energy. Ocean energy resources and Tidal energy conversion. Concept, origin, and power plants of geothermal energy.',
+        periods: 6
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Sustainability and Management',
+        content: 'Development, GDP, and the concept, needs, and challenges of Sustainability (economic, social, and aspects of sustainability). Transition from unsustainability to sustainability. Millennium development goals, protocols, and Sustainable Development Goals (targets, indicators, and intervention areas). Climate change: Global, Regional, and local environmental issues and possible solutions. Case studies. Concept of Carbon Credit and Carbon Footprint. Environmental management in industry (case study).',
+        periods: 6
+      },
+      {
+        unitNumber: 'V',
+        title: 'Sustainability Practices',
+        content: 'Zero waste and R concept. Circular economy. ISO 14000 Series. Material Life cycle assessment and Environmental Impact Assessment. Sustainable habitat: Green buildings, Green materials, Energy efficiency, Sustainable transports. Sustainable energy: Non-conventional Sources, Energy Cycles (carbon cycle, emission and sequestration). Green Engineering: Sustainable urbanization, Socio-economical and technological change.',
+        periods: 6
+      }
+    ]
+  },
 
   // ECE Sem 1 (Same as CSE Sem 1)
   {
