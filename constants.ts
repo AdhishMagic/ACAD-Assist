@@ -905,9 +905,123 @@ export const SUBJECTS: Subject[] = [
       }
     ]
   },
-  { code: 'CS3501', name: 'Compiler Design', department: Department.CSE, semester: 5, syllabus_overview: 'Lexical Analysis, Syntax Analysis, Semantic Analysis, Intermediate Code Generation, Code Optimization, Code Generation...' },
-  { code: 'CB3491', name: 'Cryptography and Cyber Security', department: Department.CSE, semester: 5, syllabus_overview: 'Cryptography Fundamentals, Symmetric and Asymmetric Encryption, Hash Functions, Digital Signatures, Network Security, Cyber Security...' },
-  { code: 'CS3551', name: 'Distributed Computing', department: Department.CSE, semester: 5, syllabus_overview: 'Distributed System Models, Communication, Synchronization, Consistency and Replication, Fault Tolerance, Distributed File Systems...' },
+  {
+    code: 'CS3501',
+    name: 'Compiler Design',
+    department: Department.CSE,
+    semester: 5,
+    syllabus_overview: 'Introduction to Compilers, Lexical Analysis, Syntax Analysis, Syntax Directed Translation, Intermediate Code Generation, Run-time Environment, Code Generation, Code Optimization.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to Compilers and Lexical Analysis',
+        content: 'Introduction to Translators, Compilation and Interpretation, Language processors. The Phases of Compiler. Lexical Analysis: Role of Lexical Analyzer, Input Buffering, Specification of Tokens, Recognition of Tokens. Finite Automata, Regular Expressions to Automata (NFA, DFA), Minimizing DFA. Language for Specifying Lexical Analyzers, Lex tool.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Syntax Analysis',
+        content: 'Role of Parser, Grammars, Context-free grammars, Writing a grammar. Top Down Parsing: General Strategies, Recursive Descent Parser, Predictive Parser-LL(1). Parser-Shift Reduce Parser-LR Parser, LR(0) Item Construction of SLR Parsing Table. Introduction to LALR Parser. Error Handling and Recovery in Syntax Analyzer. YACC tool. Design of a syntax Analyzer for a Sample Language.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Syntax Directed Translation and Intermediate Code Generation',
+        content: 'Syntax directed Definitions, Construction of Syntax Tree, Bottom-up Evaluation of S-Attribute Definitions, Design of predictive translator. Type Systems, Specification of a simple type Checker, Equivalence of Type Expressions, Type Conversions. Intermediate Languages: Syntax Tree, Three Address Code, Types and Declarations, Translation of Expressions, Type Checking, Back patching.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Run-time Environment and Code Generation',
+        content: 'Runtime Environments: source language issues, Storage organization, Storage Allocation Strategies (Static, Stack and Heap allocation), Parameter Passing, Symbol Tables, Dynamic Storage Allocation. Issues in the Design of a code generator, Basic Blocks and Flow graphs, Design of a simple Code Generator, Optimal Code Generation for Expressions, Dynamic Programming Code Generation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Code Optimization',
+        content: 'Principal Sources of Optimization. Peep-hole optimization. DAG. Optimization of Basic Blocks. Global Data Flow Analysis. Efficient Data Flow Algorithm. Recent trends in Compiler Design.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CB3491',
+    name: 'Cryptography and Cyber Security',
+    department: Department.CSE,
+    semester: 5,
+    syllabus_overview: 'Introduction to Security, Classical Encryption, Symmetric Ciphers, Asymmetric Cryptography, Integrity and Authentication Algorithms, Cyber Crimes and Cyber Security.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to Security',
+        content: 'Computer Security Concepts. The OSI Security Architecture. Security Attacks, Security Services and Mechanisms. A Model for Network Security. Classical encryption techniques: Substitution techniques, Transposition techniques, Steganography. Foundations of modern cryptography: Perfect security, Information Theory, Product Cryptosystem, Cryptanalysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Symmetric Ciphers',
+        content: 'Number theory, Algebraic Structures, Modular Arithmetic, Euclid\'s algorithm, Congruence and matrices, Group, Rings, Fields, Finite Fields. SYMMETRIC KEY CIPHERS: SDES, Block Ciphers, DES, Strength of DES, Differential and linear cryptanalysis, Block cipher design principles, Block cipher mode of operation, Evaluation criteria for AES, Pseudorandom Number Generators, RC4, Key distribution.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Asymmetric Cryptography',
+        content: 'MATHEMATICS OF ASYMMETRIC KEY CRYPTOGRAPHY: Primes, Primality Testing, Factorization, Euler\'s totient function, Fermat\'s and Euler\'s Theorem, Chinese Remainder Theorem, Exponentiation and logarithm. ASYMMETRIC KEY CIPHERS: RSA cryptosystem, Key distribution, Key management, Diffie Hellman key exchange, Elliptic curve arithmetic, Elliptic curve cryptography.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Integrity and Authentication Algorithms',
+        content: 'Authentication requirement, Authentication function, MAC, Hash function, Security of hash function: HMAC, CMAC, SHA. Digital signature and authentication protocols, DSS, Schnorr Digital Signature Scheme, ElGamal cryptosystem. Entity Authentication: Biometrics, Passwords, Challenge Response protocols, Authentication applications, Kerberos. MUTUAL TRUST: Key management and distribution, Symmetric key distribution using symmetric and asymmetric encryption, Distribution of public keys, X.509 Certificates.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Cyber Crimes and Cyber Security',
+        content: 'Cyber Crime and Information Security. Classifications of Cyber Crimes. Tools and Methods: Password Cracking, Keyloggers, Spywares, SQL Injection. Network Access Control. Cloud Security. Web Security. Wireless Security.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CS3551',
+    name: 'Distributed Computing',
+    department: Department.CSE,
+    semester: 5,
+    syllabus_overview: 'Introduction to Distributed Systems, Logical Time and Global State, Distributed Mutex and Deadlock, Consensus and Recovery, Cloud Computing.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction',
+        content: 'Introduction: Definition, Relation to Computer System Components, Motivation. Message-Passing Systems versus Shared Memory Systems. Primitives for Distributed Communication. Synchronous versus Asynchronous Executions. Design Issues and Challenges. A Model of Distributed Computations: A Distributed Program, A Model of Distributed Executions, Models of Communication Networks, Global State of a Distributed System.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Logical Time and Global State',
+        content: 'Logical Time: Physical Clock Synchronization (NTP), A Framework for a System of Logical Clocks, Scalar Time, Vector Time. Message Ordering and Group Communication: Message Ordering Paradigms, Asynchronous Execution with Synchronous Communication, Synchronous Program Order on Asynchronous System, Group Communication, Causal Order, Total Order. Global State and Snapshot Recording Algorithms: Introduction, System Model and Definitions, Snapshot Algorithms for FIFO Channels.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Distributed Mutex and Deadlock',
+        content: 'Distributed Mutual exclusion Algorithms: Introduction, Preliminaries, Lamport\'s algorithm, Ricart-Agrawala\'s Algorithm, Token-Based Algorithms, Suzuki-Kasami\'s Broadcast Algorithm. Deadlock Detection in Distributed Systems: Introduction, System Model, Preliminaries, Models of Deadlocks, Chandy-Misra-Haas Algorithm for the AND model and OR Model.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Consensus and Recovery',
+        content: 'Consensus and Agreement Algorithms: Problem Definition, Overview of Results, Agreement in a Failure-Free System (Synchronous and Asynchronous), Agreement in Synchronous Systems with Failures. Checkpointing and Rollback Recovery: Introduction, Background and Definitions, Issues in Failure Recovery, Checkpoint-based Recovery, Coordinated Checkpointing Algorithm, Algorithm for Asynchronous Checkpointing and Recovery.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Cloud Computing',
+        content: 'Definition of Cloud Computing. Characteristics of Cloud. Cloud Deployment Models. Cloud Service Models. Driving Factors and Challenges of Cloud. Virtualization. Load Balancing. Scalability and Elasticity. Replication. Monitoring. Cloud Services and Platforms: Compute Services, Storage Services, Application Services.',
+        periods: 9
+      }
+    ]
+  },
 
   // ECE Sem 1 (Same as CSE Sem 1)
   {
