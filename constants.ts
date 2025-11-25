@@ -631,6 +631,7 @@ export const SUBJECTS: Subject[] = [
 
   // CSE Sem 4
   { code: 'CS3451', name: 'Introduction to Operating Systems', department: Department.CSE, semester: 4, syllabus_overview: 'Processes, Threads, Scheduling, Deadlocks, Memory Management...' },
+  { code: 'CS3452', name: 'Theory of Computation', department: Department.CSE, semester: 4, syllabus_overview: 'Automata Theory, Regular Languages, Context-Free Grammars, Turing Machines, Computability...' },
   { code: 'CS3491', name: 'Artificial Intelligence and Machine Learning', department: Department.CSE, semester: 4, syllabus_overview: 'Search strategies, Game playing, Supervised Learning, Neural Networks...' },
 
   // ECE Sem 1 (Same as CSE Sem 1)
