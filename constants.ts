@@ -2252,6 +2252,86 @@ export const SUBJECTS: Subject[] = [
     ]
   },
 
+  // EEE Sem 6
+  {
+    code: 'EE8602',
+    name: 'Protection and Switchgear',
+    department: Department.EEE,
+    semester: 6,
+    syllabus_overview: 'Principles and need for protective schemes - nature and causes of faults - Electromagnetic Relays - Apparatus Protection - Static relays and Numerical Protection - Circuit Breakers and arc interruption.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'PROTECTION SCHEMES',
+        content: 'Principles and need for protective schemes — nature and causes of faults — types of faults — Methods of Grounding — Zones of protection and essential qualities of protection — Protection scheme.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'ELECTROMAGNETIC RELAYS',
+        content: 'Operating principles of relays — the Universal relay — Torque equation — R-X diagram — Electromagnetic Relays — Over current, Directional, Distance, Differential, Negative sequence and Under frequency relays.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'APPARATUS PROTECTION',
+        content: 'Current transformers and Potential transformers and their applications in protection schemes — Protection of transformer, generator, motor, bus bars and transmission line.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'STATIC RELAYS AND NUMERICAL PROTECTION',
+        content: 'Static relays — Phase, Amplitude Comparators — Synthesis of various relays using Static Comparators — Block diagram of Numerical relays — Over current protection, transformer differential protection, distant protection of transmission lines.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'CIRCUIT BREAKERS',
+        content: 'Physics of arcing phenomenon and arc interruption — DC and AC circuit breaking — re-striking voltage and recovery voltage — rate of rise of recovery voltage — resistance switching — current chopping — interruption of capacitive current — Types of circuit breakers — air blast, air break, oil, SF6, MCBs, MCCBs and vacuum circuit breakers — comparison of different circuit breakers — Rating and selection of Circuit breakers.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE8702',
+    name: 'Power System Operation and Control',
+    department: Department.EEE,
+    semester: 6,
+    syllabus_overview: 'Power scenario in Indian grid - Load dispatching centers - Load Frequency Control - Reactive Power Voltage Control - Economic Operation of Power System - Computer Control of Power Systems - SCADA and EMS.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'PRELIMINARIES ON POWER SYSTEM OPERATION AND CONTROL',
+        content: 'Power scenario in Indian grid – National and Regional load dispatching centers – requirements of good power system – necessity of voltage and frequency regulation – real power vs frequency and reactive power vs voltage control loops – system load variation, load curves and basic concepts of load dispatching – load forecasting – Basics of speed governing mechanisms and modeling – speed load characteristics – regulation of two generators in parallel.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'REAL POWER – FREQUENCY CONTROL',
+        content: 'Load Frequency Control (LFC) of single area system-static and dynamic analysis of uncontrolled and controlled cases – LFC of two area system – tie line modeling – block diagram representation of two area system – static and dynamic analysis – tie line with frequency bias control – state variability model – integration of economic dispatch control with LFC.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'REACTIVE POWER – VOLTAGE CONTROL',
+        content: 'Generation and absorption of reactive power – basics of reactive power control – Automatic Voltage Regulator (AVR) – brushless AC excitation system – block diagram representation of AVR loop – static and dynamic analysis – stability compensation – voltage drop in transmission line – methods of reactive power injection – tap changing transformer, SVC (TCR + TSC) and STATCOM for voltage control.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'ECONOMIC OPERATION OF POWER SYSTEM',
+        content: 'Statement of economic dispatch problem – input and output characteristics of thermal plant – incremental cost curve – optimal operation of thermal units without and with transmission losses (no derivation of transmission loss coefficients) – base point and participation factors method – statement of unit commitment (UC) problem – constraints on UC problem – solution of UC problem using priority list – special aspects of short term and long term hydrothermal problems.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'COMPUTER CONTROL OF POWER SYSTEMS',
+        content: 'Need of computer control of power systems-concept of energy control centers and functions – PMU – system monitoring, data acquisition and controls – System hardware configurations – SCADA and EMS functions – state estimation problem – measurements and errors – weighted least square estimation – various operating states – state transition diagram.',
+        periods: 9
+      }
+    ]
+  },
+
   // MECH Sem 5
   { code: 'ME3591', name: 'Design of Machine Elements', department: Department.MECH, semester: 5, syllabus_overview: 'Stress, Strain, Shafts, Couplings, Bearings, Gears...' },
   { code: 'ME3592', name: 'Metrology and Measurements', department: Department.MECH, semester: 5, syllabus_overview: 'Linear measurements, Angular measurements, Laser metrology...' },
