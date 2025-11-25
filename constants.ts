@@ -438,9 +438,196 @@ export const SUBJECTS: Subject[] = [
   },
 
   // CSE Sem 3
-  { code: 'CS3351', name: 'Digital Principles and Computer Organization', department: Department.CSE, semester: 3, syllabus_overview: 'Combinational Circuits, Synchronous Sequential Circuits, Computer Fundamentals...' },
-  { code: 'CS3352', name: 'Foundations of Data Science', department: Department.CSE, semester: 3, syllabus_overview: 'Data Analysis, Python, Statistics, Machine Learning Basics...' },
-  { code: 'CS3391', name: 'Object Oriented Programming', department: Department.CSE, semester: 3, syllabus_overview: 'Java, Inheritance, Polymorphism, Exception Handling...' },
+  {
+    code: 'MA3354',
+    name: 'Discrete Mathematics',
+    department: Department.CSE,
+    semester: 3,
+    syllabus_overview: 'Full syllabus detailed across five units covering Logic and Proofs, Combinatorics, Graphs, Algebraic Structures, and Lattices and Boolean Algebra',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Logic and Proofs',
+        content: 'Covers Propositional logic – Propositional equivalences - Predicates and quantifiers – Nested quantifiers – Rules of inference - Introduction to proofs – Proof methods and strategy.'
+      },
+      {
+        unitNumber: 'II',
+        title: 'Combinatorics',
+        content: 'Includes Mathematical induction – Strong induction and well ordering – The basics of counting – The pigeonhole principle – Permutations and combinations – Recurrence relations – Solving linear recurrence relations – Generating functions – Inclusion and exclusion principle and its applications.'
+      },
+      {
+        unitNumber: 'III',
+        title: 'Graphs',
+        content: 'Details Graphs and graph models – Graph terminology and special types of graphs – Matrix representation of graphs and graph isomorphism – Connectivity – Euler and Hamilton paths.'
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Algebraic Structures',
+        content: 'Focuses on Algebraic systems – Semi groups and monoids - Groups – Subgroups – Homomorphism’s – Normal subgroup and cosets – Lagrange’s theorem – Definitions and examples of Rings and Fields.'
+      },
+      {
+        unitNumber: 'V',
+        title: 'Lattices and Boolean Algebra',
+        content: 'Covers Partial ordering – Posets – Lattices as posets and as algebraic systems – Properties of lattices - Sub lattices – Direct product and homomorphism – Some special lattices – Boolean algebra – Sub Boolean Algebra – Boolean Homomorphism.'
+      }
+    ]
+  },
+  { 
+    code: 'CS3351', 
+    name: 'Digital Principles and Computer Organization', 
+    department: Department.CSE, 
+    semester: 3, 
+    syllabus_overview: 'Combinational Circuits, Synchronous Sequential Circuits, Computer Fundamentals...',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Combinational Logic',
+        content: 'Covers Karnaugh Map, Analysis and Design Procedures, Binary Adder – Subtractor, Decimal Adder, Magnitude Comparator, Decoder, Encoder, Multiplexers, and Demultiplexers.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Synchronous Sequential Logic',
+        content: 'Includes Introduction to Sequential Circuits, Flip-Flops (operation and excitation tables, Triggering of FF), Analysis and design of clocked sequential circuits, Design using Moore/Mealy models, state minimization, Registers, and Counters.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Computer Fundamentals',
+        content: 'Focuses on Functional Units of a Digital Computer (Von Neumann Architecture), Operation and Operands of Computer Hardware Instruction, Instruction Set Architecture (ISA), Memory Location, Addressing Modes, Encoding of Machine Instruction, and Interaction between Assembly and High Level Language.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Processor',
+        content: 'Details Instruction Execution, Building a Data Path, Designing a Control Unit (Hardwired Control, Microprogrammed Control), Pipelining, Data Hazard, and Control Hazards.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Memory and I/O',
+        content: 'Covers Memory Concepts and Hierarchy, Memory Management, Cache Memories (Mapping and Replacement Techniques), Virtual Memory, DMA, I/O Accessing (Parallel and Serial Interface), Interrupt I/O, and Interconnection Standards (USB, SATA).',
+        periods: 9
+      }
+    ]
+  },
+  { 
+    code: 'CS3352', 
+    name: 'Data Structures', 
+    department: Department.CSE, 
+    semester: 3, 
+    syllabus_overview: 'Full syllabus provided across five units: Lists, Stacks and Queues, Trees, Multiway Search Trees and Graphs, and Searching, Sorting and Hashing Techniques',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Lists, Stacks, and Queues',
+        content: 'Abstract Data Types (ADTs) – List ADT – Array-based implementation – Linked list implementation – Singly linked lists – Circularly linked lists – Doubly-linked lists – All operations (Insertion, Deletion, Merge, Traversal) – Applications of lists – Polynomial Manipulation – Stack ADT – Operations – Applications – Evaluating arithmetic expressions – Conversion of Infix to postfix expression – Queue ADT – Operations – Circular Queue – Priority Queue - deQueue – Applications of queues.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Trees',
+        content: 'Tree ADT – Tree traversals – Binary Tree ADT – Expression trees – Applications of trees – Binary search tree ADT – Threaded Binary Trees – AVL Trees – B-Tree – B+ Tree – Heap – Applications of heap.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Multiway Search Trees and Graphs',
+        content: 'M-Way Search Trees – B-Trees – B+ Trees – Graph Definition – Representation of Graphs – Types of Graph – Breadth-first traversal – Depth-first traversal – Topological Sort – Bi-connectivity – Cut vertex – Euler circuits – Applications of graphs.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Searching, Sorting and Hashing Techniques',
+        content: 'Searching- Linear Search – Binary Search. Sorting - Bubble sort – Selection sort – Insertion sort – Shell sort – Radix sort. Hashing- Hash Functions – Separate Chaining – Open Addressing – Rehashing – Extendible Hashing.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Advanced Data Structures',
+        content: 'Tries – Binary Tries – Compressed Tries – Suffix Tries – String Matching: KMP Algorithm – Boyer-Moore Algorithm – Pattern Matching and Tries – Huffman Coding.',
+        periods: 9
+      }
+    ]
+  },
+  { 
+    code: 'CS3353', 
+    name: 'Foundations of Data Science', 
+    department: Department.CSE, 
+    semester: 3, 
+    syllabus_overview: 'Data Analysis, Python, Statistics, Machine Learning Basics...',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction',
+        content: 'Data Science: Benefits and uses – facets of data – Data Science Process: Overview – Defining research goals – Retrieving data – Data preparation - Exploratory Data analysis – build the model – presenting findings and building applications - Data Mining - Data Warehousing – Basic Statistical descriptions of Data.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Describing Data',
+        content: 'Types of Data - Types of Variables - Describing Data with Tables and Graphs – Describing Data with Averages - Describing Variability - Normal Distributions and Standard (z) Scores.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Describing Relationships',
+        content: 'Correlation – Scatter plots – correlation coefficient for quantitative data – computational formula for correlation coefficient – Regression – regression line – least squares regression line – Standard error of estimate – interpretation of r 2 – multiple regression equations – regression towards the mean.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Python Libraries for Data Wrangling',
+        content: 'Basics of Numpy arrays – aggregations – computations on arrays – comparisons, masks, boolean logic – fancy indexing – structured arrays – Data manipulation with Pandas – data indexing and selection – operating on data – missing data – Hierarchical indexing – combining datasets – aggregation and grouping – pivot tables.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Data Visualization',
+        content: 'Importing Matplotlib – Line plots – Scatter plots – visualizing errors – density and contour plots – Histograms – legends – colors – subplots – text and annotation – customization – three dimensional plotting - Geographic Data with Basemap - Visualization with Seaborn.',
+        periods: 9
+      }
+    ]
+  },
+    { 
+    code: 'CS3391', 
+    name: 'Object Oriented Programming', 
+    department: Department.CSE, 
+    semester: 3, 
+    syllabus_overview: 'Java, Inheritance, Polymorphism, Exception Handling...',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to OOP and Java',
+        content: 'Overview of OOP (paradigms, features) – Java Buzzwords – Overview of Java – Data Types, Variables and Arrays – Operators – Control Statements – Programming Structures – Defining classes – Constructors – Methods – Access specifiers – Static members – Java Doc comments.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Inheritance, Packages and Interfaces',
+        content: 'Overloading Methods – Objects as Parameters – Static, Nested and Inner Classes. Inheritance: Basics, Types of Inheritance, Super keyword, Method Overriding, Dynamic Method Dispatch, Abstract Classes, final with Inheritance. Packages and Interfaces: Packages, Member Access, Importing Packages, Interfaces.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Exception Handling and Multithreading',
+        content: 'Exception Handling basics – Multiple catch Clauses – Nested try Statements – Java’s Built-in Exceptions – User defined Exception. Multithreaded Programming: Java Thread Model – Creating a Thread and Multiple Threads – Priorities – Synchronization – Inter Thread Communication – Suspending, Resuming, and Stopping Threads – Wrappers – Auto boxing.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'I/O, Generics, String Handling',
+        content: 'I/O Basics – Reading and Writing Console I/O – Reading and Writing Files. Generics: Generic Programming, Generic classes, Generic Methods, Bounded Types, Restrictions and Limitations. Strings: Basic String class, methods and String Buffer Class.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'JAVAFX Event Handling, Controls and Components',
+        content: 'JAVAFX Events and Controls: Event Basics – Handling Key and Mouse Events. Controls: Checkbox, ToggleButton, RadioButtons, ListView, ComboBox, ChoiceBox, Text Controls, ScrollPane. Layouts: FlowPane, HBox and VBox, BorderPane, StackPane, GridPane. Menus: Basics, Menu, Menu bars, MenuItem',
+        periods: 9
+      }
+    ]
+  },
 
   // CSE Sem 4
   { code: 'CS3451', name: 'Introduction to Operating Systems', department: Department.CSE, semester: 4, syllabus_overview: 'Processes, Threads, Scheduling, Deadlocks, Memory Management...' },
