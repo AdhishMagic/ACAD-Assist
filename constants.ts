@@ -865,6 +865,50 @@ export const SUBJECTS: Subject[] = [
     ]
   },
 
+  // CSE Sem 5
+  {
+    code: 'CS3591',
+    name: 'Computer Networks',
+    department: Department.CSE,
+    semester: 5,
+    syllabus_overview: 'Data Communication, Protocol Layering, TCP/IP, OSI Model, Application Layer Protocols, Transport Layer, Network Layer, Routing Protocols, Data Link and Physical Layers.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction and Application Layer',
+        content: 'Data Communication. Networks and Network Types. Protocol Layering. TCP/IP Protocol suite. OSI Model. Introduction to Sockets. Application Layer protocols: HTTP, FTP, Email protocols (SMTP, POP3, IMAP, MIME), DNS, SNMP.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Transport Layer',
+        content: 'Introduction to Transport Layer. Transport-Layer Protocols: UDP, TCP (Connection Management, Flow control, Congestion Control, Congestion avoidance including DECbit and RED). SCTP. Quality of Service.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Network Layer',
+        content: 'Switching: Packet Switching. Internet protocol. IPV4 and IP Addressing. Subnetting. IPV6. ARP, RARP, ICMP, DHCP.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Routing',
+        content: 'Routing and protocols. Unicast routing: Distance Vector Routing (RIP), Link State Routing (OSPF), Path-vector routing (BGP). Multicast Routing: DVMRP, PIM.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Data Link and Physical Layers',
+        content: 'Data Link Layer: Framing, Flow control, Error control. Data-Link Layer Protocols: HDLC, PPP. Media Access Control: Ethernet Basics, CSMA/CD, Virtual LAN, Wireless LAN (802.11). Physical Layer: Data and Signals, Performance, Transmission media, Switching, Circuit Switching.',
+        periods: 9
+      }
+    ]
+  },
+  { code: 'CS3501', name: 'Compiler Design', department: Department.CSE, semester: 5, syllabus_overview: 'Lexical Analysis, Syntax Analysis, Semantic Analysis, Intermediate Code Generation, Code Optimization, Code Generation...' },
+  { code: 'CB3491', name: 'Cryptography and Cyber Security', department: Department.CSE, semester: 5, syllabus_overview: 'Cryptography Fundamentals, Symmetric and Asymmetric Encryption, Hash Functions, Digital Signatures, Network Security, Cyber Security...' },
+  { code: 'CS3551', name: 'Distributed Computing', department: Department.CSE, semester: 5, syllabus_overview: 'Distributed System Models, Communication, Synchronization, Consistency and Replication, Fault Tolerance, Distributed File Systems...' },
+
   // ECE Sem 1 (Same as CSE Sem 1)
   {
     code: 'HS3151',
@@ -2559,6 +2603,86 @@ export const SUBJECTS: Subject[] = [
         unitNumber: 'V',
         title: 'COMPUTER CONTROL OF POWER SYSTEMS',
         content: 'Need of computer control of power systems-concept of energy control centers and functions – PMU – system monitoring, data acquisition and controls – System hardware configurations – SCADA and EMS functions – state estimation problem – measurements and errors – weighted least square estimation – various operating states – state transition diagram.',
+        periods: 9
+      }
+    ]
+  },
+
+  // EEE Sem 7
+  {
+    code: 'EE8701',
+    name: 'High Voltage Engineering',
+    department: Department.EEE,
+    semester: 7,
+    syllabus_overview: 'Over voltages in electrical power systems, Dielectric breakdown mechanisms, Generation of high voltages and currents, Measurement techniques, High voltage testing and insulation coordination.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Over Voltages in Electrical Power Systems',
+        content: 'Causes of over voltages and its effects on power system. Lightning, switching surges and temporary over voltages. Corona and its effects. Bewley lattice diagram. Protection against over voltages.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Dielectric Breakdown',
+        content: 'Properties of Dielectric materials. Gaseous breakdown in uniform and non-uniform fields. Corona discharges. Vacuum breakdown. Conduction and breakdown in pure and commercial liquids, Maintenance of oil Quality. Breakdown mechanisms in solid and composite dielectrics. Applications of insulating materials in electrical equipments.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Generation of High Voltages and High Currents',
+        content: 'Generation of High DC voltage: Rectifiers, voltage multipliers, vandegraf generator. Generation of high impulse voltage: single and multistage Marx circuits. Generation of high AC voltages: cascaded transformers, resonant transformer and tesla coil. Generation of switching surges. Generation of impulse currents. Triggering and control of impulse generators.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Measurement of High Voltages and High Currents',
+        content: 'High Resistance with series ammeter. Dividers: Resistance, Capacitance and Mixed dividers. Peak Voltmeter, Generating Voltmeters. Capacitance Voltage Transformers, Electrostatic Voltmeters. Sphere Gaps. High current shunts. Digital techniques in high voltage measurement.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'High Voltage Testing and Insulation Coordination',
+        content: 'High voltage testing of electrical power apparatus as per International and Indian standards. Power frequency, impulse voltage and DC testing of Insulators, circuit breakers, bushing, isolators and transformers. Insulation Coordination & testing of cables.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3791',
+    name: 'Human Values and Ethics',
+    department: Department.EEE,
+    semester: 7,
+    syllabus_overview: 'Democratic values, Secular values, Scientific values, Social ethics, and Scientific ethics enshrined in the Constitution of India.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Democratic Values',
+        content: 'Understanding Democratic values: Equality, Liberty, Fraternity, Freedom, Justice, Pluralism, Tolerance, Respect for All, Freedom of Expression, Citizen Participation in Governance. World Democracies: French Revolution, American Independence, Indian Freedom Movement. Reading Text: Excerpts from John Stuart Mills\' On Liberty.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Secular Values',
+        content: 'Understanding Secular values. Interpretation of secularism in Indian context. Disassociation of state from religion. Acceptance of all faiths. Encouraging non-discriminatory practices. Reading Text: Excerpt from Secularism in India: Concept and Practice by Ram Puniyani.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Scientific Values',
+        content: 'Scientific thinking and method: Inductive and Deductive thinking, Proposing and testing Hypothesis, Validating facts using evidence-based approach. Skepticism and Empiricism. Rationalism and Scientific Temper. Reading Text: Excerpt from The Scientific Temper by Antony Michaelis R.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Social Ethics',
+        content: 'Application of ethical reasoning to social problems. Gender bias and issues. Gender violence. Social discrimination. Constitutional protection and policies. Inclusive practices. Reading Text: Excerpt from 21 Lessons for the 21st Century by Yuval Noah Harari.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Scientific Ethics',
+        content: 'Transparency and Fairness in scientific pursuits. Scientific inventions for the betterment of society. Unfair application of scientific inventions. Role and Responsibility of Scientist in the modern society. Reading Text: Excerpt from American Prometheus: The Triumph and Tragedy of J.Robert Oppenheimer by Kai Bird and Martin J. Sherwin.',
         periods: 9
       }
     ]
