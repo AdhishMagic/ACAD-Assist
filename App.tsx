@@ -112,9 +112,7 @@ export default function App() {
       {screen !== AppScreen.AUTH && (
         <header className="sticky top-0 z-50 glass px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setSelectedSubject(null); setScreen(AppScreen.DASHBOARD); }}>
-            <div className="bg-[#BDB395] p-2 rounded-xl text-white shadow-md">
-              <Icons.GradCap />
-            </div>
+            <img src="/logo.svg" alt="ACAD ASSIST" className="h-12 w-12 rounded-lg" />
             <h1 className="font-display text-2xl font-bold text-[#5A5340] tracking-wide">ACAD ASSIST</h1>
           </div>
           <div className="flex items-center gap-4">
@@ -214,10 +212,10 @@ const AuthScreen = ({ onLogin }: { onLogin: (email: string) => void }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] p-4">
       <div className="mb-8 text-center animate-fade-in">
-        <div className="inline-block p-4 rounded-full bg-[#F2E2B1] mb-4 shadow-xl border-4 border-white">
-          <Icons.GradCap />
+        <div className="inline-block mb-4">
+          <img src="/logo.svg" alt="ACAD ASSIST" className="h-40 w-40 mx-auto drop-shadow-2xl rounded-2xl" />
         </div>
-        <h1 className="text-5xl font-bold mb-2 text-[#5A5340]">Acad Assist</h1>
+        <h1 className="text-5xl font-bold mb-2 text-[#5A5340]">ACAD ASSIST</h1>
         <p className="text-xl text-stone-500">Your AI-Powered University Companion</p>
       </div>
 
