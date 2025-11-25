@@ -1023,6 +1023,127 @@ export const SUBJECTS: Subject[] = [
     ]
   },
 
+  // CSE Sem 6
+  {
+    code: 'CS3601',
+    name: 'Object Oriented Software Engineering',
+    department: Department.CSE,
+    semester: 6,
+    syllabus_overview: 'Agile Development, Requirements Analysis and Specification, Software Design, Software Testing and Maintenance, Project Management including DevOps.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Agile Development',
+        content: 'Introduction to Software Engineering. Software Process. Perspective and Specialized Process Models. Introduction to Agility. Agile process. Extreme programming. XP Process. Case Study.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Requirements Analysis and Specification',
+        content: 'Requirement analysis and specification. Requirements gathering and analysis. Software Requirement Specification. Formal system specification: Finite State Machines, Petrinets. Object modelling using UML: Use case Model, Class diagrams, Interaction diagrams, Activity diagrams, State chart diagrams. Functional modelling: Data Flow Diagram. CASE TOOLS.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Software Design',
+        content: 'Software design. Design process. Design concepts: Coupling, Cohesion, Functional independence. Design patterns: Model-view-controller, Publish-subscribe, Adapter, Command, Strategy, Observer, Proxy, Facade. Architectural styles: Layered, Client Server, Tiered, Pipe and filter. User interface design. Case Study.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Software Testing and Maintenance',
+        content: 'Testing: Unit testing, Black box testing, White box testing, Integration and System testing, Regression testing. Debugging. Program analysis: Symbolic execution, Model Checking. Case Study.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Project Management',
+        content: 'Software Project Management. Software Configuration Management. Project Scheduling. DevOps: Motivation, Cloud as a platform, Operations, Deployment Pipeline (Overall Architecture Building and Testing, Deployment), Tools. Case Study.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CS3691',
+    name: 'Embedded Systems and IoT',
+    department: Department.CSE,
+    semester: 6,
+    syllabus_overview: '8-Bit Embedded Processor, Embedded C Programming, IoT and Arduino Programming, IoT Communication and Open Platforms, Applications Development.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: '8-Bit Embedded Processor',
+        content: '8-Bit Microcontroller: Architecture, Instruction Set and Programming. Programming Parallel Ports. Timers and Serial Port. Interrupt Handling.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Embedded C Programming',
+        content: 'Memory And I/O Devices Interfacing. Programming Embedded Systems in C. Need For RTOS. Multiple Tasks and Processes. Context Switching. Priority Based Scheduling Policies.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'IoT and Arduino Programming',
+        content: 'Introduction to the Concept of IoT Devices. IoT Devices Versus Computers. IoT Configurations. Basic Components. Introduction to Arduino. Types of Arduino. Arduino Toolchain. Arduino Programming Structure: Sketches, Pins, Input/Output From Pins Using Sketches. Introduction to Arduino Shields. Integration of Sensors and Actuators with Arduino.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'IoT Communication and Open Platforms',
+        content: 'IoT Communication Models and APIs. IoT Communication Protocols: Bluetooth, WiFi, ZigBee, GPS, GSM modules. Open Platform (like Raspberry Pi): Architecture, Programming, Interfacing. Accessing GPIO Pins. Sending and Receiving Signals Using GPIO Pins. Connecting to the Cloud.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Applications Development',
+        content: 'Complete Design of Embedded Systems. Development of IoT Applications: Home Automation, Smart Agriculture, Smart Cities, Smart Healthcare.',
+        periods: 9
+      }
+    ]
+  },
+
+  // CSE Sem 7
+  {
+    code: 'GE3791',
+    name: 'Human Values and Ethics',
+    department: Department.CSE,
+    semester: 7,
+    syllabus_overview: 'Democratic values, Secular values, Scientific values, Social ethics, and Scientific ethics enshrined in the Constitution of India.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Democratic Values',
+        content: 'Understanding Democratic values: Equality, Liberty, Fraternity, Freedom, Justice, Pluralism, Tolerance, Respect for All, Freedom of Expression, Citizen Participation in Governance. World Democracies: French Revolution, American Independence, Indian Freedom Movement. Reading Text: Excerpts from John Stuart Mills\' On Liberty.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Secular Values',
+        content: 'Understanding Secular values. Interpretation of secularism in Indian context. Disassociation of state from religion. Acceptance of all faiths. Encouraging non-discriminatory practices. Reading Text: Excerpt from Secularism in India: Concept and Practice by Ram Puniyani.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Scientific Values',
+        content: 'Scientific thinking and method: Inductive and Deductive thinking, Proposing and testing Hypothesis, Validating facts using evidence-based approach. Skepticism and Empiricism. Rationalism and Scientific Temper. Reading Text: Excerpt from The Scientific Temper by Antony Michaelis R.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Social Ethics',
+        content: 'Application of ethical reasoning to social problems. Gender bias and issues. Gender violence. Social discrimination. Constitutional protection and policies. Inclusive practices. Reading Text: Excerpt from 21 Lessons for the 21st Century by Yuval Noah Harari.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Scientific Ethics',
+        content: 'Transparency and Fairness in scientific pursuits. Scientific inventions for the betterment of society. Unfair application of scientific inventions. Role and Responsibility of Scientist in the modern society. Reading Text: Excerpt from American Prometheus: The Triumph and Tragedy of J.Robert Oppenheimer by Kai Bird and Martin J. Sherwin.',
+        periods: 9
+      }
+    ]
+  },
+
   // ECE Sem 1 (Same as CSE Sem 1)
   {
     code: 'HS3151',
