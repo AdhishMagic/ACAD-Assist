@@ -633,9 +633,1269 @@ export const SUBJECTS: Subject[] = [
   { code: 'CS3451', name: 'Introduction to Operating Systems', department: Department.CSE, semester: 4, syllabus_overview: 'Processes, Threads, Scheduling, Deadlocks, Memory Management...' },
   { code: 'CS3491', name: 'Artificial Intelligence and Machine Learning', department: Department.CSE, semester: 4, syllabus_overview: 'Search strategies, Game playing, Supervised Learning, Neural Networks...' },
 
+  // ECE Sem 1 (Same as CSE Sem 1)
+  {
+    code: 'HS3151',
+    name: 'Professional English - I',
+    department: Department.ECE,
+    semester: 1,
+    syllabus_overview: 'Introduction to Fundamentals of Communication, Narration and Summation, Description of a Process/Product, Classification and Recommendations, and Expression.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to Fundamentals of Communication',
+        content: 'Listening: For general information, specific details, telephone conversation, listening to voicemail/messages, and filling a form. Speaking: Self-introduction, introducing a friend, conversation (politeness strategies), and asking for information. Reading: Reading brochures (technical context), telephone messages/social media messages, and emails. Writing: Writing emails/letters introducing oneself. Grammar: Present Tense (simple and progressive), and Question types (Wh/Yes or No/Tags). Vocabulary: Synonyms, One word substitution, and Abbreviations & Acronyms (as used in technical contexts).',
+        periods: 11
+      },
+      {
+        unitNumber: 'II',
+        title: 'Narration and Summation',
+        content: 'Listening: Podcasts, anecdotes/stories/event narration, documentaries, and interviews with celebrities. Speaking: Narrating personal experiences/events, interviewing a celebrity, and reporting/summarizing documentaries/podcasts/interviews. Reading: Biographies, travelogues, newspaper reports, excerpts from literature, and travel & technical blogs. Writing: Guided writing, Paragraph writing, and Short Report on an event (e.g., field trip). Grammar: Past tense (simple), Subject-Verb Agreement, and Prepositions. Vocabulary: Word forms (prefixes & suffixes), Synonyms and Antonyms, and Phrasal verbs.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Description of a Process/Product',
+        content: 'Listening: Product and process descriptions, a classroom lecture, and advertisements about products. Speaking: Picture description, giving instruction to use the product, presenting a product, and summarizing a lecture. Reading: Advertisements, gadget reviews, and user manuals. Writing: Writing definitions, instructions, and Product/Process description. Grammar: Imperatives, Adjectives, Degrees of comparison, and Present & Past Perfect Tenses. Vocabulary: Compound Nouns, Homonyms and Homophones, and discourse markers (connectives & sequence words).',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Classification and Recommendations',
+        content: 'Listening: TED Talks, scientific lectures, and educational videos. Speaking: Small Talk, Mini presentations, and making recommendations. Reading: Newspaper articles, Journal reports, and Non Verbal Communication (tables, pie charts etc.). Writing: Note-making/Note-taking (Study skills to be taught, not tested), Writing recommendations, and Transferring information from non verbal (chart, graph etc, to verbal mode). Grammar: Articles, and Pronouns (Possessive & Relative pronouns). Vocabulary: Collocations, Fixed/Semi fixed expressions.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Expression',
+        content: 'Listening: Debates/discussions, different viewpoints on an issue, and panel discussions. Speaking: Group discussions, Debates, and Expressing opinions through Simulations & Role play. Reading: Editorials and Opinion Blogs. Writing: Essay Writing (Descriptive or narrative). Grammar: Future Tenses, Punctuation, Negation (Statements & Questions), and Simple, Compound & Complex Sentences. Vocabulary: Cause & Effect Expressions – Content vs Function words.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'MA3151',
+    name: 'Matrices and Calculus',
+    department: Department.ECE,
+    semester: 1,
+    syllabus_overview: 'Matrices (Eigenvalues, Eigenvectors), Differential Calculus, Functions of Several Variables, Integral Calculus, and Multiple Integrals.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Matrices',
+        content: 'Covers Eigenvalues and Eigenvectors of a real matrix, Characteristic equation, Properties of Eigenvalues and Eigenvectors, Cayley - Hamilton theorem, Diagonalization of matrices by orthogonal transformation, Reduction of a quadratic form to canonical form by orthogonal transformation, Nature of quadratic forms, and Applications such as Stretching of an elastic membrane.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Differential Calculus',
+        content: 'Includes Representation of functions, Limit of a function, Continuity, Derivatives, Differentiation rules (sum, product, quotient, chain rules), Implicit differentiation, Logarithmic differentiation, and Applications such as Maxima and Minima of functions of one variable.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Functions of Several Variables',
+        content: 'Focuses on Partial differentiation, Homogeneous functions and Eulers theorem, Total derivative, Change of variables, Jacobians, Partial differentiation of implicit functions, Taylors series for functions of two variables, and Applications like Maxima and minima of functions of two variables and Lagranges method of undetermined multipliers.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Integral Calculus',
+        content: 'Detailed topics include Definite and Indefinite integrals, Substitution rule, Techniques of Integration (Integration by parts, Trigonometric integrals, Trigonometric substitutions, Integration of rational functions by partial fraction, Integration of irrational functions), Improper integrals, and Applications such as Hydrostatic force and pressure, and moments and centres of mass.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Multiple Integrals',
+        content: 'Covers Double integrals, Change of order of integration, Double integrals in polar coordinates, Area enclosed by plane curves, Triple integrals, Volume of solids, Change of variables in double and triple integrals, and Applications like Moments and centres of mass, and moment of inertia.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'PH3151',
+    name: 'Engineering Physics',
+    department: Department.ECE,
+    semester: 1,
+    syllabus_overview: 'Mechanics, Electromagnetic Waves, Oscillations, Optics and Lasers, Basic Quantum Mechanics, and Applied Quantum Mechanics.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Mechanics',
+        content: 'Covers Multi-particle dynamics (Center of mass, motion of CM, kinetic energy) and Rotation of rigid bodies (Rotational kinematics, kinetic energy, moment of inertia theorems, M.I. of continuous bodies and diatomic molecule, torque, rotational dynamics, conservation of angular momentum, rotational energy state, gyroscope, torsional pendulum, double pendulum), and Introduction to nonlinear oscillations.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Electromagnetic Waves',
+        content: 'Focuses on Maxwells equations, wave equation, Plane electromagnetic waves in vacuum, properties of electromagnetic waves (speed, amplitude, phase, orientation and waves in matter), polarization, Producing electromagnetic waves, Energy and momentum in EM waves (Intensity, radiation pressure), Cell-phone reception, and Reflection and transmission of electromagnetic waves from a non-conducting medium-vacuum interface for normal incidence.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Oscillations, Optics and Lasers',
+        content: 'Topics include Simple harmonic motion, resonance, analogy between electrical and mechanical oscillating systems, waves on a string (standing waves, traveling waves, Energy transfer), sound waves, Doppler effect. Also covers Reflection and refraction of light waves, total internal reflection, interference, Michelson interferometer, Theory of air wedge and experiment. Concludes with the Theory of laser (characteristics, Spontaneous and stimulated emission, Einsteins coefficients, population inversion), types of lasers (Nd-YAG laser, CO2 laser, semiconductor laser), and basic applications of lasers in industry.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Basic Quantum Mechanics',
+        content: 'Details Photons and light waves, Electrons and matter waves, Compton effect, The Schrodinger equation (Time dependent and time independent forms), meaning of wave function, Normalization, Free particle, and particle in an infinite potential well (1D, 2D and 3D Boxes, Normalization, probabilities and the correspondence principle).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Applied Quantum Mechanics',
+        content: 'Covers the harmonic oscillator (qualitative), Barrier penetration and quantum tunneling (qualitative), Tunneling microscope, Resonant diode, Finite potential wells (qualitative), Blochs theorem for particles in a periodic potential, and Basics of Kronig-Penney model and origin of energy bands',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CY3151',
+    name: 'Engineering Chemistry',
+    department: Department.ECE,
+    semester: 1,
+    syllabus_overview: 'Water and Its Treatment, Nanochemistry, Phase Rule and Composites, Fuels and Combustion, and Energy Sources and Storage Devices.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Water and Its Treatment',
+        content: 'Covers Water Sources and impurities, Water quality parameters (color, odour, turbidity, pH, hardness, alkalinity, TDS, COD, BOD, fluoride, arsenic), Municipal water treatment (primary treatment, disinfection—UV, Ozonation, break-point chlorination), Desalination (Reverse Osmosis), Boiler troubles (Scale and sludge, corrosion, embrittlement, Priming & foaming), and Treatment of boiler feed water (Internal: phosphate, colloidal, sodium aluminate, calgon conditioning; External: Ion exchange demineralization and zeolite process).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Nanochemistry',
+        content: 'Basics include distinction between molecules, nanomaterials and bulk materials, and Size-dependent properties (optical, electrical, mechanical, magnetic). Covers types of nanomaterials (nanoparticle, nanocluster, nanorod, nanowire, nanotube), Preparation methods (sol-gel, solvothermal, laser ablation, chemical vapour deposition, electrochemical deposition, electro spinning), and Applications in medicine, agriculture, energy, electronics, and catalysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Phase Rule and Composites',
+        content: 'Phase rule: Introduction, definition of terms, One component system (water system), Reduced phase rule, construction of a simple eutectic phase diagram (Thermal analysis), Two component system (lead-silver system, Pattinson process). Composites: Definition and Need, Constitution (Matrix materials: Polymer, metal, ceramic; and Reinforcement: fiber, particulates, flakes, whiskers). Properties and applications of Metal matrix composites (MMC), Ceramic matrix composites, Polymer matrix composites, and Hybrid composites.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Fuels and Combustion',
+        content: 'Fuels: Classification, Coal and coke (proximate and ultimate analysis, Carbonization, Otto Hoffmann method), Petroleum and Diesel (synthetic petrol manufacture via Bergius process, Knocking, octane/cetane number, Power alcohol, biodiesel). Combustion of fuels: Calorific value (higher/lower, theoretical calculation), Ignition temperature (spontaneous ignition temperature, Explosive range), Flue gas analysis (ORSAT Method), and CO₂ emission and carbon footprint.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Energy Sources and Storage Devices',
+        content: 'Covers Stability of nucleus (mass defect, binding energy), Nuclear energy (light water nuclear power plant, breeder reactor). Solar energy conversion (Principle, working, applications of solar cells, recent developments). Includes Wind energy, Geothermal energy, Batteries (Primary: dry cell; Secondary: lead acid, lithium-ion-battery), Electric vehicles, Fuel cells (H₂-O₂ fuel cell, microbial fuel cell), and Supercapacitors (Storage principle, types).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3151',
+    name: 'Problem Solving and Python Programming (Theory)',
+    department: Department.ECE,
+    semester: 1,
+    syllabus_overview: 'The syllabus includes Computational Thinking and Problem Solving, Data Types, Expressions, Statements, Control Flow, Functions, Strings, Lists, Tuples, Dictionaries, and Files, Modules, Packages',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Computational Thinking and Problem Solving',
+        content: 'Fundamentals of Computing, Identification of Computational Problems, Algorithms (building blocks: statements, state, control flow, functions), notation (pseudo code, flow chart, programming language), algorithmic problem solving, simple strategies for developing algorithms (iteration, recursion). Illustrative problems include: find minimum in a list, insert a card in a list of sorted cards, guess an integer number in a range, and Towers of Hanoi.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Data Types, Expressions, Statements',
+        content: 'Python interpreter and interactive mode, debugging, values and types (int, float, boolean, string, list), variables, expressions, statements, tuple assignment, precedence of operators, comments. Illustrative programs: exchange the values of two variables, circulate the values of n variables, distance between two points.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Control Flow, Functions, Strings',
+        content: 'Conditionals (Boolean values/operators, if, if-else, if-elif-else), Iteration (while, for, break, continue, pass), Fruitful functions (return values, parameters, scope, recursion, composition), Strings (slices, immutability, functions/methods, string module), Lists as arrays. Illustrative programs: square root, gcd, exponentiation, sum an array of numbers, linear search, binary search.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Lists, Tuples, Dictionaries',
+        content: 'Lists (operations, slices, methods, loop, mutability, aliasing, cloning, parameters), Tuples (assignment, return value), Dictionaries (operations and methods), advanced list processing (list comprehension). Illustrative programs: simple sorting, histogram, Students marks statement, Retail bill preparation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Files, Modules, Packages',
+        content: 'Files and exceptions (text files, reading and writing files, format operator), command line arguments, errors and exceptions, handling exceptions, modules, packages. Illustrative programs: word count, copy file, Voters age validation, Marks range validation (0-100)',
+        periods: 9
+      }
+    ]
+  },
+
   // ECE Sem 3
   { code: 'EC3354', name: 'Signals and Systems', department: Department.ECE, semester: 3, syllabus_overview: 'Continuous Time Signals, Fourier Series, Laplace Transform...' },
   { code: 'EC3351', name: 'Control Systems', department: Department.ECE, semester: 3, syllabus_overview: 'Transfer function, Time response analysis, Frequency response...' },
+
+  // MECH Sem 1 (Same as CSE Sem 1)
+  {
+    code: 'HS3151',
+    name: 'Professional English - I',
+    department: Department.MECH,
+    semester: 1,
+    syllabus_overview: 'Introduction to Fundamentals of Communication, Narration and Summation, Description of a Process/Product, Classification and Recommendations, and Expression.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to Fundamentals of Communication',
+        content: 'Listening: For general information, specific details, telephone conversation, listening to voicemail/messages, and filling a form. Speaking: Self-introduction, introducing a friend, conversation (politeness strategies), and asking for information. Reading: Reading brochures (technical context), telephone messages/social media messages, and emails. Writing: Writing emails/letters introducing oneself. Grammar: Present Tense (simple and progressive), and Question types (Wh/Yes or No/Tags). Vocabulary: Synonyms, One word substitution, and Abbreviations & Acronyms (as used in technical contexts).',
+        periods: 11
+      },
+      {
+        unitNumber: 'II',
+        title: 'Narration and Summation',
+        content: 'Listening: Podcasts, anecdotes/stories/event narration, documentaries, and interviews with celebrities. Speaking: Narrating personal experiences/events, interviewing a celebrity, and reporting/summarizing documentaries/podcasts/interviews. Reading: Biographies, travelogues, newspaper reports, excerpts from literature, and travel & technical blogs. Writing: Guided writing, Paragraph writing, and Short Report on an event (e.g., field trip). Grammar: Past tense (simple), Subject-Verb Agreement, and Prepositions. Vocabulary: Word forms (prefixes & suffixes), Synonyms and Antonyms, and Phrasal verbs.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Description of a Process/Product',
+        content: 'Listening: Product and process descriptions, a classroom lecture, and advertisements about products. Speaking: Picture description, giving instruction to use the product, presenting a product, and summarizing a lecture. Reading: Advertisements, gadget reviews, and user manuals. Writing: Writing definitions, instructions, and Product/Process description. Grammar: Imperatives, Adjectives, Degrees of comparison, and Present & Past Perfect Tenses. Vocabulary: Compound Nouns, Homonyms and Homophones, and discourse markers (connectives & sequence words).',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Classification and Recommendations',
+        content: 'Listening: TED Talks, scientific lectures, and educational videos. Speaking: Small Talk, Mini presentations, and making recommendations. Reading: Newspaper articles, Journal reports, and Non Verbal Communication (tables, pie charts etc.). Writing: Note-making/Note-taking (Study skills to be taught, not tested), Writing recommendations, and Transferring information from non verbal (chart, graph etc, to verbal mode). Grammar: Articles, and Pronouns (Possessive & Relative pronouns). Vocabulary: Collocations, Fixed/Semi fixed expressions.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Expression',
+        content: 'Listening: Debates/discussions, different viewpoints on an issue, and panel discussions. Speaking: Group discussions, Debates, and Expressing opinions through Simulations & Role play. Reading: Editorials and Opinion Blogs. Writing: Essay Writing (Descriptive or narrative). Grammar: Future Tenses, Punctuation, Negation (Statements & Questions), and Simple, Compound & Complex Sentences. Vocabulary: Cause & Effect Expressions – Content vs Function words.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'MA3151',
+    name: 'Matrices and Calculus',
+    department: Department.MECH,
+    semester: 1,
+    syllabus_overview: 'Matrices (Eigenvalues, Eigenvectors), Differential Calculus, Functions of Several Variables, Integral Calculus, and Multiple Integrals.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Matrices',
+        content: 'Covers Eigenvalues and Eigenvectors of a real matrix, Characteristic equation, Properties of Eigenvalues and Eigenvectors, Cayley - Hamilton theorem, Diagonalization of matrices by orthogonal transformation, Reduction of a quadratic form to canonical form by orthogonal transformation, Nature of quadratic forms, and Applications such as Stretching of an elastic membrane.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Differential Calculus',
+        content: 'Includes Representation of functions, Limit of a function, Continuity, Derivatives, Differentiation rules (sum, product, quotient, chain rules), Implicit differentiation, Logarithmic differentiation, and Applications such as Maxima and Minima of functions of one variable.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Functions of Several Variables',
+        content: 'Focuses on Partial differentiation, Homogeneous functions and Eulers theorem, Total derivative, Change of variables, Jacobians, Partial differentiation of implicit functions, Taylors series for functions of two variables, and Applications like Maxima and minima of functions of two variables and Lagranges method of undetermined multipliers.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Integral Calculus',
+        content: 'Detailed topics include Definite and Indefinite integrals, Substitution rule, Techniques of Integration (Integration by parts, Trigonometric integrals, Trigonometric substitutions, Integration of rational functions by partial fraction, Integration of irrational functions), Improper integrals, and Applications such as Hydrostatic force and pressure, and moments and centres of mass.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Multiple Integrals',
+        content: 'Covers Double integrals, Change of order of integration, Double integrals in polar coordinates, Area enclosed by plane curves, Triple integrals, Volume of solids, Change of variables in double and triple integrals, and Applications like Moments and centres of mass, and moment of inertia.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'PH3151',
+    name: 'Engineering Physics',
+    department: Department.MECH,
+    semester: 1,
+    syllabus_overview: 'Mechanics, Electromagnetic Waves, Oscillations, Optics and Lasers, Basic Quantum Mechanics, and Applied Quantum Mechanics.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Mechanics',
+        content: 'Covers Multi-particle dynamics (Center of mass, motion of CM, kinetic energy) and Rotation of rigid bodies (Rotational kinematics, kinetic energy, moment of inertia theorems, M.I. of continuous bodies and diatomic molecule, torque, rotational dynamics, conservation of angular momentum, rotational energy state, gyroscope, torsional pendulum, double pendulum), and Introduction to nonlinear oscillations.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Electromagnetic Waves',
+        content: 'Focuses on Maxwells equations, wave equation, Plane electromagnetic waves in vacuum, properties of electromagnetic waves (speed, amplitude, phase, orientation and waves in matter), polarization, Producing electromagnetic waves, Energy and momentum in EM waves (Intensity, radiation pressure), Cell-phone reception, and Reflection and transmission of electromagnetic waves from a non-conducting medium-vacuum interface for normal incidence.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Oscillations, Optics and Lasers',
+        content: 'Topics include Simple harmonic motion, resonance, analogy between electrical and mechanical oscillating systems, waves on a string (standing waves, traveling waves, Energy transfer), sound waves, Doppler effect. Also covers Reflection and refraction of light waves, total internal reflection, interference, Michelson interferometer, Theory of air wedge and experiment. Concludes with the Theory of laser (characteristics, Spontaneous and stimulated emission, Einsteins coefficients, population inversion), types of lasers (Nd-YAG laser, CO2 laser, semiconductor laser), and basic applications of lasers in industry.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Basic Quantum Mechanics',
+        content: 'Details Photons and light waves, Electrons and matter waves, Compton effect, The Schrodinger equation (Time dependent and time independent forms), meaning of wave function, Normalization, Free particle, and particle in an infinite potential well (1D, 2D and 3D Boxes, Normalization, probabilities and the correspondence principle).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Applied Quantum Mechanics',
+        content: 'Covers the harmonic oscillator (qualitative), Barrier penetration and quantum tunneling (qualitative), Tunneling microscope, Resonant diode, Finite potential wells (qualitative), Blochs theorem for particles in a periodic potential, and Basics of Kronig-Penney model and origin of energy bands',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CY3151',
+    name: 'Engineering Chemistry',
+    department: Department.MECH,
+    semester: 1,
+    syllabus_overview: 'Water and Its Treatment, Nanochemistry, Phase Rule and Composites, Fuels and Combustion, and Energy Sources and Storage Devices.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Water and Its Treatment',
+        content: 'Covers Water Sources and impurities, Water quality parameters (color, odour, turbidity, pH, hardness, alkalinity, TDS, COD, BOD, fluoride, arsenic), Municipal water treatment (primary treatment, disinfection—UV, Ozonation, break-point chlorination), Desalination (Reverse Osmosis), Boiler troubles (Scale and sludge, corrosion, embrittlement, Priming & foaming), and Treatment of boiler feed water (Internal: phosphate, colloidal, sodium aluminate, calgon conditioning; External: Ion exchange demineralization and zeolite process).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Nanochemistry',
+        content: 'Basics include distinction between molecules, nanomaterials and bulk materials, and Size-dependent properties (optical, electrical, mechanical, magnetic). Covers types of nanomaterials (nanoparticle, nanocluster, nanorod, nanowire, nanotube), Preparation methods (sol-gel, solvothermal, laser ablation, chemical vapour deposition, electrochemical deposition, electro spinning), and Applications in medicine, agriculture, energy, electronics, and catalysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Phase Rule and Composites',
+        content: 'Phase rule: Introduction, definition of terms, One component system (water system), Reduced phase rule, construction of a simple eutectic phase diagram (Thermal analysis), Two component system (lead-silver system, Pattinson process). Composites: Definition and Need, Constitution (Matrix materials: Polymer, metal, ceramic; and Reinforcement: fiber, particulates, flakes, whiskers). Properties and applications of Metal matrix composites (MMC), Ceramic matrix composites, Polymer matrix composites, and Hybrid composites.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Fuels and Combustion',
+        content: 'Fuels: Classification, Coal and coke (proximate and ultimate analysis, Carbonization, Otto Hoffmann method), Petroleum and Diesel (synthetic petrol manufacture via Bergius process, Knocking, octane/cetane number, Power alcohol, biodiesel). Combustion of fuels: Calorific value (higher/lower, theoretical calculation), Ignition temperature (spontaneous ignition temperature, Explosive range), Flue gas analysis (ORSAT Method), and CO₂ emission and carbon footprint.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Energy Sources and Storage Devices',
+        content: 'Covers Stability of nucleus (mass defect, binding energy), Nuclear energy (light water nuclear power plant, breeder reactor). Solar energy conversion (Principle, working, applications of solar cells, recent developments). Includes Wind energy, Geothermal energy, Batteries (Primary: dry cell; Secondary: lead acid, lithium-ion-battery), Electric vehicles, Fuel cells (H₂-O₂ fuel cell, microbial fuel cell), and Supercapacitors (Storage principle, types).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3151',
+    name: 'Problem Solving and Python Programming (Theory)',
+    department: Department.MECH,
+    semester: 1,
+    syllabus_overview: 'The syllabus includes Computational Thinking and Problem Solving, Data Types, Expressions, Statements, Control Flow, Functions, Strings, Lists, Tuples, Dictionaries, and Files, Modules, Packages',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Computational Thinking and Problem Solving',
+        content: 'Fundamentals of Computing, Identification of Computational Problems, Algorithms (building blocks: statements, state, control flow, functions), notation (pseudo code, flow chart, programming language), algorithmic problem solving, simple strategies for developing algorithms (iteration, recursion). Illustrative problems include: find minimum in a list, insert a card in a list of sorted cards, guess an integer number in a range, and Towers of Hanoi.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Data Types, Expressions, Statements',
+        content: 'Python interpreter and interactive mode, debugging, values and types (int, float, boolean, string, list), variables, expressions, statements, tuple assignment, precedence of operators, comments. Illustrative programs: exchange the values of two variables, circulate the values of n variables, distance between two points.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Control Flow, Functions, Strings',
+        content: 'Conditionals (Boolean values/operators, if, if-else, if-elif-else), Iteration (while, for, break, continue, pass), Fruitful functions (return values, parameters, scope, recursion, composition), Strings (slices, immutability, functions/methods, string module), Lists as arrays. Illustrative programs: square root, gcd, exponentiation, sum an array of numbers, linear search, binary search.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Lists, Tuples, Dictionaries',
+        content: 'Lists (operations, slices, methods, loop, mutability, aliasing, cloning, parameters), Tuples (assignment, return value), Dictionaries (operations and methods), advanced list processing (list comprehension). Illustrative programs: simple sorting, histogram, Students marks statement, Retail bill preparation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Files, Modules, Packages',
+        content: 'Files and exceptions (text files, reading and writing files, format operator), command line arguments, errors and exceptions, handling exceptions, modules, packages. Illustrative programs: word count, copy file, Voters age validation, Marks range validation (0-100)',
+        periods: 9
+      }
+    ]
+  },
+
+  // CIVIL Sem 1 (Same as CSE Sem 1)
+  {
+    code: 'HS3151',
+    name: 'Professional English - I',
+    department: Department.CIVIL,
+    semester: 1,
+    syllabus_overview: 'Introduction to Fundamentals of Communication, Narration and Summation, Description of a Process/Product, Classification and Recommendations, and Expression.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to Fundamentals of Communication',
+        content: 'Listening: For general information, specific details, telephone conversation, listening to voicemail/messages, and filling a form. Speaking: Self-introduction, introducing a friend, conversation (politeness strategies), and asking for information. Reading: Reading brochures (technical context), telephone messages/social media messages, and emails. Writing: Writing emails/letters introducing oneself. Grammar: Present Tense (simple and progressive), and Question types (Wh/Yes or No/Tags). Vocabulary: Synonyms, One word substitution, and Abbreviations & Acronyms (as used in technical contexts).',
+        periods: 11
+      },
+      {
+        unitNumber: 'II',
+        title: 'Narration and Summation',
+        content: 'Listening: Podcasts, anecdotes/stories/event narration, documentaries, and interviews with celebrities. Speaking: Narrating personal experiences/events, interviewing a celebrity, and reporting/summarizing documentaries/podcasts/interviews. Reading: Biographies, travelogues, newspaper reports, excerpts from literature, and travel & technical blogs. Writing: Guided writing, Paragraph writing, and Short Report on an event (e.g., field trip). Grammar: Past tense (simple), Subject-Verb Agreement, and Prepositions. Vocabulary: Word forms (prefixes & suffixes), Synonyms and Antonyms, and Phrasal verbs.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Description of a Process/Product',
+        content: 'Listening: Product and process descriptions, a classroom lecture, and advertisements about products. Speaking: Picture description, giving instruction to use the product, presenting a product, and summarizing a lecture. Reading: Advertisements, gadget reviews, and user manuals. Writing: Writing definitions, instructions, and Product/Process description. Grammar: Imperatives, Adjectives, Degrees of comparison, and Present & Past Perfect Tenses. Vocabulary: Compound Nouns, Homonyms and Homophones, and discourse markers (connectives & sequence words).',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Classification and Recommendations',
+        content: 'Listening: TED Talks, scientific lectures, and educational videos. Speaking: Small Talk, Mini presentations, and making recommendations. Reading: Newspaper articles, Journal reports, and Non Verbal Communication (tables, pie charts etc.). Writing: Note-making/Note-taking (Study skills to be taught, not tested), Writing recommendations, and Transferring information from non verbal (chart, graph etc, to verbal mode). Grammar: Articles, and Pronouns (Possessive & Relative pronouns). Vocabulary: Collocations, Fixed/Semi fixed expressions.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Expression',
+        content: 'Listening: Debates/discussions, different viewpoints on an issue, and panel discussions. Speaking: Group discussions, Debates, and Expressing opinions through Simulations & Role play. Reading: Editorials and Opinion Blogs. Writing: Essay Writing (Descriptive or narrative). Grammar: Future Tenses, Punctuation, Negation (Statements & Questions), and Simple, Compound & Complex Sentences. Vocabulary: Cause & Effect Expressions – Content vs Function words.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'MA3151',
+    name: 'Matrices and Calculus',
+    department: Department.CIVIL,
+    semester: 1,
+    syllabus_overview: 'Matrices (Eigenvalues, Eigenvectors), Differential Calculus, Functions of Several Variables, Integral Calculus, and Multiple Integrals.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Matrices',
+        content: 'Covers Eigenvalues and Eigenvectors of a real matrix, Characteristic equation, Properties of Eigenvalues and Eigenvectors, Cayley - Hamilton theorem, Diagonalization of matrices by orthogonal transformation, Reduction of a quadratic form to canonical form by orthogonal transformation, Nature of quadratic forms, and Applications such as Stretching of an elastic membrane.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Differential Calculus',
+        content: 'Includes Representation of functions, Limit of a function, Continuity, Derivatives, Differentiation rules (sum, product, quotient, chain rules), Implicit differentiation, Logarithmic differentiation, and Applications such as Maxima and Minima of functions of one variable.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Functions of Several Variables',
+        content: 'Focuses on Partial differentiation, Homogeneous functions and Eulers theorem, Total derivative, Change of variables, Jacobians, Partial differentiation of implicit functions, Taylors series for functions of two variables, and Applications like Maxima and minima of functions of two variables and Lagranges method of undetermined multipliers.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Integral Calculus',
+        content: 'Detailed topics include Definite and Indefinite integrals, Substitution rule, Techniques of Integration (Integration by parts, Trigonometric integrals, Trigonometric substitutions, Integration of rational functions by partial fraction, Integration of irrational functions), Improper integrals, and Applications such as Hydrostatic force and pressure, and moments and centres of mass.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Multiple Integrals',
+        content: 'Covers Double integrals, Change of order of integration, Double integrals in polar coordinates, Area enclosed by plane curves, Triple integrals, Volume of solids, Change of variables in double and triple integrals, and Applications like Moments and centres of mass, and moment of inertia.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'PH3151',
+    name: 'Engineering Physics',
+    department: Department.CIVIL,
+    semester: 1,
+    syllabus_overview: 'Mechanics, Electromagnetic Waves, Oscillations, Optics and Lasers, Basic Quantum Mechanics, and Applied Quantum Mechanics.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Mechanics',
+        content: 'Covers Multi-particle dynamics (Center of mass, motion of CM, kinetic energy) and Rotation of rigid bodies (Rotational kinematics, kinetic energy, moment of inertia theorems, M.I. of continuous bodies and diatomic molecule, torque, rotational dynamics, conservation of angular momentum, rotational energy state, gyroscope, torsional pendulum, double pendulum), and Introduction to nonlinear oscillations.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Electromagnetic Waves',
+        content: 'Focuses on Maxwells equations, wave equation, Plane electromagnetic waves in vacuum, properties of electromagnetic waves (speed, amplitude, phase, orientation and waves in matter), polarization, Producing electromagnetic waves, Energy and momentum in EM waves (Intensity, radiation pressure), Cell-phone reception, and Reflection and transmission of electromagnetic waves from a non-conducting medium-vacuum interface for normal incidence.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Oscillations, Optics and Lasers',
+        content: 'Topics include Simple harmonic motion, resonance, analogy between electrical and mechanical oscillating systems, waves on a string (standing waves, traveling waves, Energy transfer), sound waves, Doppler effect. Also covers Reflection and refraction of light waves, total internal reflection, interference, Michelson interferometer, Theory of air wedge and experiment. Concludes with the Theory of laser (characteristics, Spontaneous and stimulated emission, Einsteins coefficients, population inversion), types of lasers (Nd-YAG laser, CO2 laser, semiconductor laser), and basic applications of lasers in industry.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Basic Quantum Mechanics',
+        content: 'Details Photons and light waves, Electrons and matter waves, Compton effect, The Schrodinger equation (Time dependent and time independent forms), meaning of wave function, Normalization, Free particle, and particle in an infinite potential well (1D, 2D and 3D Boxes, Normalization, probabilities and the correspondence principle).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Applied Quantum Mechanics',
+        content: 'Covers the harmonic oscillator (qualitative), Barrier penetration and quantum tunneling (qualitative), Tunneling microscope, Resonant diode, Finite potential wells (qualitative), Blochs theorem for particles in a periodic potential, and Basics of Kronig-Penney model and origin of energy bands',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CY3151',
+    name: 'Engineering Chemistry',
+    department: Department.CIVIL,
+    semester: 1,
+    syllabus_overview: 'Water and Its Treatment, Nanochemistry, Phase Rule and Composites, Fuels and Combustion, and Energy Sources and Storage Devices.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Water and Its Treatment',
+        content: 'Covers Water Sources and impurities, Water quality parameters (color, odour, turbidity, pH, hardness, alkalinity, TDS, COD, BOD, fluoride, arsenic), Municipal water treatment (primary treatment, disinfection—UV, Ozonation, break-point chlorination), Desalination (Reverse Osmosis), Boiler troubles (Scale and sludge, corrosion, embrittlement, Priming & foaming), and Treatment of boiler feed water (Internal: phosphate, colloidal, sodium aluminate, calgon conditioning; External: Ion exchange demineralization and zeolite process).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Nanochemistry',
+        content: 'Basics include distinction between molecules, nanomaterials and bulk materials, and Size-dependent properties (optical, electrical, mechanical, magnetic). Covers types of nanomaterials (nanoparticle, nanocluster, nanorod, nanowire, nanotube), Preparation methods (sol-gel, solvothermal, laser ablation, chemical vapour deposition, electrochemical deposition, electro spinning), and Applications in medicine, agriculture, energy, electronics, and catalysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Phase Rule and Composites',
+        content: 'Phase rule: Introduction, definition of terms, One component system (water system), Reduced phase rule, construction of a simple eutectic phase diagram (Thermal analysis), Two component system (lead-silver system, Pattinson process). Composites: Definition and Need, Constitution (Matrix materials: Polymer, metal, ceramic; and Reinforcement: fiber, particulates, flakes, whiskers). Properties and applications of Metal matrix composites (MMC), Ceramic matrix composites, Polymer matrix composites, and Hybrid composites.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Fuels and Combustion',
+        content: 'Fuels: Classification, Coal and coke (proximate and ultimate analysis, Carbonization, Otto Hoffmann method), Petroleum and Diesel (synthetic petrol manufacture via Bergius process, Knocking, octane/cetane number, Power alcohol, biodiesel). Combustion of fuels: Calorific value (higher/lower, theoretical calculation), Ignition temperature (spontaneous ignition temperature, Explosive range), Flue gas analysis (ORSAT Method), and CO₂ emission and carbon footprint.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Energy Sources and Storage Devices',
+        content: 'Covers Stability of nucleus (mass defect, binding energy), Nuclear energy (light water nuclear power plant, breeder reactor). Solar energy conversion (Principle, working, applications of solar cells, recent developments). Includes Wind energy, Geothermal energy, Batteries (Primary: dry cell; Secondary: lead acid, lithium-ion-battery), Electric vehicles, Fuel cells (H₂-O₂ fuel cell, microbial fuel cell), and Supercapacitors (Storage principle, types).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3151',
+    name: 'Problem Solving and Python Programming (Theory)',
+    department: Department.CIVIL,
+    semester: 1,
+    syllabus_overview: 'The syllabus includes Computational Thinking and Problem Solving, Data Types, Expressions, Statements, Control Flow, Functions, Strings, Lists, Tuples, Dictionaries, and Files, Modules, Packages',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Computational Thinking and Problem Solving',
+        content: 'Fundamentals of Computing, Identification of Computational Problems, Algorithms (building blocks: statements, state, control flow, functions), notation (pseudo code, flow chart, programming language), algorithmic problem solving, simple strategies for developing algorithms (iteration, recursion). Illustrative problems include: find minimum in a list, insert a card in a list of sorted cards, guess an integer number in a range, and Towers of Hanoi.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Data Types, Expressions, Statements',
+        content: 'Python interpreter and interactive mode, debugging, values and types (int, float, boolean, string, list), variables, expressions, statements, tuple assignment, precedence of operators, comments. Illustrative programs: exchange the values of two variables, circulate the values of n variables, distance between two points.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Control Flow, Functions, Strings',
+        content: 'Conditionals (Boolean values/operators, if, if-else, if-elif-else), Iteration (while, for, break, continue, pass), Fruitful functions (return values, parameters, scope, recursion, composition), Strings (slices, immutability, functions/methods, string module), Lists as arrays. Illustrative programs: square root, gcd, exponentiation, sum an array of numbers, linear search, binary search.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Lists, Tuples, Dictionaries',
+        content: 'Lists (operations, slices, methods, loop, mutability, aliasing, cloning, parameters), Tuples (assignment, return value), Dictionaries (operations and methods), advanced list processing (list comprehension). Illustrative programs: simple sorting, histogram, Students marks statement, Retail bill preparation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Files, Modules, Packages',
+        content: 'Files and exceptions (text files, reading and writing files, format operator), command line arguments, errors and exceptions, handling exceptions, modules, packages. Illustrative programs: word count, copy file, Voters age validation, Marks range validation (0-100)',
+        periods: 9
+      }
+    ]
+  },
+
+  // EEE Sem 1 (Same as CSE Sem 1)
+  {
+    code: 'HS3151',
+    name: 'Professional English - I',
+    department: Department.EEE,
+    semester: 1,
+    syllabus_overview: 'Introduction to Fundamentals of Communication, Narration and Summation, Description of a Process/Product, Classification and Recommendations, and Expression.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Introduction to Fundamentals of Communication',
+        content: 'Listening: For general information, specific details, telephone conversation, listening to voicemail/messages, and filling a form. Speaking: Self-introduction, introducing a friend, conversation (politeness strategies), and asking for information. Reading: Reading brochures (technical context), telephone messages/social media messages, and emails. Writing: Writing emails/letters introducing oneself. Grammar: Present Tense (simple and progressive), and Question types (Wh/Yes or No/Tags). Vocabulary: Synonyms, One word substitution, and Abbreviations & Acronyms (as used in technical contexts).',
+        periods: 11
+      },
+      {
+        unitNumber: 'II',
+        title: 'Narration and Summation',
+        content: 'Listening: Podcasts, anecdotes/stories/event narration, documentaries, and interviews with celebrities. Speaking: Narrating personal experiences/events, interviewing a celebrity, and reporting/summarizing documentaries/podcasts/interviews. Reading: Biographies, travelogues, newspaper reports, excerpts from literature, and travel & technical blogs. Writing: Guided writing, Paragraph writing, and Short Report on an event (e.g., field trip). Grammar: Past tense (simple), Subject-Verb Agreement, and Prepositions. Vocabulary: Word forms (prefixes & suffixes), Synonyms and Antonyms, and Phrasal verbs.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Description of a Process/Product',
+        content: 'Listening: Product and process descriptions, a classroom lecture, and advertisements about products. Speaking: Picture description, giving instruction to use the product, presenting a product, and summarizing a lecture. Reading: Advertisements, gadget reviews, and user manuals. Writing: Writing definitions, instructions, and Product/Process description. Grammar: Imperatives, Adjectives, Degrees of comparison, and Present & Past Perfect Tenses. Vocabulary: Compound Nouns, Homonyms and Homophones, and discourse markers (connectives & sequence words).',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Classification and Recommendations',
+        content: 'Listening: TED Talks, scientific lectures, and educational videos. Speaking: Small Talk, Mini presentations, and making recommendations. Reading: Newspaper articles, Journal reports, and Non Verbal Communication (tables, pie charts etc.). Writing: Note-making/Note-taking (Study skills to be taught, not tested), Writing recommendations, and Transferring information from non verbal (chart, graph etc, to verbal mode). Grammar: Articles, and Pronouns (Possessive & Relative pronouns). Vocabulary: Collocations, Fixed/Semi fixed expressions.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Expression',
+        content: 'Listening: Debates/discussions, different viewpoints on an issue, and panel discussions. Speaking: Group discussions, Debates, and Expressing opinions through Simulations & Role play. Reading: Editorials and Opinion Blogs. Writing: Essay Writing (Descriptive or narrative). Grammar: Future Tenses, Punctuation, Negation (Statements & Questions), and Simple, Compound & Complex Sentences. Vocabulary: Cause & Effect Expressions – Content vs Function words.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'MA3151',
+    name: 'Matrices and Calculus',
+    department: Department.EEE,
+    semester: 1,
+    syllabus_overview: 'Matrices (Eigenvalues, Eigenvectors), Differential Calculus, Functions of Several Variables, Integral Calculus, and Multiple Integrals.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Matrices',
+        content: 'Covers Eigenvalues and Eigenvectors of a real matrix, Characteristic equation, Properties of Eigenvalues and Eigenvectors, Cayley - Hamilton theorem, Diagonalization of matrices by orthogonal transformation, Reduction of a quadratic form to canonical form by orthogonal transformation, Nature of quadratic forms, and Applications such as Stretching of an elastic membrane.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Differential Calculus',
+        content: 'Includes Representation of functions, Limit of a function, Continuity, Derivatives, Differentiation rules (sum, product, quotient, chain rules), Implicit differentiation, Logarithmic differentiation, and Applications such as Maxima and Minima of functions of one variable.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Functions of Several Variables',
+        content: 'Focuses on Partial differentiation, Homogeneous functions and Eulers theorem, Total derivative, Change of variables, Jacobians, Partial differentiation of implicit functions, Taylors series for functions of two variables, and Applications like Maxima and minima of functions of two variables and Lagranges method of undetermined multipliers.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Integral Calculus',
+        content: 'Detailed topics include Definite and Indefinite integrals, Substitution rule, Techniques of Integration (Integration by parts, Trigonometric integrals, Trigonometric substitutions, Integration of rational functions by partial fraction, Integration of irrational functions), Improper integrals, and Applications such as Hydrostatic force and pressure, and moments and centres of mass.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Multiple Integrals',
+        content: 'Covers Double integrals, Change of order of integration, Double integrals in polar coordinates, Area enclosed by plane curves, Triple integrals, Volume of solids, Change of variables in double and triple integrals, and Applications like Moments and centres of mass, and moment of inertia.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'PH3151',
+    name: 'Engineering Physics',
+    department: Department.EEE,
+    semester: 1,
+    syllabus_overview: 'Mechanics, Electromagnetic Waves, Oscillations, Optics and Lasers, Basic Quantum Mechanics, and Applied Quantum Mechanics.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Mechanics',
+        content: 'Covers Multi-particle dynamics (Center of mass, motion of CM, kinetic energy) and Rotation of rigid bodies (Rotational kinematics, kinetic energy, moment of inertia theorems, M.I. of continuous bodies and diatomic molecule, torque, rotational dynamics, conservation of angular momentum, rotational energy state, gyroscope, torsional pendulum, double pendulum), and Introduction to nonlinear oscillations.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Electromagnetic Waves',
+        content: 'Focuses on Maxwells equations, wave equation, Plane electromagnetic waves in vacuum, properties of electromagnetic waves (speed, amplitude, phase, orientation and waves in matter), polarization, Producing electromagnetic waves, Energy and momentum in EM waves (Intensity, radiation pressure), Cell-phone reception, and Reflection and transmission of electromagnetic waves from a non-conducting medium-vacuum interface for normal incidence.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Oscillations, Optics and Lasers',
+        content: 'Topics include Simple harmonic motion, resonance, analogy between electrical and mechanical oscillating systems, waves on a string (standing waves, traveling waves, Energy transfer), sound waves, Doppler effect. Also covers Reflection and refraction of light waves, total internal reflection, interference, Michelson interferometer, Theory of air wedge and experiment. Concludes with the Theory of laser (characteristics, Spontaneous and stimulated emission, Einsteins coefficients, population inversion), types of lasers (Nd-YAG laser, CO2 laser, semiconductor laser), and basic applications of lasers in industry.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Basic Quantum Mechanics',
+        content: 'Details Photons and light waves, Electrons and matter waves, Compton effect, The Schrodinger equation (Time dependent and time independent forms), meaning of wave function, Normalization, Free particle, and particle in an infinite potential well (1D, 2D and 3D Boxes, Normalization, probabilities and the correspondence principle).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Applied Quantum Mechanics',
+        content: 'Covers the harmonic oscillator (qualitative), Barrier penetration and quantum tunneling (qualitative), Tunneling microscope, Resonant diode, Finite potential wells (qualitative), Blochs theorem for particles in a periodic potential, and Basics of Kronig-Penney model and origin of energy bands',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CY3151',
+    name: 'Engineering Chemistry',
+    department: Department.EEE,
+    semester: 1,
+    syllabus_overview: 'Water and Its Treatment, Nanochemistry, Phase Rule and Composites, Fuels and Combustion, and Energy Sources and Storage Devices.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Water and Its Treatment',
+        content: 'Covers Water Sources and impurities, Water quality parameters (color, odour, turbidity, pH, hardness, alkalinity, TDS, COD, BOD, fluoride, arsenic), Municipal water treatment (primary treatment, disinfection—UV, Ozonation, break-point chlorination), Desalination (Reverse Osmosis), Boiler troubles (Scale and sludge, corrosion, embrittlement, Priming & foaming), and Treatment of boiler feed water (Internal: phosphate, colloidal, sodium aluminate, calgon conditioning; External: Ion exchange demineralization and zeolite process).',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Nanochemistry',
+        content: 'Basics include distinction between molecules, nanomaterials and bulk materials, and Size-dependent properties (optical, electrical, mechanical, magnetic). Covers types of nanomaterials (nanoparticle, nanocluster, nanorod, nanowire, nanotube), Preparation methods (sol-gel, solvothermal, laser ablation, chemical vapour deposition, electrochemical deposition, electro spinning), and Applications in medicine, agriculture, energy, electronics, and catalysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Phase Rule and Composites',
+        content: 'Phase rule: Introduction, definition of terms, One component system (water system), Reduced phase rule, construction of a simple eutectic phase diagram (Thermal analysis), Two component system (lead-silver system, Pattinson process). Composites: Definition and Need, Constitution (Matrix materials: Polymer, metal, ceramic; and Reinforcement: fiber, particulates, flakes, whiskers). Properties and applications of Metal matrix composites (MMC), Ceramic matrix composites, Polymer matrix composites, and Hybrid composites.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Fuels and Combustion',
+        content: 'Fuels: Classification, Coal and coke (proximate and ultimate analysis, Carbonization, Otto Hoffmann method), Petroleum and Diesel (synthetic petrol manufacture via Bergius process, Knocking, octane/cetane number, Power alcohol, biodiesel). Combustion of fuels: Calorific value (higher/lower, theoretical calculation), Ignition temperature (spontaneous ignition temperature, Explosive range), Flue gas analysis (ORSAT Method), and CO₂ emission and carbon footprint.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Energy Sources and Storage Devices',
+        content: 'Covers Stability of nucleus (mass defect, binding energy), Nuclear energy (light water nuclear power plant, breeder reactor). Solar energy conversion (Principle, working, applications of solar cells, recent developments). Includes Wind energy, Geothermal energy, Batteries (Primary: dry cell; Secondary: lead acid, lithium-ion-battery), Electric vehicles, Fuel cells (H₂-O₂ fuel cell, microbial fuel cell), and Supercapacitors (Storage principle, types).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3151',
+    name: 'Problem Solving and Python Programming (Theory)',
+    department: Department.EEE,
+    semester: 1,
+    syllabus_overview: 'The syllabus includes Computational Thinking and Problem Solving, Data Types, Expressions, Statements, Control Flow, Functions, Strings, Lists, Tuples, Dictionaries, and Files, Modules, Packages',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Computational Thinking and Problem Solving',
+        content: 'Fundamentals of Computing, Identification of Computational Problems, Algorithms (building blocks: statements, state, control flow, functions), notation (pseudo code, flow chart, programming language), algorithmic problem solving, simple strategies for developing algorithms (iteration, recursion). Illustrative problems include: find minimum in a list, insert a card in a list of sorted cards, guess an integer number in a range, and Towers of Hanoi.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Data Types, Expressions, Statements',
+        content: 'Python interpreter and interactive mode, debugging, values and types (int, float, boolean, string, list), variables, expressions, statements, tuple assignment, precedence of operators, comments. Illustrative programs: exchange the values of two variables, circulate the values of n variables, distance between two points.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Control Flow, Functions, Strings',
+        content: 'Conditionals (Boolean values/operators, if, if-else, if-elif-else), Iteration (while, for, break, continue, pass), Fruitful functions (return values, parameters, scope, recursion, composition), Strings (slices, immutability, functions/methods, string module), Lists as arrays. Illustrative programs: square root, gcd, exponentiation, sum an array of numbers, linear search, binary search.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Lists, Tuples, Dictionaries',
+        content: 'Lists (operations, slices, methods, loop, mutability, aliasing, cloning, parameters), Tuples (assignment, return value), Dictionaries (operations and methods), advanced list processing (list comprehension). Illustrative programs: simple sorting, histogram, Students marks statement, Retail bill preparation.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Files, Modules, Packages',
+        content: 'Files and exceptions (text files, reading and writing files, format operator), command line arguments, errors and exceptions, handling exceptions, modules, packages. Illustrative programs: word count, copy file, Voters age validation, Marks range validation (0-100)',
+        periods: 9
+      }
+    ]
+  },
+
+  // EEE Sem 2
+  {
+    code: 'HS3252',
+    name: 'Professional English - II',
+    department: Department.EEE,
+    semester: 2,
+    syllabus_overview: 'Making Comparisons, Expressing Causal Relations, Problem Solving, Reporting of Events and Research, and The Ability to Put Ideas or Information Cogently',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Making Comparisons',
+        content: 'Listening: Evaluative Listening (Advertisements, Product Descriptions), Audio/Video, Listening and filling a Graphic Organiser (Choosing a product or service by comparison). Speaking: Marketing a product, Persuasive Speech Techniques. Reading: Advertisements, user manuals, brochures. Writing: Professional emails, Email etiquette, Compare and Contrast Essay. Grammar: Mixed Tenses, Prepositional phrases. Vocabulary: Contextual meaning of words.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Expressing Causal Relations in Speaking and Writing',
+        content: 'Listening: Longer technical talks (gap filling), technical information from podcasts, process/event descriptions to identify cause & effects. Speaking: Describing and discussing reasons for accidents or disasters based on news reports. Reading: Longer technical texts, Cause and Effect Essays, Letters/emails of complaint. Writing: Writing responses to complaints. Grammar: Active Passive Voice transformations, Infinitive and Gerunds. Vocabulary: Word Formation (Noun-Verb-Adj-Adv), Adverbs.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Problem Solving',
+        content: 'Listening: Movie scenes/documentaries depicting a technical problem and suggesting solutions. Speaking: Group Discussion (based on case studies), techniques and strategies. Reading: Case Studies, excerpts from literary texts, news reports. Writing: Letter to the Editor, Checklists, Problem solution essay / Argumentative Essay. Grammar: Error correction, If conditional sentences. Vocabulary: Compound Words, Sentence Completion.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Reporting of Events and Research',
+        content: 'Listening: Listening Comprehension based on news reports and documentaries, Precis writing, Summarising. Speaking: Interviewing, Presenting an oral report, Mini presentations. Reading: Newspaper articles. Writing: Recommendations, Transcoding, Accident Report, Survey Report. Grammar: Reported Speech, Modals. Vocabulary: Conjunctions, use of prepositions.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'The Ability to Put Ideas or Information Cogently',
+        content: 'Listening: TED Talks, Presentations, Formal job interviews (analysis of the interview performance). Speaking: Participating in a Role play (interview/telephone interview), virtual interviews, Making presentations with visual aids. Reading: Company profiles, Statement of Purpose (SOP), interview excerpts. Writing: Job / Internship application, Cover letter & Resume. Grammar: Numerical adjectives, Relative Clauses. Vocabulary: Idioms.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'MA3251',
+    name: 'Statistics and Numerical Methods',
+    department: Department.EEE,
+    semester: 2,
+    syllabus_overview: 'Testing of Hypothesis, Design of Experiments, Solution of Equations and Eigenvalue Problems, Interpolation and Numerical Differentiation, Numerical Solution of Ordinary Differential Equations',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Testing of Hypothesis',
+        content: 'Covers Sampling distributions, Tests for single mean, proportion, and difference of means (Large and small samples), Tests for single variance and equality of variances, Chi square test for goodness of fit, and Independence of attributes.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Design of Experiments',
+        content: 'Focuses on One way and two way classifications, Completely randomized design, Randomized block design, Latin square design, and 2^2 factorial design.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Solution of Equations and Eigenvalue Problems',
+        content: 'Includes solution methods for algebraic and transcendental equations (Fixed point iteration, Newton Raphson method), solution of linear system of equations (Gauss elimination, Pivoting, Gauss Jordan, Iterative methods like Gauss Jacobi and Gauss Seidel), and Eigenvalues of a matrix by Power method and Jacobis method for symmetric matrices.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Interpolation, Numerical Differentiation and Numerical Integration',
+        content: 'Details Lagranges and Newtons divided difference interpolations, Newtons forward and backward difference interpolation, Approximation of derivates using interpolation polynomials, and Numerical single and double integrations using Trapezoidal and Simpsons 1/3 rules.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Numerical Solution of Ordinary Differential Equations',
+        content: 'Covers Single step methods (Taylors series, Eulers, Modified Eulers, Fourth order Runge-Kutta method) and Multi step methods (Milnes and Adams - Bash forth predictor corrector methods) for solving first order differential equations.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'PH3202',
+    name: 'Physics for Electrical Engineering',
+    department: Department.EEE,
+    semester: 2,
+    syllabus_overview: 'Electromagnetic theory, principles of quantum mechanics, semiconductor physics, magnetic and dielectric materials, and photonic devices',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Electromagnetic Theory',
+        content: 'Electromagnetic field theory fundamentals, Maxwells equations in differential and integral forms, Electromagnetic wave propagation, Poynting vector and energy flow, Reflection and refraction of electromagnetic waves.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Quantum Mechanics',
+        content: 'Introduction to quantum mechanics, Wave-particle duality, Schrodinger wave equation, Particle in a box, Quantum tunneling, Hydrogen atom.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Semiconductor Physics',
+        content: 'Energy bands in solids, Intrinsic and extrinsic semiconductors, Carrier concentration, Fermi level, Hall effect, p-n junction, Solar cells.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Magnetic and Dielectric Materials',
+        content: 'Magnetic materials classification, Ferromagnetism, Magnetic domains, Hysteresis, Dielectric materials, Polarization, Ferroelectric materials, Applications.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Photonic Devices',
+        content: 'Lasers principle and types, LED, Photodetectors, Optical fibers, Fiber optic communication systems, Applications of photonics in electrical engineering.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'BE3255',
+    name: 'Basic Civil and Mechanical Engineering',
+    department: Department.EEE,
+    semester: 2,
+    syllabus_overview: 'Building components, Construction materials, Survey fundamentals, Thermodynamics basics, Power generation, and Engineering mechanics',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Building Components and Materials',
+        content: 'Building components (Foundation, Walls, Floors, Roofs), Construction materials (Cement, Aggregates, Concrete), Properties and testing of materials.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Surveying',
+        content: 'Principles of surveying, Linear and angular measurements, Leveling, Theodolite, Total station, GPS applications in surveying.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Thermodynamics',
+        content: 'Thermodynamic systems, Laws of thermodynamics, Thermodynamic processes, Heat engines, Refrigeration cycles, Heat transfer modes.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Power Generation',
+        content: 'Steam power plants, Gas turbine power plants, Hydroelectric power plants, Nuclear power plants, Renewable energy sources.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Engineering Mechanics',
+        content: 'Force systems, Equilibrium of forces, Friction, Center of gravity, Moment of inertia, Simple machines.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'GE3251',
+    name: 'Engineering Graphics',
+    department: Department.EEE,
+    semester: 2,
+    syllabus_overview: 'Plane Curves and Freehand Sketching, Projection of Points/Lines/Plane Surface, Projection of Solids, Projection of Sectioned Solids and Development of Surfaces, and Isometric and Perspective Projections',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Plane Curves and Freehand Sketching',
+        content: 'Covers Basic Geometrical constructions, and curves used in engineering practices, specifically: Conics (Construction of ellipse, parabola and hyperbola by eccentricity method), Construction of cycloid, Construction of involutes of square and circle, and Drawing of tangents and normal to these curves.',
+        periods: 18
+      },
+      {
+        unitNumber: 'II',
+        title: 'Projection of Points, Lines and Plane Surface',
+        content: 'Focuses on Orthographic projection principles, Principal planes, First angle projection, projection of points, Projection of straight lines inclined to both the principal planes (by rotating line method and traces), and Projection of planes inclined to both the principal planes (by rotating object method).',
+        periods: 18
+      },
+      {
+        unitNumber: 'III',
+        title: 'Projection of Solids',
+        content: 'Details the Projection of simple solids (prisms, pyramids, cylinder, cone, and truncated solids) when the axis is inclined to one principal plane and parallel to the other (by rotating object method). Also includes Visualization concepts, Free Hand sketching of multiple views from pictorial views of objects, and practicing three-dimensional modeling by CAD Software (Not for examination).',
+        periods: 18
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Projection of Sectioned Solids and Development of Surfaces',
+        content: 'Involves the Sectioning of solids in simple vertical position when the cutting plane is inclined to one principal plane and perpendicular to the other, and obtaining the true shape of the section. Also covers the Development of lateral surfaces of simple and sectioned solids (Prisms, pyramids, cylinders, and cones). Practicing three-dimensional modeling by CAD Software is mentioned (Not for examination).',
+        periods: 18
+      },
+      {
+        unitNumber: 'V',
+        title: 'Isometric and Perspective Projections',
+        content: 'Focuses on Principles of isometric projection, isometric scale, isometric projections of simple solids, truncated solids, and the combination of two solid objects. Also includes Perspective projection of simple solids (Prisms, pyramids and cylinders by visual ray method). Practicing three-dimensional modeling of isometric projection by CAD Software is included (Not for examination).',
+        periods: 18
+      }
+    ]
+  },
+  {
+    code: 'EE3251',
+    name: 'Electric Circuit Analysis',
+    department: Department.EEE,
+    semester: 2,
+    syllabus_overview: 'Basic Circuits Analysis, Network Reduction and Theorems, Transient Response Analysis, Resonance and Coupled Circuits, and Three Phase Circuits',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Basic Circuits Analysis',
+        content: 'Fundamentals concepts of R, L and C elements. Energy Sources. Ohms Law - Kirchhoffs Laws. DC Circuits – Resistors in series and parallel circuits. A.C Circuits – Average and RMS Value – Complex Impedance – Phasor diagram - Real and Reactive Power, Power Factor, Energy. Mesh current and node voltage methods of analysis for D.C and A.C Circuits.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'Network Reduction and Theorems for DC and AC Circuits',
+        content: 'Network reduction: voltage and current division, source transformation – star delta conversion. Theorems – Superposition, Thevenins and Nortons Theorem. Maximum power transfer theorem – Reciprocity Theorem – Millmans theorem- Tellegens Theorem. Statement and application of all theorems to DC and AC Circuits.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'Transient Response Analysis',
+        content: 'Introduction – Laplace transforms and inverse Laplace transforms. Standard test signals. Transient response of RL, RC and RLC circuits using Laplace transform for: Source free input, Step input, and Sinusoidal input.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Resonance and Coupled Circuits',
+        content: 'Series and parallel resonance – frequency response – Quality factor and Bandwidth. Self and mutual inductance. Coefficient of coupling – Dot rule. Analysis of coupled circuits – Single Tuned circuits.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'Three Phase Circuits',
+        content: 'Analysis of three phase 3-wire and 4-wire circuits with star and delta connected loads, which can be balanced and unbalanced. Phasor diagram of voltages and currents. Power measurement in three phase circuits. Power Factor Calculations.',
+        periods: 12
+      }
+    ]
+  },
+
+  // EEE Sem 3
+  {
+    code: 'MA3303',
+    name: 'Probability and Complex Functions',
+    department: Department.EEE,
+    semester: 3,
+    syllabus_overview: 'Axioms of probability – Conditional probability – Bayes theorem - Discrete and continuous random variables – Moments – Distributions – Analytic functions – Conformal mapping – Complex integration – Taylor and Laurent series – Residue theorem – Ordinary Differential Equations.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'PROBABILITY AND RANDOM VARIABLES',
+        content: 'Axioms of probability – Conditional probability – Bayes theorem - Discrete and continuous random variables – Moments – Moment generating functions – Binomial, Poisson, Geometric, Uniform, Exponential and Normal distributions – Functions of a random variable.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'TWO-DIMENSIONAL RANDOM VARIABLES',
+        content: 'Joint distributions – Marginal and conditional distributions – Covariance – Correlation and linear regression – Transformation of random variables – Central limit theorem (for independent and identically distributed random variables).',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'ANALYTIC FUNCTIONS',
+        content: 'Analytic functions – Necessary and sufficient conditions for analyticity in Cartesian and polar coordinates - Properties – Harmonic conjugates – Construction of analytic function - Conformal mapping – Mapping by functions w = z^2, w = 1/z, w = cz + c, w = z - Bilinear transformation.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'COMPLEX INTEGRATION',
+        content: 'Line integral - Cauchys integral theorem – Cauchys integral formula – Taylors and Laurents series – Singularities – Residues – Residue theorem – Application of residue theorem for evaluation of real integrals – Applications of circular contour and semicircular contour (with poles NOT on real axis).',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'ORDINARY DIFFERENTIAL EQUATIONS',
+        content: 'Higher order linear differential equations with constant coefficients - Method of variation of parameters – Homogenous equation of Eulers and Legendres type – System of simultaneous linear first order differential equations with constant coefficients - Method of undetermined coefficients.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'EE3301',
+    name: 'Electromagnetic Fields',
+    department: Department.EEE,
+    semester: 3,
+    syllabus_overview: 'Sources and effects of electromagnetic fields – Coordinate Systems – Coulombs Law – Gausss law – Electric potential – Dielectric polarization – Lorentz force – Biot-Savarts Law - Amperes Circuit Law – Faradays law – Maxwells equations – Electromagnetic wave generation and equations – Plane wave reflection and refraction.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'ELECTROSTATICS - I',
+        content: 'Sources and effects of electromagnetic fields – Coordinate Systems – Vector fields – Gradient, Divergence, Curl – theorems and applications - Coulombs Law – Electric field intensity – Field due to discrete and continuous charges – Gausss law and applications.',
+        periods: 12
+      },
+      {
+        unitNumber: 'II',
+        title: 'ELECTROSTATICS - II',
+        content: 'Electric potential – Electric field and equipotential plots, Uniform and Non-Uniform field, Utilization factor – Electric field in free space, conductors, dielectrics - Dielectric polarization – Dielectric strength - Electric field in multiple dielectrics – Boundary conditions, Poissons and Laplaces equations, Capacitance, Energy density, Applications.',
+        periods: 12
+      },
+      {
+        unitNumber: 'III',
+        title: 'MAGNETOSTATICS',
+        content: 'Lorentz force, magnetic field intensity (H) – Biot–Savarts Law - Amperes Circuit Law – H due to straight conductors, circular loop, infinite sheet of current, Magnetic flux density (B) – B in free space, conductor, magnetic materials – Magnetization, Magnetic field in multiple media – Boundary conditions, scalar and vector potential, Poissons Equation, Magnetic force, Torque, Inductance, Energy density, Applications.',
+        periods: 12
+      },
+      {
+        unitNumber: 'IV',
+        title: 'ELECTRODYNAMIC FIELDS',
+        content: 'Magnetic Circuits - Faradays law – Transformer and motional EMF – Displacement current - Maxwells equations (differential and integral form) – Relation between field theory and circuit theory – Applications.',
+        periods: 12
+      },
+      {
+        unitNumber: 'V',
+        title: 'ELECTROMAGNETIC WAVES',
+        content: 'Electromagnetic wave generation and equations – Wave parameters; velocity, intrinsic impedance, propagation constant – Waves in free space, lossy and lossless dielectrics, conductors- skin depth - Poynting vector – Plane wave reflection and refraction.',
+        periods: 12
+      }
+    ]
+  },
+  {
+    code: 'EE3302',
+    name: 'Digital Logic Circuits',
+    department: Department.EEE,
+    semester: 3,
+    syllabus_overview: 'Number system, error detection, corrections & codes conversions, Boolean algebra – switching functions and minimization - Digital Logic Families - Combinational logic - multiplexers and de multiplexers - code converters, adders, subtractors - Sequential logic - flip flops - counters - Shift registers - Asynchronous sequential logic - Programmability Logic Devices - VHDL.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'NUMBER SYSTEMS AND DIGITAL LOGIC FAMILIES',
+        content: 'Number system, error detection, corrections & codes conversions, Boolean algebra: De Morgans theorem, switching functions and minimization using K-maps & Quine McCluskey method - Digital Logic Families - comparison of RTL, DTL, TTL, ECL and MOS families operation, characteristics of digital logic family.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'COMBINATIONAL CIRCUITS',
+        content: 'Combinational logic - representation of logic functions-SOP and POS forms, K-map representations - minimization using K maps - simplification and implementation of combinational logic – multiplexers and de multiplexers - code converters, adders, subtractors, Encoders and Decoders.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'SYNCHRONOUS SEQUENTIAL CIRCUITS',
+        content: 'Sequential logic- SR, JK, D and T flip flops - level triggering and edge triggering - counters - asynchronous and synchronous type - Modulo counters - Shift registers - design of synchronous sequential circuits – Moore and Mealy models- Counters, state diagram; state reduction; state assignment.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'ASYNCHRONOUS SEQUENTIAL CIRCUITS AND PROGRAMMABILITY LOGIC DEVICES',
+        content: 'Asynchronous sequential logic Circuits-Transition stability, flow stability-race conditions, hazards & errors in digital circuits; analysis of asynchronous sequential logic circuits introduction to Programmability Logic Devices: PROM – PLA – PAL, CPLD-FPGA.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'VHDL',
+        content: 'RTL Design – combinational logic – Sequential circuit – Operators – Introduction to Packages – Subprograms – Test bench. (Simulation /Tutorial Examples: adders, counters, flip flops, Multiplexers & De multiplexers).',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EC3301',
+    name: 'Electron Devices and Circuits',
+    department: Department.EEE,
+    semester: 3,
+    syllabus_overview: 'PN junction diode - Clipping & Clamping circuits - Rectifiers - LED, Laser diodes, Zener diode - BJT, JFET, MOSFET - UJT, Thyristors and IGBT - BJT and MOSFET amplifiers - Multistage amplifiers - Differential amplifier - Feedback amplifiers - Oscillators.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'PN JUNCTION DEVICES',
+        content: 'PN junction diode – structure, operation and V-I characteristics, diffusion and transition capacitance Clipping & Clamping circuits - Rectifiers – Half Wave and Full Wave Rectifier– Display devices- LED, Laser diodes, Zener diode characteristics- Zener diode Reverse characteristics – Zener diode as regulator.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'TRANSISTORS AND THYRISTORS',
+        content: 'BJT, JFET, MOSFET- structure, operation, characteristics and Biasing UJT, Thyristors and IGBT - Structure and characteristics.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'AMPLIFIERS',
+        content: 'BJT small signal model – Analysis of CE, CB, CC amplifiers- Gain and frequency response – MOSFET small signal model– Analysis of CS and Source follower – Gain and frequency response- High frequency analysis.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'MULTISTAGE AMPLIFIERS AND DIFFERENTIAL AMPLIFIER',
+        content: 'BIMOS cascade amplifier, Differential amplifier – Common mode and Difference mode analysis – FET input stages – Single tuned amplifiers – Gain and frequency response – Neutralization methods, power amplifiers – Types (Qualitative analysis).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'FEEDBACK AMPLIFIERS AND OSCILLATORS',
+        content: 'Advantages of negative feedback – voltage / current, series, Shunt feedback – positive feedback – Condition for oscillations, phase shift – Wien bridge, Hartley, Colpitts and Crystal oscillators.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'EE3303',
+    name: 'Electrical Machines - I',
+    department: Department.EEE,
+    semester: 3,
+    syllabus_overview: 'Fundamentals of Magnetic circuits - Principle of electromechanical energy conversion - Indian Standard Specifications - DC Generators - DC Motors - Testing of DC Machines - Single Phase Transformer - Three Phase Transformer - Autotransformer.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'ELECTROMECHANICAL ENERGY CONVERSION',
+        content: 'Fundamentals of Magnetic circuits- Statically and dynamically induced EMF - Principle of electromechanical energy conversion forces and torque in magnetic field systems- energy balance in magnetic circuits- magnetic force- co-energy in singly excited and multi excited magnetic field system mmf of distributed windings – Winding Inductances-, magnetic fields in rotating machines- magnetic saturation and leakage fluxes. Introduction to Indian Standard Specifications (ISS) - Role and significance in testing.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'DC GENERATORS',
+        content: 'Principle of operation, constructional details, armature windings and its types, EMF equation, wave shape of induced emf, armature reaction, demagnetizing and cross magnetizing Ampere turns, compensating winding, commutation, methods of improving commutation, interpoles, OCC and load characteristics of different types of DC Generators. Parallel operation of DC Generators, equalizing connections- applications of DC Generators.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'DC MOTORS',
+        content: 'Principle of operation, significance of back emf, torque equations and power developed by armature, speed control of DC motors, starting methods of DC motors, load characteristics of DC motors, losses and efficiency in DC machine, condition for maximum efficiency. Testing of DC Machines: Brake test, Swinburnes test, Hopkinsons test, Field test, Retardation test, Separation of core losses-applications of DC motors.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'SINGLE PHASE TRANSFORMER',
+        content: 'Construction and principle of operation, equivalent circuit, phasor diagrams, testing - polarity test, open circuit and short circuit tests, voltage regulation, losses and efficiency, all day efficiency, back-to-back test, separation of core losses, parallel operation of single-phase transformers, applications of single-phase transformer.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'AUTOTRANSFORMER AND THREE PHASE TRANSFORMER',
+        content: 'Construction and working of auto transformer, comparison with two winding transformers, applications of autotransformer. Three Phase Transformer- Construction, types of connections and their comparative features, Scott connection, applications of Scott connection.',
+        periods: 9
+      }
+    ]
+  },
+  {
+    code: 'CS3354',
+    name: 'Data Structures and OOPS',
+    department: Department.EEE,
+    semester: 3,
+    syllabus_overview: 'Data Types – Variables – Operations – Expressions and Statements – Conditional Statements – Functions – Recursive Functions – Arrays - Structures – Union – Pointers - File Handling - Abstract Data Types (ADTs) – List ADT – Linked List – Stack ADT – Queue ADT - Trees – Binary Trees – Binary Search Tree – Hashing - Sorting and Searching.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'C PROGRAMMING FUNDAMENTALS',
+        content: 'Data Types – Variables – Operations – Expressions and Statements – Conditional Statements – Functions – Recursive Functions – Arrays – Single and Multi-Dimensional Arrays.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'C PROGRAMMING - ADVANCED FEATURES',
+        content: 'Structures – Union – Enumerated Data Types – Pointers: Pointers to Variables, Arrays and Functions – File Handling – Preprocessor Directives.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'LINEAR DATA STRUCTURES',
+        content: 'Abstract Data Types (ADTs) – List ADT – Array-Based Implementation – Linked List – Doubly- Linked Lists – Circular Linked List – Stack ADT – Implementation of Stack – Applications – Queue ADT – Priority Queues – Queue Implementation – Applications.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'NON-LINEAR DATA STRUCTURES',
+        content: 'Trees – Binary Trees – Tree Traversals – Expression Trees – Binary Search Tree – Hashing - Hash Functions – Separate Chaining – Open Addressing – Linear Probing– Quadratic Probing – Double Hashing – Rehashing.',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'SORTING AND SEARCHING TECHNIQUES',
+        content: 'Insertion Sort – Quick Sort – Heap Sort – Merge Sort – Linear Search – Binary Search.',
+        periods: 9
+      }
+    ]
+  },
 
   // MECH Sem 5
   { code: 'ME3591', name: 'Design of Machine Elements', department: Department.MECH, semester: 5, syllabus_overview: 'Stress, Strain, Shafts, Couplings, Bearings, Gears...' },

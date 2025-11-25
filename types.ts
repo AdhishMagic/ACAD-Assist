@@ -2,7 +2,8 @@ export enum Department {
   CSE = 'Computer Science & Engineering',
   ECE = 'Electronics & Comm. Engineering',
   MECH = 'Mechanical Engineering',
-  EEE = 'Electrical & Electronics Engineering'
+  EEE = 'Electrical & Electronics Engineering',
+  CIVIL = 'Civil Engineering'
 }
 
 export type Semester = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
