@@ -631,7 +631,45 @@ export const SUBJECTS: Subject[] = [
 
   // CSE Sem 4
   { code: 'CS3451', name: 'Introduction to Operating Systems', department: Department.CSE, semester: 4, syllabus_overview: 'Processes, Threads, Scheduling, Deadlocks, Memory Management...' },
-  { code: 'CS3452', name: 'Theory of Computation', department: Department.CSE, semester: 4, syllabus_overview: 'Automata Theory, Regular Languages, Context-Free Grammars, Turing Machines, Computability...' },
+  {
+    code: 'CS3452',
+    name: 'Theory of Computation',
+    department: Department.CSE,
+    semester: 4,
+    syllabus_overview: 'Automata Theory, Regular Languages, Context-Free Grammars, Turing Machines, Computability, Undecidability, P and NP Completeness.',
+    detailed_syllabus: [
+      {
+        unitNumber: 'I',
+        title: 'Automata and Regular Expressions',
+        content: 'Need for automata theory. Introduction to formal proof. Finite Automata (FA). Deterministic Finite Automata (DFA). Non-deterministic Finite Automata (NFA). Equivalence between NFA and DFA. Finite Automata with Epsilon transitions. Equivalence of NFA and DFA. Equivalence of NFAs with and without ϵ-moves. Conversion of NFA into DFA. Minimization of DFAs.',
+        periods: 9
+      },
+      {
+        unitNumber: 'II',
+        title: 'Regular Expressions and Languages',
+        content: 'Regular expression. Regular Languages. Equivalence of Finite Automata and regular expressions. Proving languages to be not regular (Pumping Lemma). Closure properties of regular languages.',
+        periods: 9
+      },
+      {
+        unitNumber: 'III',
+        title: 'Context Free Grammar and Push Down Automata',
+        content: 'Types of Grammar. Chomsky\'s hierarchy of languages. Context-Free Grammar (CFG) and Languages. Derivations and Parse trees. Ambiguity in grammars and languages. Push Down Automata (PDA): Definition, Moves, Instantaneous descriptions. Languages of pushdown automata. Equivalence of pushdown automata and CFG. CFG to PDA. PDA to CFG. Deterministic Pushdown Automata.',
+        periods: 9
+      },
+      {
+        unitNumber: 'IV',
+        title: 'Normal Forms and Turing Machines',
+        content: 'Normal forms for CFG. Simplification of CFG. Chomsky Normal Form (CNF) and Greibach Normal Form (GNF). Pumping lemma for CFL. Closure properties of Context Free Languages. Turing Machine: Basic model – definition and representation. Instantaneous Description. Language acceptance by TM. TM as Computer of Integer functions. Programming techniques for Turing machines (subroutines).',
+        periods: 9
+      },
+      {
+        unitNumber: 'V',
+        title: 'Undecidability',
+        content: 'Unsolvable Problems and Computable Functions. PCP (Post Correspondence Problem). MPCP (Modified Post Correspondence Problem). Recursive and recursively enumerable languages – Properties. Universal Turing machine. Tractable and Intractable problems. P and NP completeness. Kruskal\'s algorithm. Travelling Salesman Problem. 3-CNF SAT problems.',
+        periods: 9
+      }
+    ]
+  },
   { code: 'CS3491', name: 'Artificial Intelligence and Machine Learning', department: Department.CSE, semester: 4, syllabus_overview: 'Search strategies, Game playing, Supervised Learning, Neural Networks...' },
 
   // ECE Sem 1 (Same as CSE Sem 1)
