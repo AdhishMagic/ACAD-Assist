@@ -285,12 +285,13 @@ const OnboardingScreen = ({ initialDept, initialSem, onComplete, isSettings, onC
 
   return (
     <div className="flex items-center justify-center min-h-[70vh] p-4">
-      <Card className="w-full max-w-lg p-8 animate-fade-in bg-white">
+      <Card className="w-full max-w-5xl p-8 animate-fade-in bg-white">
         <h2 className="text-3xl font-bold text-[#5A5340] mb-8 text-center">
           {isSettings ? 'Profile Settings' : 'Setup Your Profile'}
         </h2>
 
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Side - Department Selection */}
           <div>
             <label className="block font-bold text-stone-500 mb-3 uppercase text-xs tracking-wider">Select Department</label>
             <div className="grid grid-cols-1 gap-3">
@@ -306,18 +307,28 @@ const OnboardingScreen = ({ initialDept, initialSem, onComplete, isSettings, onC
             </div>
           </div>
 
-          <div>
-            <label className="block font-bold text-stone-500 mb-3 uppercase text-xs tracking-wider">Current Semester</label>
-            <div className="flex flex-wrap gap-3">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSem(s as Semester)}
-                  className={`w-12 h-12 rounded-full font-bold transition-all flex items-center justify-center ${sem === s ? 'bg-[#BDB395] text-white shadow-lg scale-110' : 'bg-[#F6F0F0] text-stone-400 hover:bg-[#E5DCC3] border border-[#E7E5E4]'}`}
-                >
-                  {s}
-                </button>
-              ))}
+          {/* Right Side - Selected Department & Semester */}
+          <div className="flex flex-col">
+            {/* Selected Department Display */}
+            <div className="mb-6 p-4 bg-[#F2E2B1] rounded-xl border-l-4 border-[#BDB395]">
+              <p className="text-xs font-bold uppercase text-stone-500 mb-1">Selected Department</p>
+              <p className="text-lg font-bold text-[#5A5340]">{dept}</p>
+            </div>
+
+            {/* Semester Selection */}
+            <div>
+              <label className="block font-bold text-stone-500 mb-3 uppercase text-xs tracking-wider">Current Semester</label>
+              <div className="flex flex-wrap gap-3">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSem(s as Semester)}
+                    className={`${s === 8 ? 'px-4 py-2 h-12' : 'w-12 h-12'} rounded-full font-bold transition-all flex items-center justify-center ${sem === s ? 'bg-[#BDB395] text-white shadow-lg scale-110' : 'bg-[#F6F0F0] text-stone-400 hover:bg-[#E5DCC3] border border-[#E7E5E4]'}`}
+                  >
+                    {s === 8 ? 'Electives' : s}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

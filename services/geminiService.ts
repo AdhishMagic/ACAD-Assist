@@ -1,8 +1,17 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import { QuizQuestion } from '../types';
 
-// NOTE: API Key is accessed via process.env.API_KEY as per instructions.
-const apiKey = process.env.API_KEY || '';
+// NOTE: API Key is accessed via import.meta.env for Vite
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+
+// Debug: Log if API key is present (don't log the actual key)
+console.log('API Key loaded:', apiKey ? 'Yes ✓' : 'No ✗');
+console.log('API Key length:', apiKey.length);
+
+if (!apiKey) {
+  console.error('⚠️ VITE_GEMINI_API_KEY is not set in .env.local file!');
+}
+
 const ai = new GoogleGenAI({ apiKey });
 
 /**
@@ -13,6 +22,10 @@ export const generateStudyContent = async (
   subjectName: string
 ): Promise<string> => {
   try {
+    if (!apiKey) {
+      throw new Error('API key is missing. Please provide a valid API key.');
+    }
+
     const prompt = `
       You are an expert professor at Anna University. The student is studying "${subjectName}".
       The topic is: "${topic}".
@@ -28,14 +41,14 @@ export const generateStudyContent = async (
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
+      model: 'gemini-1.5-flash',
+      contents: prompt
     });
 
     return response.text || "Sorry, I couldn't generate the content at this moment.";
   } catch (error) {
     console.error("Gemini Chat Error:", error);
-    return "Error generating study content. Please check your connection.";
+    throw error;
   }
 };
 
@@ -44,12 +57,16 @@ export const generateStudyContent = async (
  */
 export const generateQuiz = async (subjectName: string, topic?: string): Promise<QuizQuestion[]> => {
   try {
+    if (!apiKey) {
+      throw new Error('API key is missing. Please provide a valid API key.');
+    }
+
     const prompt = topic
       ? `Generate 5 multiple-choice questions for the topic "${topic}" in the subject "${subjectName}" suitable for engineering students.`
       : `Generate 5 multiple-choice questions for the subject "${subjectName}" suitable for engineering students.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -87,6 +104,11 @@ export const generateNarrativeAudio = async (
   subjectName: string
 ): Promise<string | null> => {
   try {
+    if (!apiKey) {
+      console.error('API key is missing');
+      return null;
+    }
+
     const prompt = `
       Explain the concept of "${topic}" in the subject "${subjectName}" like a storyteller. 
       Use a narrative style to help an engineering student understand the intuition behind the concept.
@@ -94,7 +116,7 @@ export const generateNarrativeAudio = async (
     `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         responseModalities: [Modality.AUDIO],
