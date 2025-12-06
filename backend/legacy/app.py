@@ -4,6 +4,11 @@ from pydantic import BaseModel
 from contextlib import asynccontextmanager
 from rag_engine import RAGService
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # Global RAG Service Instance
 rag_service = RAGService()
 
@@ -12,9 +17,9 @@ async def lifespan(app: FastAPI):
     # Startup logic
     print("Starting up RAG Backend...")
     try:
-        # Hardcoded values as per requirements - User should update these
-        bucket_name = "your-bucket-name" 
-        file_name = "document.pdf"
+        # Load values from env or use defaults
+        bucket_name = os.getenv("GCS_BUCKET_NAME", "your-bucket-name") 
+        file_name = os.getenv("GCS_FILE_NAME", "document.pdf")
         
         # Download file from GCS
         rag_service.download_from_gcs(

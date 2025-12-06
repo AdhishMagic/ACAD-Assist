@@ -1,9 +1,18 @@
-fastapi
-uvicorn
-langchain
-langchain-community
-langchain-google-genai
-faiss-cpu
-google-cloud-storage
-pypdf
-python-dotenv
+fastapi>=0.110.0
+uvicorn>=0.27.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.0
+langchain-core>=0.3.0
+langchain-google-genai>=1.0.0
+httpx>=0.27.0
+# Vector DB clients (using qdrant as default example)
+qdrant-client>=1.8.0
+
+# Ingestion & OCR
+# paddlepaddle>=2.6.0  # Not compatible with Python 3.14
+# paddleocr>=2.7.0     # Not compatible with Python 3.14
+easyocr>=1.7.0
+pymupdf>=1.23.0
+sentence-transformers>=2.5.0
+langchain-text-splitters>=0.0.1

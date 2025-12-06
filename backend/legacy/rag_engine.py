@@ -4,14 +4,22 @@ from google.cloud import storage
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains import RetrievalQA
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.prompts import PromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 
 class RAGService:
     def __init__(self):
         self.vector_store = None
-        self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-        self.llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.7)
+        try:
+            self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            self.llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.7)
+        except Exception as e:
+            print(f"Warning: Failed to initialize AI models. Check API keys. Error: {e}")
+            # Assign dummy or None to prevent attribute errors, though usage will fail
+            self.embeddings = None
+            self.llm = None
 
     def download_from_gcs(self, bucket_name: str, source_blob: str, dest_file: str):
         """Downloads a file from GCS if it doesn't exist locally."""
@@ -38,6 +46,9 @@ class RAGService:
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
             texts = text_splitter.split_documents(documents)
             
+            if not self.embeddings:
+                 return "Error: Embeddings model not initialized."
+
             self.vector_store = FAISS.from_documents(texts, self.embeddings)
             return "Success: Index built successfully."
         except Exception as e:
@@ -50,12 +61,26 @@ class RAGService:
         
         try:
             retriever = self.vector_store.as_retriever()
-            qa_chain = RetrievalQA.from_chain_type(
-                llm=self.llm,
-                chain_type="stuff",
-                retriever=retriever
+            
+            # Define simple RAG prompt
+            template = """Answer the question based only on the following context:
+            {context}
+
+            Question: {question}
+            """
+            prompt = PromptTemplate.from_template(template)
+            
+            def format_docs(docs):
+                return "\n\n".join(doc.page_content for doc in docs)
+
+            # Build LCEL chain
+            rag_chain = (
+                {"context": retriever | format_docs, "question": RunnablePassthrough()}
+                | prompt
+                | self.llm
+                | StrOutputParser()
             )
-            result = qa_chain.invoke({"query": query})
-            return result.get("result", "No answer generated.")
+            
+            return rag_chain.invoke(query)
         except Exception as e:
             return f"Error generating answer: {e}"
