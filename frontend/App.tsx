@@ -23,6 +23,17 @@ const Icons = {
   Microphone: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>,
   Send: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9-2-9-18-9 18 9-2zm0 0v-8" /></svg>,
   VolumeUp: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>,
+  Sun: () => (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <circle cx="12" cy="12" r="4" strokeWidth={2} />
+      <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M17.66 6.34l1.41-1.41M4.93 19.07l1.41-1.41" strokeWidth={2} strokeLinecap="round" />
+    </svg>
+  ),
+  Moon: () => (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+    </svg>
+  ),
 };
 
 // --- Helper Components ---
@@ -54,6 +65,10 @@ export default function App() {
   const [screen, setScreen] = useState<AppScreen>(AppScreen.AUTH);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const stored = localStorage.getItem('theme');
+    return stored === 'dark';
+  });
 
   // Persistence
   useEffect(() => {
@@ -64,6 +79,11 @@ export default function App() {
       setScreen(parsed.isSetupComplete ? AppScreen.DASHBOARD : AppScreen.ONBOARDING);
     }
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   const handleLogin = (email: string) => {
     // Simulated Login
@@ -106,21 +126,49 @@ export default function App() {
 
   const filteredSubjects = SUBJECTS.filter(s => s.department === user?.department && s.semester === user?.semester);
 
+  const handleBack = () => {
+    if (screen === AppScreen.SUBJECT_DETAIL) {
+      setSelectedSubject(null);
+      setScreen(AppScreen.DASHBOARD);
+    } else if (screen === AppScreen.SETTINGS) {
+      setScreen(AppScreen.DASHBOARD);
+    } else if (screen === AppScreen.ONBOARDING) {
+      setScreen(user?.isSetupComplete ? AppScreen.DASHBOARD : AppScreen.AUTH);
+    } else {
+      if (window.history.length > 1) {
+        window.history.back();
+      }
+    }
+  };
+
   return (
     <div className="h-full w-full flex flex-col relative font-sans">
       {/* Navbar - Sticky */}
       {screen !== AppScreen.AUTH && (
         <header className="sticky top-0 z-50 glass px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setSelectedSubject(null); setScreen(AppScreen.DASHBOARD); }}>
-            <img src="/logo.svg" alt="ACAD ASSIST" className="h-12 w-12 rounded-lg" />
-            <h1 className="font-display text-2xl font-bold text-[#5A5340] tracking-wide">ACAD ASSIST</h1>
+          <div className="flex items-center gap-3">
+            <button onClick={handleBack} className="back-btn" aria-label="Go back">
+              <Icons.ChevronLeft />
+            </button>
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setSelectedSubject(null); setScreen(AppScreen.DASHBOARD); }}>
+              <img src="/logo.svg" alt="ACAD ASSIST" className="h-12 w-12 rounded-lg" />
+              <h1 className="font-display text-2xl font-bold text-[#5A5340] tracking-wide">ACAD ASSIST</h1>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden md:block text-right">
               <p className="font-bold text-[#5A5340] text-sm">{user?.name}</p>
               <p className="text-xs text-stone-500">{user?.department} - Sem {user?.semester}</p>
             </div>
-            <button onClick={() => setScreen(AppScreen.SETTINGS)} className="p-2 hover:bg-black/5 rounded-full text-[#5A5340] transition">
+            <button
+              onClick={() => setIsDark(d => !d)}
+              className={`theme-toggle ${isDark ? 'active' : ''}`}
+              aria-label="Toggle theme"
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? <Icons.Sun /> : <Icons.Moon />}
+            </button>
+            <button onClick={() => setScreen(AppScreen.SETTINGS)} className="back-btn" aria-label="Open settings" title="Subject & Semester settings">
               <Icons.Settings />
             </button>
             <button onClick={handleLogout} className="text-xs font-bold text-red-500 hover:text-red-700 ml-2 border border-red-200 px-3 py-1 rounded-full hover:bg-red-50 transition">LOGOUT</button>
@@ -343,6 +391,7 @@ const OnboardingScreen = ({ initialDept, initialSem, onComplete, isSettings, onC
     </div>
   );
 };
+
 
 // --- Subject Module Component ---
 

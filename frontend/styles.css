@@ -25,7 +25,7 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-color);
+  background-color: var(--bg-color) !important;
   color: var(--text-main);
   min-height: 100vh;
   /* Subtle texture or gradient to make the light theme pop */
@@ -33,6 +33,54 @@ body {
     radial-gradient(at 100% 0%, rgba(242, 226, 177, 0.3) 0px, transparent 50%),
     radial-gradient(at 0% 100%, rgba(189, 179, 149, 0.2) 0px, transparent 50%);
   background-attachment: fixed;
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+  --bg-color: #0f0f0f;
+  --paper-color: #2a2a2a;
+  --accent-color: #3a3a3a;
+  --primary-color: #a39a7f;
+  --text-main: #f5f5f5;
+  --text-muted: #c2c2c2;
+  --surface: #1a1a1a;
+  --surface-translucent: rgba(26, 26, 26, 0.7);
+  --border-color: #333333;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: #e8e6e3;
+}
+
+/* Header utility buttons */
+.back-btn,
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  color: var(--text-main);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+
+.back-btn:hover,
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.theme-toggle.active {
+  background: var(--primary-color);
+  color: #fff;
 }
 
 /* Typography */
