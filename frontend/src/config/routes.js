@@ -1,0 +1,16 @@
+export const ROUTES = {
+  HOME: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  FORGOT_PASSWORD: "/forgot-password",
+  DASHBOARD: "/",
+  COURSES: "/courses",
+  COURSE_DETAIL: (id) => `/courses/${id}`,
+  LESSON: (courseId, lessonId) => `/courses/${courseId}/lessons/${lessonId}`,
+  AI_ASSISTANT: "/ai-assistant",
+  KNOWLEDGE: "/knowledge",
+  DOCUMENT_DETAIL: (id) => `/knowledge/${id}`,
+  QPAPER_GENERATE: "/qpaper/generate",
+  QPAPER_PREVIEW: (id) => `/qpaper/${id}`,
+  SETTINGS: "/settings",
+};

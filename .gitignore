@@ -1,52 +1,119 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# =========================
+# ACAD-Assist .gitignore
+# =========================
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Python
+# ---------- Python ----------
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-env/
+*.egg
+*.egg-info/
+dist/
 build/
-develop-eggs/
-downloads/
 eggs/
-.eggs/
+*.whl
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+*.manifest
+*.spec
+.installed.cfg
+develop-eggs/
 lib/
 lib64/
 parts/
 sdist/
 var/
 wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# Virtual Environment
+# Virtual environments
 venv/
+.venv/
+env/
+.env/
+ENV/
 
-# Environment Variables
+# ---------- Node / Frontend ----------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ---------- Environment ----------
 .env
+.env.local
+.env.*.local
+!envs/.env.example
+
+# ---------- IDE ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ---------- Docker ----------
+docker-compose.override.yml
+
+# ---------- Django ----------
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static_collected/
+
+# ---------- AI / ML ----------
+*.h5
+*.hdf5
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
+*.safetensors
+model_cache/
+*.faiss
+*.pkl
+
+# ---------- Build Artifacts ----------
+frontend/dist/
+frontend/build/
+*.map
+
+# ---------- Testing ----------
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ---------- Monitoring / Logs ----------
+logs/
+*.log
+
+# ---------- Misc ----------
+*.bak
+*.tmp
+*.temp
+.pre-commit-config.yaml.bak
