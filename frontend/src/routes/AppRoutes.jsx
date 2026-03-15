@@ -28,6 +28,11 @@ import NotesExplorer from "@/features/notes/pages/NotesExplorer";
 import SubjectNotesPage from "@/features/notes/pages/SubjectNotesPage";
 import NotesViewer from "@/features/notes/pages/NotesViewer";
 
+// AI Study System Pages
+import AIChatPage from "@/features/ai/pages/AIChatPage";
+import SavedNotesPage from "@/features/ai/pages/SavedNotesPage";
+import GeneratedNotesPage from "@/features/ai/pages/GeneratedNotesPage";
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -58,6 +63,11 @@ export function AppRoutes() {
           <Route path="/notes" element={<NotesExplorer />} />
           <Route path="/notes/view/:noteId" element={<NotesViewer />} />
           <Route path="/notes/:subjectId" element={<SubjectNotesPage />} />
+
+          {/* AI Study System Routes */}
+          <Route path="/ai" element={<AIChatPage />} />
+          <Route path="/ai/saved-notes" element={<SavedNotesPage />} />
+          <Route path="/ai/generated/:noteId" element={<GeneratedNotesPage />} />
 
           {/* System Utility Routes */}
           <Route path="/notifications" element={<NotificationsPage />} />
