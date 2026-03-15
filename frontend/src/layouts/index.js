@@ -1,3 +1,3 @@
-export { default as AppLayout } from "./AppLayout";
-export { default as AuthLayout } from "./AuthLayout";
-export { default as DashboardLayout } from "./DashboardLayout";
+export * from './DashboardLayout';
+export * from './AuthLayout';
+export * from './MainLayout';

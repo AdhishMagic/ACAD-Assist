@@ -1,0 +1,93 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { 
+  LayoutDashboard, 
+  BookOpen, 
+  BrainCircuit, 
+  FileText, 
+  Settings, 
+  ChevronLeft,
+  ChevronRight,
+  X
+} from 'lucide-react';
+import SidebarItem from './SidebarItem';
+
+const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
+  const navItems = [
+    { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
+    { label: 'Knowledge Base', icon: BookOpen, to: '/notes' },
+    { label: 'AI Assistant', icon: BrainCircuit, to: '/ai' },
+    { label: 'Question Papers', icon: FileText, to: '/tests' },
+    { label: 'Settings', icon: Settings, to: '/admin' },
+  ];
+
+  return (
+    <>
+      {/* Mobile backdrop */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 z-30 bg-gray-900/50 backdrop-blur-sm md:hidden"
+          onClick={closeMobileSidebar}
+        />
+      )}
+
+      {/* Sidebar container */}
+      <motion.aside
+        initial={false}
+        animate={{ 
+          width: isMobileOpen || !isCollapsed ? 240 : 72,
+          x: isMobileOpen ? 0 : 0
+        }}
+        className={`fixed md:sticky top-0 left-0 z-40 h-screen flex flex-col bg-slate-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-transform md:translate-x-0 ${
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
+          <div className="flex items-center">
+            {/* Show logo or simple icon depending on collapse state */}
+            {(!isCollapsed || isMobileOpen) && (
+              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 md:hidden">
+                ACAD-Assist
+              </span>
+            )}
+            {isCollapsed && !isMobileOpen && (
+              <div className="w-8 h-8 rounded bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold ml-1">
+                A
+              </div>
+            )}
+          </div>
+          
+          <button 
+            className="md:hidden p-2 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md"
+            onClick={closeMobileSidebar}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 scrollbar-hide">
+          {navItems.map((item) => (
+            <SidebarItem
+              key={item.to}
+              icon={item.icon}
+              label={item.label}
+              to={item.to}
+              isCollapsed={isCollapsed && !isMobileOpen}
+            />
+          ))}
+        </nav>
+
+        <div className="p-3 border-t border-gray-200 dark:border-gray-800 hidden md:flex justify-end">
+          <button
+            onClick={toggleCollapse}
+            className="p-1.5 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors w-full flex justify-center"
+          >
+            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          </button>
+        </div>
+      </motion.aside>
+    </>
+  );
+};
+
+export default Sidebar;
