@@ -5,7 +5,8 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { LoginPage } from "@/features/auth/pages/LoginPage";
 import { RegisterPage } from "@/features/auth/pages/RegisterPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
-import DashboardPage from "@/pages/dashboard/DashboardPage";
+import StudentDashboard from "@/features/student/pages/StudentDashboard";
+import StudyOverviewPage from "@/features/student/pages/StudyOverviewPage";
 import CoursesPage from "@/pages/courses/CoursesPage";
 import CourseDetailPage from "@/pages/courses/CourseDetailPage";
 import LessonPage from "@/pages/courses/LessonPage";
@@ -22,6 +23,11 @@ import NotificationsPage from "@/features/system/pages/NotificationsPage";
 import GlobalSearchPage from "@/features/system/pages/GlobalSearchPage";
 import ProfilePage from "@/features/system/pages/ProfilePage";
 
+// Notes System
+import NotesExplorer from "@/features/notes/pages/NotesExplorer";
+import SubjectNotesPage from "@/features/notes/pages/SubjectNotesPage";
+import NotesViewer from "@/features/notes/pages/NotesViewer";
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -35,7 +41,8 @@ export function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<StudentDashboard />} />
+          <Route path="/study-overview" element={<StudyOverviewPage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CourseDetailPage />} />
           <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonPage />} />
@@ -46,6 +53,12 @@ export function AppRoutes() {
           <Route path="/qpaper/:id" element={<PaperPreviewPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           
+          
+          {/* Notes System Routes */}
+          <Route path="/notes" element={<NotesExplorer />} />
+          <Route path="/notes/view/:noteId" element={<NotesViewer />} />
+          <Route path="/notes/:subjectId" element={<SubjectNotesPage />} />
+
           {/* System Utility Routes */}
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/search" element={<GlobalSearchPage />} />
