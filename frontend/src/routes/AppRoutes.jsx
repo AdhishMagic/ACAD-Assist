@@ -36,6 +36,9 @@ import GeneratedNotesPage from "@/features/ai/pages/GeneratedNotesPage";
 // Teacher Management System
 import { teacherRoutes } from "@/features/teacher/constants/teacherRoutes";
 
+// HOD System
+import { hodRoutes } from "@/features/hod/constants/hodRoutes";
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -80,6 +83,11 @@ export function AppRoutes() {
           {/* Teacher System Routes */}
           {teacherRoutes.map((route) => (
             <Route key={route.path} path={`/teacher/${route.path}`} element={route.element} />
+          ))}
+
+          {/* HOD System Routes */}
+          {hodRoutes.map((route) => (
+            <Route key={route.path} path={`/hod/${route.path}`} element={route.element} />
           ))}
         </Route>
       </Route>
