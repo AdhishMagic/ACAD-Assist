@@ -39,6 +39,9 @@ import { teacherRoutes } from "@/features/teacher/constants/teacherRoutes";
 // HOD System
 import { hodRoutes } from "@/features/hod/constants/hodRoutes";
 
+// Admin System
+import { adminRoutes } from "@/features/admin/constants/adminRoutes.jsx";
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -88,6 +91,11 @@ export function AppRoutes() {
           {/* HOD System Routes */}
           {hodRoutes.map((route) => (
             <Route key={route.path} path={`/hod/${route.path}`} element={route.element} />
+          ))}
+
+          {/* Admin System Routes */}
+          {adminRoutes.map((route) => (
+            <Route key={route.path} path={`/admin/${route.path}`} element={route.element} />
           ))}
         </Route>
       </Route>
