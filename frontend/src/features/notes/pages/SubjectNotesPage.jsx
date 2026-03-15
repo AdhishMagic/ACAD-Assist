@@ -7,11 +7,7 @@ import NotesToolbar from '../components/NotesToolbar';
 import NotesFilters from '../components/NotesFilters';
 import NotesGrid from '../components/NotesGrid';
 
-// Mock data fallback since there is no real API returning data
-const MOCK_SUBJECT_NOTES = [
-  { id: 101, title: 'Network Topologies', subject: 'Computer Networks', author: 'Dr. Alan', createdAt: '2026-03-01T10:00:00Z', isBookmarked: true, tags: ['Important'], readTime: 10 },
-  { id: 102, title: 'OSI Model Deep Dive', subject: 'Computer Networks', author: 'Dr. Alan', createdAt: '2026-03-05T14:30:00Z', isBookmarked: false, tags: ['Exam Prep'], readTime: 15 },
-];
+
 
 const SubjectNotesPage = () => {
   const { subjectId } = useParams();
@@ -26,9 +22,7 @@ const SubjectNotesPage = () => {
   // Format subject title from ID (e.g., computer-networks -> Computer Networks)
   const formattedSubject = subjectId ? subjectId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Subject';
   
-  // Use mock data if API is not wired up
-  const notes = data?.notes || MOCK_SUBJECT_NOTES;
-  const loading = false; // Set to isLoading for real API
+  const notes = data?.notes || [];
 
   return (
     <div className="flex-1 h-full overflow-y-auto bg-background w-full">
@@ -68,7 +62,7 @@ const SubjectNotesPage = () => {
 
         {/* Notes Grid Layout */}
         <div className="flex-1 pb-10">
-          <NotesGrid notes={notes} isLoading={loading} />
+          <NotesGrid notes={notes} isLoading={isLoading} />
         </div>
       </div>
     </div>

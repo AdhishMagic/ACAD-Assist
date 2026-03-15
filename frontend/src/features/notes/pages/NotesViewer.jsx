@@ -8,68 +8,14 @@ import { ChevronLeft, Calendar, User, FileDown, BookMarked, Share2, Printer, Tag
 import BookmarkButton from '../components/BookmarkButton';
 import MarkdownViewer from '../components/MarkdownViewer';
 
-// Mock content
-const MOCK_NOTE_DETAILS = {
-  id: 1,
-  title: 'Understanding React Server Components',
-  subject: 'Frontend Engineering',
-  author: 'Dan Abramov',
-  createdAt: '2026-03-12T10:00:00Z',
-  isBookmarked: true,
-  tags: ['React', 'Architecture', 'Performance'],
-  content: `
-# React Server Components (RSC)
 
-Server Components allow us to render components on the server, sending zero JavaScript to the client. This results in faster page loads and a smaller bundle size.
-
-## Why RSC?
-1. **Zero Bundle Size Impact**: Dependencies imported in Server Components are not included in the client bundle.
-2. **Direct Backend Access**: Safely access databases and file systems directly from your components.
-3. **Automatic Code Splitting**: Client components are automatically code-split by default.
-
-### Example Server Component
-
-\`\`\`jsx
-import db from './db';
-
-// This component runs uniquely on the server
-export default async function NoteList() {
-  const notes = await db.notes.getAll();
-  return (
-    <ul>
-      {notes.map(note => (
-        <li key={note.id}>{note.title}</li>
-      ))}
-    </ul>
-  );
-}
-\`\`\`
-
-> Note: Server components cannot use state or effects directly.
-
-### Table of Constraints
-| Feature | Server Components | Client Components |
-|---|---|---|
-| Use State | No | Yes |
-| Use Effects | No | Yes |
-| DOM Event Listeners | No | Yes |
-| Access Backend API | Yes | No (requires fetch) |
-
-Get started building modern full-stack React applications!
-  `,
-  relatedNotes: [
-    { title: 'Advanced Hooks Pattern', id: 'hooks-1' },
-    { title: 'Concurrent Mode Deep Dive', id: 'concurrent-1' }
-  ]
-};
 
 const NotesViewer = () => {
   const { noteId } = useParams();
   const navigate = useNavigate();
   const { data, isLoading } = useNoteDetails(noteId);
 
-  // Fallback to mock data if API is pending or not implemented
-  const note = data || MOCK_NOTE_DETAILS;
+  const note = data;
 
   if (isLoading && !data) {
     return <div className="p-10 text-center w-full">Loading Note...</div>;
