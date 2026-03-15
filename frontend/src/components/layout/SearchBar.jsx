@@ -13,20 +13,22 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-full max-w-md hidden md:block">
+    <div className="relative w-full max-w-md hidden md:block group">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Search className="h-4 w-4 text-gray-400" />
+        <Search className="h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
       </div>
       <input
         type="text"
-        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 placeholder-gray-500 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors duration-200"
+        className="block w-full pl-10 pr-12 py-2 bg-slate-100/50 border border-slate-200 rounded-lg leading-5 dark:bg-[#0f172a]/50 dark:border-slate-800 dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:bg-white dark:focus:bg-[#0f172a] focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-        <span className="text-gray-400 sm:text-xs border border-gray-300 dark:border-gray-600 rounded px-1.5">⌘K</span>
+      <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+        <kbd className="hidden sm:inline-block border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded px-1.5 py-0.5 text-[10px] font-medium tracking-widest font-sans">
+          ⌘K
+        </kbd>
       </div>
     </div>
   );

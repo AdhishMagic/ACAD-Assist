@@ -3,6 +3,7 @@ import TeacherDashboard from '../pages/TeacherDashboard';
 import ClassesOverviewPage from '../pages/ClassesOverviewPage';
 import StudentActivityPage from '../pages/StudentActivityPage';
 import NotesStudioPage from '../pages/NotesStudioPage';
+import { examRoutes } from '../exams/constants/examRoutes';
 
 export const teacherRoutes = [
   {
@@ -20,5 +21,6 @@ export const teacherRoutes = [
   {
     path: 'notes-studio',
     element: <NotesStudioPage />
-  }
+  },
+  ...examRoutes
 ];

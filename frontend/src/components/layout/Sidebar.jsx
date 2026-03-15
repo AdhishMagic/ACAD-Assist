@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, 
@@ -12,22 +13,69 @@ import {
   Settings, 
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  Users,
+  Activity,
+  FileText,
+  CheckSquare
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
-  const navItems = [
-    { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
-    { label: 'Study Overview', icon: PlayCircle, to: '/study-overview' },
-    { label: 'Notes', icon: BookOpen, to: '/notes' },
-    { label: 'AI Assistant', icon: BrainCircuit, to: '/ai' },
-    { label: 'Saved Notes', icon: Bookmark, to: '/ai/saved-notes' },
-    { label: 'Analytics', icon: BarChart, to: '/analytics' },
-    { label: 'Notifications', icon: Bell, to: '/notifications' },
-    { label: 'Profile', icon: User, to: '/profile' },
-    { label: 'Settings', icon: Settings, to: '/settings' },
-  ];
+  const { user } = useSelector((state) => state.auth);
+  const userRole = user?.role || 'student'; // fallback
+
+  const getNavItems = () => {
+    const commonItems = [
+      { label: 'Notifications', icon: Bell, to: '/notifications' },
+      { label: 'Profile', icon: User, to: '/profile' },
+      { label: 'Settings', icon: Settings, to: '/settings' },
+    ];
+
+    const studentItems = [
+      { label: 'Student Dashboard', icon: LayoutDashboard, to: '/student/dashboard' },
+      { label: 'Study Overview', icon: PlayCircle, to: '/student/study-overview' },
+      { label: 'Notes', icon: BookOpen, to: '/student/notes' },
+      { label: 'AI Assistant', icon: BrainCircuit, to: '/student/ai' },
+      { label: 'Saved Notes', icon: Bookmark, to: '/student/ai/saved-notes' },
+      { label: 'Student Analytics', icon: BarChart, to: '/student/analytics' },
+      { label: 'Project Submission', icon: FileText, to: '/student/project-submission' },
+    ];
+
+    const teacherItems = [
+      { label: 'Teacher Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
+      { label: 'Classes', icon: Users, to: '/teacher/classes' },
+      { label: 'Student Activity', icon: Activity, to: '/teacher/activity' },
+      { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
+    ];
+
+    const hodItems = [
+      { label: 'HOD Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
+      { label: 'Dept Analytics', icon: BarChart, to: '/hod/analytics' },
+      { label: 'Course Approval', icon: CheckSquare, to: '/hod/course-approval' },
+      { label: 'Project Approvals', icon: CheckSquare, to: '/hod/project-approvals' },
+    ];
+
+    const adminItems = [
+      { label: 'Admin Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
+      { label: 'System Analytics', icon: BarChart, to: '/admin/analytics' },
+      { label: 'User Management', icon: Users, to: '/admin/users' },
+    ];
+
+    switch (userRole) {
+      case 'admin':
+        return [...adminItems, ...hodItems, ...teacherItems, ...studentItems, ...commonItems];
+      case 'hod':
+        return [...hodItems, ...teacherItems, ...studentItems, ...commonItems];
+      case 'teacher':
+        return [...teacherItems, ...studentItems, ...commonItems];
+      case 'student':
+      default:
+        return [...studentItems, ...commonItems];
+    }
+  };
+
+  const navItems = getNavItems();
 
   return (
     <>
