@@ -7,7 +7,7 @@ export const ROUTES = {
   COURSES: "/courses",
   COURSE_DETAIL: (id) => `/courses/${id}`,
   LESSON: (courseId, lessonId) => `/courses/${courseId}/lessons/${lessonId}`,
-  AI_ASSISTANT: "/ai-assistant",
+  AI_ASSISTANT: "/ai",
   KNOWLEDGE: "/knowledge",
   DOCUMENT_DETAIL: (id) => `/knowledge/${id}`,
   QPAPER_GENERATE: "/qpaper/generate",

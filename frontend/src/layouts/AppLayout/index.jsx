@@ -10,7 +10,7 @@ export default function AppLayout() {
           <nav className="space-y-2">
             <a href="/" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">Dashboard</a>
             <a href="/courses" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">Courses</a>
-            <a href="/ai-assistant" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">AI Assistant</a>
+            <a href="/ai" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">AI Assistant</a>
             <a href="/knowledge" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">Knowledge Repo</a>
             <a href="/qpaper/generate" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">Question Paper</a>
             <a href="/settings" className="block px-3 py-2 rounded-md hover:bg-accent text-sm">Settings</a>

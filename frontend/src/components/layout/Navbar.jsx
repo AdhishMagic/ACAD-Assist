@@ -17,9 +17,9 @@ const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
         </button>
         
         <div className="hidden md:flex items-center mr-8">
-          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+          <Link to="/dashboard" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
             ACAD-Assist
-          </div>
+          </Link>
         </div>
 
         <SearchBar />

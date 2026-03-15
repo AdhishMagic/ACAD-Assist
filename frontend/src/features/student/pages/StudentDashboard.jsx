@@ -40,7 +40,7 @@ const StudentDashboard = () => {
           <p className="text-muted-foreground mt-1">Ready to crush your goals today? You're doing great!</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate('/ai-assistant')}>
+          <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate('/ai')}>
             <Sparkles className="w-4 h-4 mr-2" />
             Ask AI
           </Button>
@@ -51,10 +51,6 @@ const StudentDashboard = () => {
           <Button variant="outline" className="hidden sm:inline-flex" onClick={() => navigate('/notes')}>
             <BookOpen className="w-4 h-4 mr-2" />
             Notes
-          </Button>
-          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => navigate('/tests')}>
-            <FileCode className="w-4 h-4 mr-2" />
-            Practice
           </Button>
         </div>
       </motion.div>

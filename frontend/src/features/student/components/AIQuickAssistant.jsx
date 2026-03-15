@@ -21,7 +21,7 @@ const AIQuickAssistant = () => {
     e.preventDefault();
     if (!prompt.trim()) return;
     // In a real app, this would pass the state or URL param to the AI chat page
-    navigate('/ai-assistant', { state: { initialPrompt: prompt } });
+    navigate('/ai', { state: { initialPrompt: prompt } });
   };
 
   return (
@@ -67,7 +67,7 @@ const AIQuickAssistant = () => {
         <Button 
           variant="outline" 
           className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:text-indigo-400 dark:hover:bg-indigo-900/50"
-          onClick={() => navigate('/ai-assistant')}
+          onClick={() => navigate('/ai')}
         >
           <MessageSquare className="w-4 h-4 mr-2" />
           Open Full Chat

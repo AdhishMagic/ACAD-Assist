@@ -7,10 +7,10 @@ import { RegisterPage } from "@/features/auth/pages/RegisterPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudyOverviewPage from "@/features/student/pages/StudyOverviewPage";
+import StudyAnalyticsPage from "@/features/student/pages/StudyAnalyticsPage";
 import CoursesPage from "@/pages/courses/CoursesPage";
 import CourseDetailPage from "@/pages/courses/CourseDetailPage";
 import LessonPage from "@/pages/courses/LessonPage";
-import AiAssistantPage from "@/pages/ai-assistant/AiAssistantPage";
 import KnowledgeRepoPage from "@/pages/knowledge-repo/KnowledgeRepoPage";
 import DocumentDetailPage from "@/pages/knowledge-repo/DocumentDetailPage";
 import GeneratorPage from "@/pages/qpaper/GeneratorPage";
@@ -51,12 +51,12 @@ export function AppRoutes() {
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CourseDetailPage />} />
           <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonPage />} />
-          <Route path="/ai-assistant" element={<AiAssistantPage />} />
           <Route path="/knowledge" element={<KnowledgeRepoPage />} />
           <Route path="/knowledge/:id" element={<DocumentDetailPage />} />
           <Route path="/qpaper/generate" element={<GeneratorPage />} />
           <Route path="/qpaper/:id" element={<PaperPreviewPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/analytics" element={<StudyAnalyticsPage />} />
           
           
           {/* Notes System Routes */}

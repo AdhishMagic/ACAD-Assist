@@ -2,9 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, 
+  PlayCircle,
   BookOpen, 
   BrainCircuit, 
-  FileText, 
+  Bookmark,
+  BarChart,
+  Bell,
+  User,
   Settings, 
   ChevronLeft,
   ChevronRight,
@@ -15,10 +19,14 @@ import SidebarItem from './SidebarItem';
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
   const navItems = [
     { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
-    { label: 'Knowledge Base', icon: BookOpen, to: '/notes' },
+    { label: 'Study Overview', icon: PlayCircle, to: '/study-overview' },
+    { label: 'Notes', icon: BookOpen, to: '/notes' },
     { label: 'AI Assistant', icon: BrainCircuit, to: '/ai' },
-    { label: 'Question Papers', icon: FileText, to: '/tests' },
-    { label: 'Settings', icon: Settings, to: '/admin' },
+    { label: 'Saved Notes', icon: Bookmark, to: '/ai/saved-notes' },
+    { label: 'Analytics', icon: BarChart, to: '/analytics' },
+    { label: 'Notifications', icon: Bell, to: '/notifications' },
+    { label: 'Profile', icon: User, to: '/profile' },
+    { label: 'Settings', icon: Settings, to: '/settings' },
   ];
 
   return (
