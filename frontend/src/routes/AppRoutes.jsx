@@ -14,7 +14,7 @@ import KnowledgeRepoPage from "@/pages/knowledge-repo/KnowledgeRepoPage";
 import DocumentDetailPage from "@/pages/knowledge-repo/DocumentDetailPage";
 import GeneratorPage from "@/pages/qpaper/GeneratorPage";
 import PaperPreviewPage from "@/pages/qpaper/PaperPreviewPage";
-import SettingsPage from "@/pages/settings/SettingsPage";
+import SettingsPage from "@/features/settings/pages/SettingsPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
 // System Utility Pages
