@@ -33,6 +33,9 @@ import AIChatPage from "@/features/ai/pages/AIChatPage";
 import SavedNotesPage from "@/features/ai/pages/SavedNotesPage";
 import GeneratedNotesPage from "@/features/ai/pages/GeneratedNotesPage";
 
+// Teacher Management System
+import { teacherRoutes } from "@/features/teacher/constants/teacherRoutes";
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -73,6 +76,11 @@ export function AppRoutes() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/search" element={<GlobalSearchPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          
+          {/* Teacher System Routes */}
+          {teacherRoutes.map((route) => (
+            <Route key={route.path} path={`/teacher/${route.path}`} element={route.element} />
+          ))}
         </Route>
       </Route>
 

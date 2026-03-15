@@ -18,7 +18,7 @@ const StudyHoursChart = ({ data }) => {
         </CardHeader>
         <CardContent>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <BarChart
                 data={data}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}

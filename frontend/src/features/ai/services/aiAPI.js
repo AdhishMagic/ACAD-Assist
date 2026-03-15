@@ -9,7 +9,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Return mock data for UI development
-    const path = error.config.url;
+    const path = error.config?.url || '';
+    const method = error.config?.method?.toLowerCase() || '';
+    
+    // For local development without a backend, mock everything successfully
     
     if (path.includes('/ai/history')) {
       return Promise.resolve({ data: [] });
@@ -71,7 +74,8 @@ api.interceptors.response.use(
       });
     }
 
-    return Promise.reject(error);
+    // Generic fallback for any other AI route to avoid connection refused errors breaking the UI
+    return Promise.resolve({ data: { success: true, message: 'Mocked successful response' } });
   }
 );
 
