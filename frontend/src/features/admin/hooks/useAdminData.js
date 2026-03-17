@@ -58,3 +58,24 @@ export const useResetUserPassword = () => {
     mutationFn: (userId) => adminAPI.resetUserPassword(userId),
   });
 };
+
+export const useAdminRoles = () => {
+  return useQuery({
+    queryKey: ['adminRoles'],
+    queryFn: async () => {
+      const { data } = await adminAPI.getRoles();
+      return data;
+    },
+  });
+};
+
+export const useUpdateRolePermissions = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ roleId, permissions }) => adminAPI.updateRolePermissions(roleId, permissions),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminRoles'] });
+    },
+  });
+};

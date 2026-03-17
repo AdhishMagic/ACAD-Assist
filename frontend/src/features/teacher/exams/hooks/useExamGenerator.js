@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanStack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { examAPI } from '../services/examAPI';
 
 // Hook for uploading material

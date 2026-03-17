@@ -17,7 +17,9 @@ import {
   Users,
   Activity,
   FileText,
-  CheckSquare
+  CheckSquare,
+  TrendingUp,
+  FileCheck
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 
@@ -51,9 +53,11 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
 
     const hodItems = [
       { label: 'HOD Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
-      { label: 'Dept Analytics', icon: BarChart, to: '/hod/analytics' },
-      { label: 'Course Approval', icon: CheckSquare, to: '/hod/course-approval' },
-      { label: 'Project Approvals', icon: CheckSquare, to: '/hod/project-approvals' },
+      { label: 'Dept Performance', icon: TrendingUp, to: '/hod/performance' },
+      { label: 'Teacher Contributions', icon: Users, to: '/hod/teacher-contributions' },
+      { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
+      { label: 'Student Engagement', icon: Activity, to: '/hod/student-engagement' },
+      { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
     ];
 
     const adminItems = [

@@ -54,6 +54,38 @@ let mockUsers = [
   { id: "u7", name: "George Miller", email: "george@example.com", role: "Teacher", status: "Active", joinDate: "2025-09-18", lastLogin: "3 days ago" },
 ];
 
+// Mock Data for Roles
+let mockRoles = [
+  {
+    id: "r1",
+    name: "Admin",
+    userCount: 15,
+    lastUpdated: "2026-03-10",
+    permissions: ["access_dashboard", "access_notes", "access_ai", "access_teacher_panel", "access_hod_panel", "access_admin_panel"]
+  },
+  {
+    id: "r2",
+    name: "HOD",
+    userCount: 45,
+    lastUpdated: "2026-02-15",
+    permissions: ["access_dashboard", "access_notes", "access_ai", "access_teacher_panel", "access_hod_panel"]
+  },
+  {
+    id: "r3",
+    name: "Teacher",
+    userCount: 320,
+    lastUpdated: "2026-01-20",
+    permissions: ["access_dashboard", "access_notes", "access_ai", "access_teacher_panel"]
+  },
+  {
+    id: "r4",
+    name: "Student",
+    userCount: 8500,
+    lastUpdated: "2025-12-05",
+    permissions: ["access_dashboard", "access_notes", "access_ai"]
+  }
+];
+
 const api = axios.create({
   baseURL: "/api/admin",
 });
@@ -98,6 +130,23 @@ export const adminAPI = {
     // return await api.post('/reset-password', { userId });
     return new Promise((resolve) => {
       setTimeout(() => resolve({ data: { message: "Password reset link sent successfully", userId } }), 500);
+    });
+  },
+
+  getRoles: async () => {
+    // return await api.get('/roles');
+    return new Promise((resolve) => setTimeout(() => resolve({ data: mockRoles }), 600));
+  },
+
+  updateRolePermissions: async (roleId, permissions) => {
+    // return await api.post('/update-role-permissions', { roleId, permissions });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        mockRoles = mockRoles.map((r) => 
+          r.id === roleId ? { ...r, permissions, lastUpdated: new Date().toISOString().split('T')[0] } : r
+        );
+        resolve({ data: { message: "Role permissions updated successfully", roleId } });
+      }, 600);
     });
   }
 };

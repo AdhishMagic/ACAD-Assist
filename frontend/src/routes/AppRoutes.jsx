@@ -41,7 +41,7 @@ import { teacherRoutes } from "@/features/teacher/constants/teacherRoutes";
 
 // HOD System
 import { hodRoutes } from "@/features/hod/constants/hodRoutes";
-import ProjectApprovalsPage from "@/features/hod/pages/ProjectApprovalsPage";
+
 
 // Admin System
 import { adminRoutes } from "@/features/admin/constants/adminRoutes.jsx";
@@ -105,7 +105,7 @@ export function AppRoutes() {
             {hodRoutes.map((route) => (
               <Route key={route.path} path={`/hod/${route.path}`} element={route.element} />
             ))}
-            <Route path="/hod/project-approvals" element={<ProjectApprovalsPage />} />
+
           </Route>
 
           {/* Admin System Routes */}
