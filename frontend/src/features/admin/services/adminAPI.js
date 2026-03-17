@@ -86,6 +86,60 @@ let mockRoles = [
   }
 ];
 
+// Mock Data for Activity Logs
+const mockActivityLogs = [
+  { id: 1, user: "Alice Johnson", action: "User login", module: "Authentication", timestamp: "2026-03-18T10:00:00Z", status: "Success" },
+  { id: 2, user: "Dr. Smith", action: "Note upload", module: "Knowledge Repo", timestamp: "2026-03-18T09:30:00Z", status: "Success" },
+  { id: 3, user: "Bob Smith", action: "AI query", module: "AI Assistant", timestamp: "2026-03-18T09:15:00Z", status: "Success" },
+  { id: 4, user: "Admin", action: "Role change", module: "User Management", timestamp: "2026-03-18T08:45:00Z", status: "Success" },
+  { id: 5, user: "Diana Prince", action: "File download", module: "Knowledge Repo", timestamp: "2026-03-18T08:00:00Z", status: "Failed" },
+];
+
+// Mock Data for Storage
+const mockStorageStats = {
+  totalUsed: "1.2 TB",
+  available: "3.8 TB",
+  perUserAvg: "2.4 GB",
+  byType: [
+    { type: "PDF", value: 45 },
+    { type: "Images", value: 25 },
+    { type: "Videos", value: 20 },
+    { type: "Docs", value: 10 }
+  ]
+};
+
+let mockFiles = [
+  { id: "f1", name: "Quantum Mechanics Part 2", type: "PDF", size: "15 MB", uploadedBy: "Dr. Smith", date: "2026-03-18" },
+  { id: "f2", name: "CS101 Intro", type: "Video", size: "250 MB", uploadedBy: "Prof. Davis", date: "2026-03-17" },
+  { id: "f3", name: "Assignment 1 Guidelines", type: "Doc", size: "2 MB", uploadedBy: "Dr. Smith", date: "2026-03-16" },
+  { id: "f4", name: "Dataset_2026", type: "CSV", size: "45 MB", uploadedBy: "Alice Johnson", date: "2026-03-15" }
+];
+
+// Mock Data for AI Usage
+const mockAiUsageStats = {
+  queriesPerDay: [
+    { date: "Mon", queries: 1200 },
+    { date: "Tue", queries: 1500 },
+    { date: "Wed", queries: 1800 },
+    { date: "Thu", queries: 2100 },
+    { date: "Fri", queries: 2400 },
+    { date: "Sat", queries: 1600 },
+    { date: "Sun", queries: 1400 }
+  ],
+  topFeatures: [
+    { name: "Chat", value: 4500 },
+    { name: "Summarize", value: 3200 },
+    { name: "Generate Quiz", value: 1500 },
+    { name: "Explain Concept", value: 2800 }
+  ],
+  activeUsers: [
+    { name: "Alice Johnson", queries: 150 },
+    { name: "Bob Smith", queries: 120 },
+    { name: "Charlie Davis", queries: 95 },
+    { name: "Dr. Smith", queries: 80 }
+  ]
+};
+
 const api = axios.create({
   baseURL: "/api/admin",
 });
@@ -148,5 +202,30 @@ export const adminAPI = {
         resolve({ data: { message: "Role permissions updated successfully", roleId } });
       }, 600);
     });
+  },
+
+  getActivityLogs: async () => {
+    return new Promise((resolve) => setTimeout(() => resolve({ data: mockActivityLogs }), 500));
+  },
+
+  getStorageStats: async () => {
+    return new Promise((resolve) => setTimeout(() => resolve({ data: mockStorageStats }), 500));
+  },
+
+  getFiles: async () => {
+    return new Promise((resolve) => setTimeout(() => resolve({ data: mockFiles }), 500));
+  },
+
+  deleteFile: async (fileId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        mockFiles = mockFiles.filter((f) => f.id !== fileId);
+        resolve({ data: { message: "File deleted successfully", fileId } });
+      }, 500);
+    });
+  },
+
+  getAiUsageStats: async () => {
+    return new Promise((resolve) => setTimeout(() => resolve({ data: mockAiUsageStats }), 500));
   }
 };

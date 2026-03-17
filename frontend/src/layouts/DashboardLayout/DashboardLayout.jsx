@@ -5,6 +5,7 @@ import {
   Sidebar, 
   RightPanel 
 } from '../../components/layout';
+import { CommandPalette } from '@/features/system/components/CommandPalette';
 
 const DashboardLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -59,6 +60,7 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen w-full bg-white dark:bg-gray-950 overflow-hidden font-sans text-slate-900 dark:text-slate-50 transition-colors duration-200">
+      <CommandPalette />
       <Sidebar 
         isCollapsed={isSidebarCollapsed} 
         toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}

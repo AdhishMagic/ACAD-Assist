@@ -19,7 +19,9 @@ import {
   FileText,
   CheckSquare,
   TrendingUp,
-  FileCheck
+  FileCheck,
+  ShieldCheck,
+  Database
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 
@@ -64,6 +66,10 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       { label: 'Admin Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
       { label: 'System Analytics', icon: BarChart, to: '/admin/analytics' },
       { label: 'User Management', icon: Users, to: '/admin/users' },
+      { label: 'Role Management', icon: ShieldCheck, to: '/admin/roles' },
+      { label: 'Activity Logs', icon: Activity, to: '/admin/activity-logs' },
+      { label: 'Storage', icon: Database, to: '/admin/storage' },
+      { label: 'AI Usage', icon: BrainCircuit, to: '/admin/ai-usage' },
     ];
 
     switch (userRole) {

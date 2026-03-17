@@ -25,6 +25,10 @@ import NotFoundPage from "@/pages/NotFoundPage";
 import NotificationsPage from "@/features/system/pages/NotificationsPage";
 import GlobalSearchPage from "@/features/system/pages/GlobalSearchPage";
 import ProfilePage from "@/features/system/pages/ProfilePage";
+import { FileUploadManagerPage } from "@/features/system/pages/FileUploadManagerPage";
+import { FilePreviewPage } from "@/features/system/pages/FilePreviewPage";
+import { ActivityFeedPage } from "@/features/system/pages/ActivityFeedPage";
+import { NotFoundPage as SystemNotFoundPage } from "@/features/system/pages/NotFoundPage";
 
 // Notes System
 import NotesExplorer from "@/features/notes/pages/NotesExplorer";
@@ -65,6 +69,9 @@ export function AppRoutes() {
           <Route path="/search" element={<GlobalSearchPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/file-manager" element={<FileUploadManagerPage />} />
+          <Route path="/file-preview/:fileId" element={<FilePreviewPage />} />
+          <Route path="/activity-feed" element={<ActivityFeedPage />} />
 
           {/* Student Routes */}
           <Route element={<RoleGuard allowedRoles={['student', 'teacher', 'hod', 'admin']} />}>
@@ -117,7 +124,7 @@ export function AppRoutes() {
         </Route>
       </Route>
 
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<SystemNotFoundPage />} />
     </Routes>
   );
 }
