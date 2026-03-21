@@ -25,7 +25,7 @@ export const RegisterForm = () => {
   const registerMutation = useMutation({
     mutationFn: authAPI.register,
     onSuccess: () => {
-      navigate(AUTH_ROUTES.LOGIN, { state: { message: 'Registration successful. Please login to continue.' } });
+      navigate(AUTH_ROUTES.CHOOSE_ROLE, { state: { message: 'Registration successful. Please choose your access type, then sign in to continue.' } });
     },
   });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2, Mail, Lock } from 'lucide-react';
@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { authAPI } from '../services/authAPI';
-import { setCredentials } from '../store/authSlice';
+import { setActiveRole, setCredentials, setPendingRole } from '../store/authSlice';
 import { AUTH_ROUTES } from '../constants/authRoutes';
 
 export const LoginForm = () => {
@@ -17,12 +17,16 @@ export const LoginForm = () => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const pendingRole = useSelector((state) => state.auth.pendingRole);
 
   const loginMutation = useMutation({
     mutationFn: authAPI.login,
     onSuccess: (data) => {
-      dispatch(setCredentials({ user: data.user, token: data.token }));
-      navigate('/dashboard');
+      dispatch(setCredentials({ user: data.user, token: data.access }));
+      const roleToActivate = pendingRole || data.user?.role || 'student';
+      dispatch(setActiveRole(roleToActivate));
+      dispatch(setPendingRole(null));
+      navigate('/dashboard', { replace: true });
     },
   });
 

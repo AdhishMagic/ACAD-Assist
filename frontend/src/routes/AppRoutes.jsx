@@ -7,6 +7,7 @@ import { RoleBasedRedirect } from "./RoleBasedRedirect";
 import { LoginPage } from "@/features/auth/pages/LoginPage";
 import { RegisterPage } from "@/features/auth/pages/RegisterPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
+import RoleConfirmPage from "@/features/auth/pages/RoleConfirmPage";
 import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudyOverviewPage from "@/features/student/pages/StudyOverviewPage";
 import StudyAnalyticsPage from "@/features/student/pages/StudyAnalyticsPage";
@@ -29,6 +30,7 @@ import { FileUploadManagerPage } from "@/features/system/pages/FileUploadManager
 import { FilePreviewPage } from "@/features/system/pages/FilePreviewPage";
 import { ActivityFeedPage } from "@/features/system/pages/ActivityFeedPage";
 import { NotFoundPage as SystemNotFoundPage } from "@/features/system/pages/NotFoundPage";
+import SystemDashboardPage from "@/features/system/pages/SystemDashboardPage";
 
 // Notes System
 import NotesExplorer from "@/features/notes/pages/NotesExplorer";
@@ -39,6 +41,7 @@ import NotesViewer from "@/features/notes/pages/NotesViewer";
 import AIChatPage from "@/features/ai/pages/AIChatPage";
 import SavedNotesPage from "@/features/ai/pages/SavedNotesPage";
 import GeneratedNotesPage from "@/features/ai/pages/GeneratedNotesPage";
+import GeneratedNotesLibraryPage from "@/features/ai/pages/GeneratedNotesLibraryPage";
 
 // Teacher Management System
 import { teacherRoutes } from "@/features/teacher/constants/teacherRoutes";
@@ -56,6 +59,7 @@ export function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
 
       <Route element={<AuthLayout />}>
+        <Route path="/choose-role" element={<RoleConfirmPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -73,8 +77,13 @@ export function AppRoutes() {
           <Route path="/file-preview/:fileId" element={<FilePreviewPage />} />
           <Route path="/activity-feed" element={<ActivityFeedPage />} />
 
+          {/* System Routes */}
+          <Route element={<RoleGuard allowedRoles={['system']} />}>
+            <Route path="/system/dashboard" element={<SystemDashboardPage />} />
+          </Route>
+
           {/* Student Routes */}
-          <Route element={<RoleGuard allowedRoles={['student', 'teacher', 'hod', 'admin']} />}>
+          <Route element={<RoleGuard allowedRoles={['student']} />}>
             <Route path="/student">
               <Route path="dashboard" element={<StudentDashboard />} />
               <Route path="study-overview" element={<StudyOverviewPage />} />
@@ -96,19 +105,20 @@ export function AppRoutes() {
               {/* AI Study System Routes */}
               <Route path="ai" element={<AIChatPage />} />
               <Route path="ai/saved-notes" element={<SavedNotesPage />} />
+              <Route path="ai/generated" element={<GeneratedNotesLibraryPage />} />
               <Route path="ai/generated/:noteId" element={<GeneratedNotesPage />} />
             </Route>
           </Route>
 
           {/* Teacher System Routes */}
-          <Route element={<RoleGuard allowedRoles={['teacher', 'hod', 'admin']} />}>
+          <Route element={<RoleGuard allowedRoles={['teacher']} />}>
             {teacherRoutes.map((route) => (
               <Route key={route.path} path={`/teacher/${route.path}`} element={route.element} />
             ))}
           </Route>
 
           {/* HOD System Routes */}
-          <Route element={<RoleGuard allowedRoles={['hod', 'admin']} />}>
+          <Route element={<RoleGuard allowedRoles={['hod']} />}>
             {hodRoutes.map((route) => (
               <Route key={route.path} path={`/hod/${route.path}`} element={route.element} />
             ))}
@@ -120,6 +130,11 @@ export function AppRoutes() {
             {adminRoutes.map((route) => (
               <Route key={route.path} path={`/admin/${route.path}`} element={route.element} />
             ))}
+          </Route>
+
+          {/* System Role Routes */}
+          <Route element={<RoleGuard allowedRoles={['system']} />}>
+            <Route path="/system/dashboard" element={<SystemDashboardPage />} />
           </Route>
         </Route>
       </Route>

@@ -29,10 +29,10 @@ const Navbar = () => {
         
         <div className="flex items-center gap-4">
           <Button variant="ghost" asChild className="hidden sm:inline-flex">
-            <Link to="/login">Login</Link>
+            <Link to="/choose-role">Login</Link>
           </Button>
           <Button asChild>
-            <Link to="/signup">Get Started</Link>
+            <Link to="/register">Get Started</Link>
           </Button>
         </div>
       </div>

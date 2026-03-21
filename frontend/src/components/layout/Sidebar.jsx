@@ -5,10 +5,12 @@ import {
   LayoutDashboard, 
   PlayCircle,
   BookOpen, 
+  Library,
   BrainCircuit, 
   Bookmark,
   BarChart,
   Bell,
+  Search,
   User,
   Settings, 
   ChevronLeft,
@@ -21,16 +23,19 @@ import {
   TrendingUp,
   FileCheck,
   ShieldCheck,
-  Database
+  Database,
+  Upload,
+  Braces
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
-  const { user } = useSelector((state) => state.auth);
-  const userRole = user?.role || 'student'; // fallback
+  const { user, activeRole } = useSelector((state) => state.auth);
+  const userRole = activeRole || user?.role || 'student'; // fallback
 
   const getNavItems = () => {
     const commonItems = [
+      { label: 'Search', icon: Search, to: '/search' },
       { label: 'Notifications', icon: Bell, to: '/notifications' },
       { label: 'Profile', icon: User, to: '/profile' },
       { label: 'Settings', icon: Settings, to: '/settings' },
@@ -39,26 +44,35 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
     const studentItems = [
       { label: 'Student Dashboard', icon: LayoutDashboard, to: '/student/dashboard' },
       { label: 'Study Overview', icon: PlayCircle, to: '/student/study-overview' },
-      { label: 'Notes', icon: BookOpen, to: '/student/notes' },
-      { label: 'AI Assistant', icon: BrainCircuit, to: '/student/ai' },
-      { label: 'Saved Notes', icon: Bookmark, to: '/student/ai/saved-notes' },
+      { label: 'Courses', icon: Library, to: '/student/courses' },
+      { label: 'Notes Explorer', icon: BookOpen, to: '/student/notes' },
+      { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai' },
+      { label: 'Saved / Bookmarked Notes', icon: Bookmark, to: '/student/ai/saved-notes' },
+      { label: 'AI Generated Notes Viewer', icon: FileText, to: '/student/ai/generated' },
+      { label: 'Knowledge Repo', icon: BookOpen, to: '/student/knowledge' },
+      { label: 'Question Paper', icon: FileText, to: '/student/qpaper/generate' },
       { label: 'Student Analytics', icon: BarChart, to: '/student/analytics' },
       { label: 'Project Submission', icon: FileText, to: '/student/project-submission' },
     ];
 
     const teacherItems = [
       { label: 'Teacher Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
-      { label: 'Classes', icon: Users, to: '/teacher/classes' },
-      { label: 'Student Activity', icon: Activity, to: '/teacher/activity' },
-      { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
+      { label: 'Classes Overview', icon: Users, to: '/teacher/classes' },
+      { label: 'Student Activity Monitor', icon: Activity, to: '/teacher/activity' },
+      { label: 'Notes Creation Studio', icon: FileText, to: '/teacher/notes-studio' },
+      { label: 'Notes Editor Page', icon: FileText, to: '/teacher/notes-editor' },
+      { label: 'Materials Upload Page', icon: Upload, to: '/teacher/materials-upload' },
+      { label: 'JSON Template Builder', icon: Braces, to: '/teacher/template-builder' },
+      { label: 'Template Preview Page', icon: FileText, to: '/teacher/template-preview' },
+      { label: 'Question Paper Generator', icon: FileText, to: '/teacher/question-generator' },
     ];
 
     const hodItems = [
       { label: 'HOD Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
-      { label: 'Dept Performance', icon: TrendingUp, to: '/hod/performance' },
+      { label: 'Department Performance', icon: TrendingUp, to: '/hod/performance' },
       { label: 'Teacher Contributions', icon: Users, to: '/hod/teacher-contributions' },
-      { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
-      { label: 'Student Engagement', icon: Activity, to: '/hod/student-engagement' },
+      { label: 'Course Materials Approval', icon: CheckSquare, to: '/hod/material-approval' },
+      { label: 'Student Engagement Analytics', icon: Activity, to: '/hod/student-engagement' },
       { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
     ];
 
@@ -68,17 +82,25 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       { label: 'User Management', icon: Users, to: '/admin/users' },
       { label: 'Role Management', icon: ShieldCheck, to: '/admin/roles' },
       { label: 'Activity Logs', icon: Activity, to: '/admin/activity-logs' },
-      { label: 'Storage', icon: Database, to: '/admin/storage' },
-      { label: 'AI Usage', icon: BrainCircuit, to: '/admin/ai-usage' },
+      { label: 'Storage Management', icon: Database, to: '/admin/storage' },
+      { label: 'AI Usage Analytics', icon: BrainCircuit, to: '/admin/ai-usage' },
+    ];
+
+    const systemItems = [
+      { label: 'System Dashboard', icon: LayoutDashboard, to: '/system/dashboard' },
+      { label: 'Activity Feed', icon: Activity, to: '/activity-feed' },
+      { label: 'File Manager', icon: Database, to: '/file-manager' },
     ];
 
     switch (userRole) {
       case 'admin':
-        return [...adminItems, ...hodItems, ...teacherItems, ...studentItems, ...commonItems];
+        return [...adminItems, ...commonItems];
       case 'hod':
-        return [...hodItems, ...teacherItems, ...studentItems, ...commonItems];
+        return [...hodItems, ...commonItems];
       case 'teacher':
-        return [...teacherItems, ...studentItems, ...commonItems];
+        return [...teacherItems, ...commonItems];
+      case 'system':
+        return [...systemItems, ...commonItems];
       case 'student':
       default:
         return [...studentItems, ...commonItems];
@@ -112,7 +134,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
           <div className="flex items-center">
             {/* Show logo or simple icon depending on collapse state */}
             {(!isCollapsed || isMobileOpen) && (
-              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 md:hidden">
+              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
                 ACAD-Assist
               </span>
             )}

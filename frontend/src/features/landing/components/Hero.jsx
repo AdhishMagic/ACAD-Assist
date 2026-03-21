@@ -51,7 +51,7 @@ const Hero = () => {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Button size="lg" className="w-full sm:w-auto text-lg px-8 h-14" asChild>
-            <Link to="/signup">
+            <Link to="/register">
               {HeroContent.primaryCTA}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>

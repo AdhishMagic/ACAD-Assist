@@ -40,15 +40,15 @@ const StudentDashboard = () => {
           <p className="text-muted-foreground mt-1">Ready to crush your goals today? You're doing great!</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate('/ai')}>
+          <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700" onClick={() => navigate('/student/ai')}>
             <Sparkles className="w-4 h-4 mr-2" />
             Ask AI
           </Button>
-          <Button variant="outline" onClick={() => navigate('/study-overview')}>
+          <Button variant="outline" onClick={() => navigate('/student/study-overview')}>
             <PlayCircle className="w-4 h-4 mr-2" />
             Continue
           </Button>
-          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => navigate('/notes')}>
+          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => navigate('/student/notes')}>
             <BookOpen className="w-4 h-4 mr-2" />
             Notes
           </Button>

@@ -10,7 +10,7 @@ const MainLayout = () => {
             ACAD-Assist
           </a>
           <nav className="space-x-4">
-            <a href="/login" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium">Log in</a>
+            <a href="/choose-role" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium">Log in</a>
             <a href="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors">Sign up</a>
           </nav>
         </div>

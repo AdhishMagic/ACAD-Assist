@@ -13,7 +13,7 @@ export const RegisterPage = () => {
         footer={
           <div className="text-sm text-muted-foreground w-full flex justify-center lg:justify-start">
             Already have an account?{' '}
-            <Link to={AUTH_ROUTES.LOGIN} className="ml-1 font-semibold text-primary hover:text-primary/80 transition-colors">
+            <Link to={AUTH_ROUTES.CHOOSE_ROLE} className="ml-1 font-semibold text-primary hover:text-primary/80 transition-colors">
               Sign in
             </Link>
           </div>

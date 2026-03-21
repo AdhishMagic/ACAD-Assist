@@ -33,7 +33,7 @@ const CTA = () => {
           </p>
 
           <Button size="lg" className="h-14 px-10 text-lg rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1" asChild>
-            <Link to="/signup">
+              <Link to="/register">
               {CTAContent.buttonText}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>

@@ -63,7 +63,7 @@ export const ForgotPasswordForm = () => {
 
       <div className="text-center mt-4">
         <Link 
-          to={AUTH_ROUTES.LOGIN} 
+          to={AUTH_ROUTES.CHOOSE_ROLE} 
           className="text-sm font-medium text-muted-foreground hover:text-primary"
         >
           Back to login

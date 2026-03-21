@@ -2,7 +2,8 @@ export const SYSTEM_ROLES = {
   STUDENT: 'Student',
   TEACHER: 'Teacher',
   HOD: 'HOD',
-  ADMIN: 'Admin'
+  ADMIN: 'Admin',
+  SYSTEM: 'System'
 };
 
 export const FILE_UPLOAD_CONFIG = {
