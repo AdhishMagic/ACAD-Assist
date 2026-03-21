@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import HeroSection from '../sections/HeroSection';
 import FeatureSection from '../sections/FeatureSection';
+import PricingSection from '../sections/PricingSection';
 import CTASection from '../sections/CTASection';
 import Footer from '../components/Footer';
 
@@ -13,6 +14,7 @@ const LandingPage = () => {
       <main className="flex-1">
         <HeroSection />
         <FeatureSection />
+        <PricingSection />
         <CTASection />
       </main>
 

@@ -5,7 +5,7 @@ import { Bot, User } from 'lucide-react';
 
 const AIHighlight = () => {
   return (
-    <div id="ai-assistant" className="py-24 bg-gradient-to-b from-background to-muted/50 overflow-hidden">
+    <div id="ai-assistant" className="scroll-mt-24 py-24 bg-gradient-to-b from-background to-muted/50 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <motion.div 
@@ -25,6 +25,17 @@ const AIHighlight = () => {
             <p className="text-lg text-muted-foreground leading-relaxed">
               {AIHighlightContent.description}
             </p>
+
+            {Array.isArray(AIHighlightContent.bullets) && AIHighlightContent.bullets.length > 0 ? (
+              <ul className="mt-6 space-y-3">
+                {AIHighlightContent.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-3 text-sm text-muted-foreground">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500/70 shrink-0" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </motion.div>
 
           <motion.div 

@@ -5,7 +5,7 @@ import * as Icons from 'lucide-react';
 
 const Features = () => {
   return (
-    <div id="features" className="py-24 bg-muted/30">
+    <div id="features" className="scroll-mt-24 py-24 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Supercharge Your Studies</h2>
@@ -34,6 +34,17 @@ const Features = () => {
                 <p className="text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
+
+                {Array.isArray(feature.highlights) && feature.highlights.length > 0 ? (
+                  <ul className="mt-5 space-y-2 text-sm">
+                    {feature.highlights.map((h) => (
+                      <li key={h} className="flex items-start gap-2 text-muted-foreground">
+                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary/70 shrink-0" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </motion.div>
             );
           })}
