@@ -1,5 +1,5 @@
 export const NOTES_ROUTES = {
-  EXPLORER: '/notes',
-  SUBJECT: (subjectId) => `/notes/${subjectId}`,
-  VIEWER: (noteId) => `/notes/view/${noteId}`,
+  EXPLORER: '/student/notes',
+  SUBJECT: (subjectId) => `/student/notes/${subjectId}`,
+  VIEWER: (noteId) => `/student/notes/view/${noteId}`,
 };

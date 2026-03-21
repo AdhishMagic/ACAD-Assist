@@ -10,7 +10,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token") || localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,8 +27,9 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const refreshToken = localStorage.getItem("refresh_token");
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || "/api/v1";
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/token/refresh/`,
+          `${baseUrl}/auth/token/refresh/`,
           { refresh: refreshToken }
         );
         localStorage.setItem("access_token", data.access);

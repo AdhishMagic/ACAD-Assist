@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { NOTES_ROUTES } from '../constants/notesRoutes';
 import BookmarkButton from './BookmarkButton';
 
-const NoteCard = ({ note }) => {
+const NoteCard = ({ note, onNoteClick }) => {
   const navigate = useNavigate();
 
   return (
@@ -18,7 +18,13 @@ const NoteCard = ({ note }) => {
     >
       <Card 
         className="h-full flex flex-col cursor-pointer overflow-hidden border-border/50 hover:border-primary/50 hover:shadow-md transition-all duration-300"
-        onClick={() => navigate(NOTES_ROUTES.VIEWER(note.id))}
+        onClick={() => {
+          if (typeof onNoteClick === 'function') {
+            onNoteClick(note);
+            return;
+          }
+          navigate(NOTES_ROUTES.VIEWER(note.id));
+        }}
       >
         {/* Optional preview image/banner */}
         {note.previewImage ? (

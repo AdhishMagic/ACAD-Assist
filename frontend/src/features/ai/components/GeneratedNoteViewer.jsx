@@ -1,17 +1,119 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Download, Share2, Copy, Bookmark, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CitationBlock from "./CitationBlock";
 import { motion } from "framer-motion";
+import { downloadNoteAsPdf } from "@/features/notes/utils/noteActions";
+import { useAISaveNote } from "../hooks/useAIChat";
 
 export default function GeneratedNoteViewer({ note }) {
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const saveNoteMutation = useAISaveNote();
+
+  const printableContent = useMemo(() => {
+    if (!note) return '';
+    const lines = [];
+    lines.push(`# ${note.title || 'AI Generated Note'}`);
+    if (note.topic) lines.push(`**Topic:** ${note.topic}`);
+    if (note.summary) {
+      lines.push('');
+      lines.push(note.summary);
+    }
+
+    if (note.definitions?.length) {
+      lines.push('');
+      lines.push('## Key Definitions');
+      for (const def of note.definitions) {
+        lines.push(`- **${def.term}**: ${def.definition}`);
+      }
+    }
+
+    if (note.explanations) {
+      lines.push('');
+      lines.push('## Detailed Explanation');
+      lines.push(note.explanations);
+    }
+
+    if (note.examples?.length) {
+      lines.push('');
+      lines.push('## Examples');
+      for (const ex of note.examples) lines.push(`- ${ex}`);
+    }
+
+    if (note.practiceQuestions?.length) {
+      lines.push('');
+      lines.push('## Practice Questions');
+      note.practiceQuestions.forEach((q, i) => lines.push(`${i + 1}. ${q}`));
+    }
+
+    if (note.citations?.length) {
+      lines.push('');
+      lines.push('## Citations');
+      for (const c of note.citations) {
+        lines.push(`- ${c.title}${c.author ? ` — ${c.author}` : ''}${c.link ? ` (${c.link})` : ''}`);
+      }
+    }
+
+    return lines.join('\n');
+  }, [note]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`${note.title}\n\n${note.summary}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleExportPdf = () => {
+    const exportNote = {
+      id: note.id,
+      title: note.title,
+      subject: note.topic,
+      author: 'AI Assistant',
+      createdAt: note.dateSaved || note.createdAt || new Date().toISOString(),
+      content: printableContent,
+      excerpt: note.summary,
+    };
+    downloadNoteAsPdf(exportNote);
+  };
+
+  const handleShare = async () => {
+    const url = window.location?.href || `${window.location.origin}/student/ai/generated/${note.id}`;
+    const shareData = {
+      title: note.title || 'AI Generated Note',
+      text: note.summary || '',
+      url,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(url);
+      }
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    } catch (e) {
+      // user cancelled share; no-op
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await saveNoteMutation.mutateAsync({
+        title: note.title || 'AI Generated Note',
+        topic: note.topic || 'AI',
+        content: printableContent,
+        preview: (note.summary || printableContent).toString().substring(0, 110) + '...',
+        dateSaved: new Date().toISOString(),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e) {
+      // handled by caller console/logging; keep UI stable
+    }
   };
 
   if (!note) return null;
@@ -37,14 +139,16 @@ export default function GeneratedNoteViewer({ note }) {
               {copied ? <Check className="w-4 h-4 mr-2 text-green-500" /> : <Copy className="w-4 h-4 mr-2" />}
               {copied ? "Copied" : "Copy"}
             </Button>
-            <Button variant="outline" size="sm" className="bg-background hidden sm:flex">
+            <Button variant="outline" size="sm" className="bg-background hidden sm:flex" onClick={handleExportPdf}>
               <Download className="w-4 h-4 mr-2" /> Export PDF
             </Button>
-            <Button variant="outline" size="sm" className="bg-background hidden sm:flex">
-              <Share2 className="w-4 h-4 mr-2" /> Share
+            <Button variant="outline" size="sm" className="bg-background hidden sm:flex" onClick={handleShare}>
+              {shared ? <Check className="w-4 h-4 mr-2 text-green-500" /> : <Share2 className="w-4 h-4 mr-2" />}
+              {shared ? (navigator.share ? 'Shared' : 'Link Copied') : 'Share'}
             </Button>
-            <Button size="sm" className="shadow-sm">
-              <Bookmark className="w-4 h-4 mr-2" /> Save Form
+            <Button size="sm" className="shadow-sm" onClick={handleSave} disabled={saveNoteMutation.isPending}>
+              {saved ? <Check className="w-4 h-4 mr-2 text-green-500" /> : <Bookmark className="w-4 h-4 mr-2" />}
+              {saveNoteMutation.isPending ? 'Saving...' : (saved ? 'Saved' : 'Save Form')}
             </Button>
           </div>
         </div>

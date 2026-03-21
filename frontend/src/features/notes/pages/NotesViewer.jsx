@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, Calendar, User, FileDown, BookMarked, Share2, Printer, Tag } from 'lucide-react';
 import BookmarkButton from '../components/BookmarkButton';
 import MarkdownViewer from '../components/MarkdownViewer';
+import { downloadNoteAsPdf, printNote } from '../utils/noteActions';
 
 
 
@@ -74,7 +75,10 @@ const NotesViewer = () => {
           {/* Actions */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Actions</h4>
-            <Button className="w-full justify-start text-left bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
+            <Button
+              className="w-full justify-start text-left bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+              onClick={() => downloadNoteAsPdf(note)}
+            >
               <FileDown className="h-4 w-4 mr-2" />
               Export as PDF
             </Button>
@@ -82,7 +86,11 @@ const NotesViewer = () => {
               <BookmarkButton noteId={note.id} isBookmarked={note.isBookmarked} className="h-4 w-4 mr-2 p-0 -ml-1 text-foreground" />
               Save Note
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-left text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-left text-muted-foreground hover:text-foreground"
+              onClick={() => printNote(note)}
+            >
               <Printer className="h-4 w-4 mr-2" />
               Print
             </Button>

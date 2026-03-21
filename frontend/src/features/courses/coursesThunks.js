@@ -29,3 +29,21 @@ export const fetchCourseById = createAsyncThunk("courses/fetchById", async (id, 
     dispatch(setLoading(false));
   }
 });
+
+export const createCourse = createAsyncThunk(
+  "courses/create",
+  async (payload, { dispatch, getState }) => {
+    dispatch(setLoading(true));
+    try {
+      const { data } = await coursesApi.create(payload);
+      const current = getState().courses?.courses || [];
+      dispatch(setCourses([data, ...current]));
+      return data;
+    } catch (err) {
+      dispatch(setError(err.response?.data?.detail || "Failed to create course"));
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);

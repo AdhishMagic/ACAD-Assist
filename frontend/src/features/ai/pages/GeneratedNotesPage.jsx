@@ -33,7 +33,7 @@ export default function GeneratedNotesPage() {
           </div>
           <h3 className="text-3xl font-bold mb-3">Note Not Found</h3>
           <p className="text-muted-foreground text-lg mb-8 max-w-md">The study note and generated content you're looking for doesn't exist or has been removed.</p>
-          <Button size="lg" onClick={() => navigate('/ai/saved-notes')} className="rounded-full">
+          <Button size="lg" onClick={() => navigate('/student/ai/saved-notes')} className="rounded-full">
             Return to Saved Notes
           </Button>
         </div>

@@ -6,9 +6,12 @@ import { X, Calendar, User, FileText, Download, ExternalLink } from 'lucide-reac
 import { useNavigate } from 'react-router-dom';
 import { NOTES_ROUTES } from '../constants/notesRoutes';
 import BookmarkButton from './BookmarkButton';
+import { useNoteDetails } from '../hooks/useNotes';
+import { downloadNoteAsPdf } from '../utils/noteActions';
 
 const NotePreviewPanel = ({ note, onClose }) => {
   const navigate = useNavigate();
+  const { data: noteDetails, isLoading: isNoteDetailsLoading } = useNoteDetails(note?.id);
 
   return (
     <AnimatePresence>
@@ -95,9 +98,14 @@ const NotePreviewPanel = ({ note, onClose }) => {
               <ExternalLink className="h-4 w-4" />
               Open Full Note
             </Button>
-            <Button variant="outline" className="w-full gap-2">
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              disabled={isNoteDetailsLoading}
+              onClick={() => downloadNoteAsPdf(noteDetails || note)}
+            >
               <Download className="h-4 w-4" />
-              Download PDF
+              {isNoteDetailsLoading ? 'Preparing...' : 'Download PDF'}
             </Button>
           </div>
         </motion.aside>

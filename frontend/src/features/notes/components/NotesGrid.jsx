@@ -18,7 +18,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
-const NotesGrid = ({ notes = [], isLoading = false }) => {
+const NotesGrid = ({ notes = [], isLoading = false, onNoteClick }) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -52,7 +52,7 @@ const NotesGrid = ({ notes = [], isLoading = false }) => {
     >
       {notes.map((note) => (
         <motion.div key={note.id} variants={itemVariants}>
-          <NoteCard note={note} />
+          <NoteCard note={note} onNoteClick={onNoteClick} />
         </motion.div>
       ))}
     </motion.div>

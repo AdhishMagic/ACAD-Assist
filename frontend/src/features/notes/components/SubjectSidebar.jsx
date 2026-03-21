@@ -6,11 +6,11 @@ import { NOTES_ROUTES } from '../constants/notesRoutes';
 
 // Mock data, normally fetched from API
 const MOCK_SUBJECTS = [
-  { id: 'math', name: 'Mathematics', count: 12 },
-  { id: 'physics', name: 'Physics', count: 8 },
-  { id: 'chemistry', name: 'Chemistry', count: 15 },
-  { id: 'computer-networks', name: 'Computer Networks', count: 24 },
-  { id: 'data-structures', name: 'Data Structures', count: 19 },
+  { id: 'mathematics', name: 'Mathematics', count: 1 },
+  { id: 'physics', name: 'Physics', count: 1 },
+  { id: 'chemistry', name: 'Chemistry', count: 1 },
+  { id: 'computer-networks', name: 'Computer Networks', count: 1 },
+  { id: 'data-structures', name: 'Data Structures', count: 1 },
 ];
 
 const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end }) => {

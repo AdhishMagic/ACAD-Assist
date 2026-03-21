@@ -20,7 +20,7 @@ const RecentNotes = ({ notes = mockNotes }) => {
           <FileText className="w-5 h-5 text-indigo-500" />
           Recent Notes
         </CardTitle>
-        <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => navigate('/notes')}>
+        <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => navigate('/student/notes')}>
           View All <ArrowRight className="w-4 h-4 ml-1" />
         </Button>
       </CardHeader>

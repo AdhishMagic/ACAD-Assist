@@ -6,7 +6,7 @@ import { CommandItem } from './CommandItem';
 
 const COMMANDS = [
   { id: 'dashboard', label: 'Go to Dashboard', icon: Monitor, href: '/dashboard' },
-  { id: 'notes', label: 'Open Notes', icon: FileText, href: '/notes' },
+  { id: 'notes', label: 'Open Notes', icon: FileText, href: '/student/notes' },
   { id: 'profile', label: 'Open Profile', icon: User, href: '/profile' },
   { id: 'activity', label: 'View Activity Feed', icon: Bell, href: '/activity-feed' }
 ];

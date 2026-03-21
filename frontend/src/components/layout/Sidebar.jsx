@@ -49,7 +49,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai' },
       { label: 'Saved / Bookmarked Notes', icon: Bookmark, to: '/student/ai/saved-notes' },
       { label: 'AI Generated Notes Viewer', icon: FileText, to: '/student/ai/generated' },
-      { label: 'Knowledge Repo', icon: BookOpen, to: '/student/knowledge' },
       { label: 'Question Paper', icon: FileText, to: '/student/qpaper/generate' },
       { label: 'Student Analytics', icon: BarChart, to: '/student/analytics' },
       { label: 'Project Submission', icon: FileText, to: '/student/project-submission' },
