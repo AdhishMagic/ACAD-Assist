@@ -68,10 +68,20 @@ const authSlice = createSlice({
       localStorage.removeItem('activeRole');
       localStorage.removeItem('pendingRole');
     },
+
+    updateCurrentUser: (state, action) => {
+      const patch = action.payload || {};
+      state.user = state.user ? { ...state.user, ...patch } : { ...patch };
+      try {
+        localStorage.setItem('user', JSON.stringify(state.user));
+      } catch {
+        // ignore storage failures
+      }
+    },
   },
 });
 
-export const { setCredentials, setPendingRole, setActiveRole, logout } = authSlice.actions;
+export const { setCredentials, setPendingRole, setActiveRole, logout, updateCurrentUser } = authSlice.actions;
 
 export const selectCurrentUser = (state) => state.auth.user;
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;

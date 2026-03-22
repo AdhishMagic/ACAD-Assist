@@ -6,22 +6,31 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSettings } from '../hooks/useSettings';
 import { Upload, Loader2 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentUser, updateCurrentUser } from '@/features/auth/store/authSlice';
+import { getDisplayNameFromUser, getInitials, splitFullName } from '@/utils/helpers';
 
 export function AccountSettings() {
   const { settings, updateSettings, isUpdating } = useSettings();
+  const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
   });
 
   useEffect(() => {
-    if (settings) {
-      setFormData({
-        fullName: settings.fullName || '',
-        email: settings.email || '',
-      });
-    }
-  }, [settings]);
+    const nameFromAuth = getDisplayNameFromUser(user);
+    const emailFromAuth = user?.email;
+
+    const nameFromSettings = settings?.account?.name || settings?.fullName;
+    const emailFromSettings = settings?.account?.email || settings?.email;
+
+    setFormData({
+      fullName: nameFromAuth || nameFromSettings || '',
+      email: emailFromAuth || emailFromSettings || '',
+    });
+  }, [settings, user]);
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -29,8 +38,19 @@ export function AccountSettings() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await updateSettings(formData);
+
+    const { first_name, last_name } = splitFullName(formData.fullName);
+    dispatch(updateCurrentUser({ first_name, last_name, email: formData.email }));
+
+    // Best-effort settings update (mocked without backend)
+    await updateSettings({
+      fullName: formData.fullName,
+      email: formData.email,
+    });
   };
+
+  const avatarSrc = user?.avatar || user?.avatarUrl || settings?.account?.avatarUrl || settings?.avatarUrl;
+  const initials = getInitials(formData.fullName || user?.email);
 
   return (
     <div className="space-y-6">
@@ -38,9 +58,9 @@ export function AccountSettings() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <Avatar className="h-24 w-24 border-2 border-border shadow-sm">
-              <AvatarImage src={settings?.avatarUrl} alt="Avatar" />
+              <AvatarImage src={avatarSrc} alt="Avatar" />
               <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                {formData.fullName?.charAt(0) || "U"}
+                {initials}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-2">

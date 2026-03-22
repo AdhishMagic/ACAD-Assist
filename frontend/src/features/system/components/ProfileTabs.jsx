@@ -1,13 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ProfileCard } from "./ProfileCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Book, CheckSquare, GraduationCap } from "lucide-react";
+import { useUpdateProfile } from "../hooks/useProfile";
+import { useDispatch } from "react-redux";
+import { updateCurrentUser } from "@/features/auth/store/authSlice";
+import { splitFullName } from "@/utils/helpers";
 
 export const ProfileTabs = ({ profile }) => {
   const [activeTab, setActiveTab] = useState("info");
+  const [fullName, setFullName] = useState(profile?.name || "");
+  const updateProfile = useUpdateProfile();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFullName(profile?.name || "");
+  }, [profile?.name]);
+
+  const handleSaveProfile = async () => {
+    const { first_name, last_name } = splitFullName(fullName);
+    await updateProfile.mutateAsync({ first_name, last_name });
+    dispatch(updateCurrentUser({ first_name, last_name }));
+  };
+
+  const handleCancel = () => {
+    setFullName(profile?.name || "");
+  };
 
   const tabs = [
     { id: "info", label: "Profile Info" },
@@ -103,7 +124,11 @@ export const ProfileTabs = ({ profile }) => {
             <div className="space-y-6 max-w-md">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input id="name" defaultValue={profile?.name} />
+                <Input
+                  id="name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
@@ -115,8 +140,12 @@ export const ProfileTabs = ({ profile }) => {
                 <Input id="password" type="password" placeholder="••••••••" />
               </div>
               <div className="pt-4 flex gap-4">
-                <Button>Save Changes</Button>
-                <Button variant="outline">Cancel</Button>
+                <Button onClick={handleSaveProfile} disabled={updateProfile.isPending}>
+                  {updateProfile.isPending ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button variant="outline" onClick={handleCancel} disabled={updateProfile.isPending}>
+                  Cancel
+                </Button>
               </div>
             </div>
           </ProfileCard>

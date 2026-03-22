@@ -8,7 +8,7 @@ const api = axios.create({
 });
 
 // Mock data to handle cases without a backend
-const mockSettings = {
+let mockSettings = {
   account: {
     name: "John Doe",
     email: "john.doe@example.com",
@@ -40,7 +40,26 @@ api.interceptors.response.use(
       if (error.config.method === "get") {
         return Promise.resolve({ data: mockSettings });
       } else if (error.config.method === "put") {
-        return Promise.resolve({ data: { success: true, message: "Settings updated successfully" } });
+        let payload = {};
+        try {
+          payload = error.config?.data ? JSON.parse(error.config.data) : {};
+        } catch {
+          payload = {};
+        }
+
+        // Support both flat payloads ({ fullName, email }) and nested ({ account: { name, email } }).
+        const next = {
+          ...mockSettings,
+          account: {
+            ...mockSettings.account,
+            ...(payload.account || {}),
+            name: payload.fullName || payload.account?.name || mockSettings.account.name,
+            email: payload.email || payload.account?.email || mockSettings.account.email,
+          },
+        };
+
+        mockSettings = next;
+        return Promise.resolve({ data: mockSettings });
       }
     }
     

@@ -4,22 +4,23 @@ import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, selectCurrentUser } from '../../features/auth/store/authSlice';
+import { getDisplayNameFromUser, getInitials, toTitleCase } from '@/utils/helpers';
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
+  const activeRole = useSelector((state) => state.auth.activeRole);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
   };
 
-  const getInitials = (name) => {
-    if (!name) return 'JD';
-    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-  };
+  const displayName = getDisplayNameFromUser(user) || 'User';
+  const initials = getInitials(displayName || user?.email);
+  const roleLabel = toTitleCase(activeRole || user?.role || 'student');
 
   return (
     <div className="relative">
@@ -28,11 +29,11 @@ const UserMenu = () => {
         className="flex items-center space-x-2 focus:outline-none"
       >
         <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
-          JD
+          {initials}
         </div>
         <div className="hidden md:flex flex-col items-start">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">John Doe</span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">Student</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{displayName}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{roleLabel}</span>
         </div>
         <ChevronDown className="h-4 w-4 text-gray-500 hidden md:block" />
       </button>
