@@ -4,12 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, BookOpen, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-const ClassesTable = ({ classes = [] }) => {
+const ClassesTable = ({ classes = [], onViewDetails }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('All');
 
-  const subjects = ['All', ...new Set(classes.map(c => c.subject))];
+  const subjects = ['All', ...new Set(classes.map((c) => c?.subject).filter(Boolean))];
 
   const filteredClasses = classes.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -36,20 +43,20 @@ const ClassesTable = ({ classes = [] }) => {
                 className="pl-9 w-[200px] lg:w-[250px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800"
               />
             </div>
-            <div className="flex gap-2 font-medium text-sm">
-              {subjects.slice(0, 3).map(subject => (
-                <button
-                  key={subject}
-                  onClick={() => setSubjectFilter(subject)}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
-                    subjectFilter === subject 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {subject}
-                </button>
-              ))}
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <Select value={subjectFilter} onValueChange={setSubjectFilter}>
+                <SelectTrigger className="h-10 w-[190px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                  <SelectValue placeholder="Filter by subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subjects.map((subject) => (
+                    <SelectItem key={subject} value={subject}>
+                      {subject}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -94,7 +101,13 @@ const ClassesTable = ({ classes = [] }) => {
                       <td className="p-4 text-gray-600 dark:text-gray-300">{cls.materials} items</td>
                       <td className="p-4 text-gray-500 dark:text-gray-400 text-sm">{cls.lastActivity}</td>
                       <td className="p-4 pr-6 text-right">
-                        <Button variant="ghost" size="sm" className="text-primary hover:text-primary-focus hover:bg-primary/10">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onViewDetails?.(cls)}
+                          className="text-primary hover:text-primary-focus hover:bg-primary/10"
+                        >
                           View details
                           <ExternalLink size={14} className="ml-2" />
                         </Button>
