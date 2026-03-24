@@ -7,22 +7,60 @@ import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const TemplateSectionBuilder = ({ sections = [], onChange }) => {
+  const getDefaultMarksPerQuestion = (type) => {
+    switch (type) {
+      case 'MCQ':
+        return 1;
+      case 'Definition':
+        return 2;
+      case 'Short Answer':
+        return 3;
+      case 'Explanation':
+        return 5;
+      case 'Diagram':
+        return 5;
+      case 'Long Answer':
+        return 10;
+      default:
+        return 1;
+    }
+  };
+
   const addSection = () => {
     const newSection = {
       id: Date.now().toString(),
       name: `Section ${sections.length + 1}`,
       questionType: 'MCQ',
       questionCount: 5,
-      marksPerQuestion: 1,
+      marksPerQuestion: getDefaultMarksPerQuestion('MCQ'),
       difficulty: 'Medium'
     };
     onChange([...sections, newSection]);
   };
 
   const updateSection = (id, field, value) => {
-    onChange(sections.map(sec => 
-      sec.id === id ? { ...sec, [field]: value } : sec
-    ));
+    onChange(
+      sections.map((sec) => {
+        if (sec.id !== id) return sec;
+
+        if (field === 'questionType') {
+          const nextType = value;
+          const next = { ...sec, questionType: nextType };
+          const currentMarks = Number.parseInt(next.marksPerQuestion, 10);
+          const safeMarks = Number.isFinite(currentMarks) ? currentMarks : 0;
+          const defaultMarks = getDefaultMarksPerQuestion(nextType);
+
+          // If marks are missing or too low for the selected type, auto-set to sensible default.
+          if (safeMarks <= 0 || (nextType === 'Long Answer' && safeMarks < 5)) {
+            next.marksPerQuestion = defaultMarks;
+          }
+
+          return next;
+        }
+
+        return { ...sec, [field]: value };
+      })
+    );
   };
 
   const removeSection = (id) => {

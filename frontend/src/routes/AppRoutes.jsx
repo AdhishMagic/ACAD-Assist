@@ -12,6 +12,8 @@ import StudentDashboard from "@/features/student/pages/StudentDashboard";
 import StudyOverviewPage from "@/features/student/pages/StudyOverviewPage";
 import StudyAnalyticsPage from "@/features/student/pages/StudyAnalyticsPage";
 import ProjectSubmissionPage from "@/features/student/pages/ProjectSubmissionPage";
+import OnlineTestPage from "@/features/student/pages/OnlineTestPage";
+import OnlineTestLegacyRedirect from "@/features/student/pages/OnlineTestLegacyRedirect";
 import CoursesPage from "@/pages/courses/CoursesPage";
 import CourseDetailPage from "@/pages/courses/CourseDetailPage";
 import LessonPage from "@/pages/courses/LessonPage";
@@ -76,6 +78,11 @@ export function AppRoutes() {
           <Route path="/file-manager" element={<FileUploadManagerPage />} />
           <Route path="/file-preview/:fileId" element={<FilePreviewPage />} />
           <Route path="/activity-feed" element={<ActivityFeedPage />} />
+
+          {/* Published Online Test (all authenticated roles) */}
+          <Route path="/online-test/:examId" element={<OnlineTestPage />} />
+          {/* Legacy link support */}
+          <Route path="/student/online-test/:examId" element={<OnlineTestLegacyRedirect />} />
 
           {/* System Routes */}
           <Route element={<RoleGuard allowedRoles={['system']} />}>

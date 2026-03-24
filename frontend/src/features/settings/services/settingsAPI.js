@@ -13,6 +13,7 @@ let mockSettings = {
     name: "John Doe",
     email: "john.doe@example.com",
     role: "Teacher",
+    avatarUrl: null,
   },
   appearance: {
     theme: "light",
@@ -55,6 +56,7 @@ api.interceptors.response.use(
             ...(payload.account || {}),
             name: payload.fullName || payload.account?.name || mockSettings.account.name,
             email: payload.email || payload.account?.email || mockSettings.account.email,
+            avatarUrl: payload.avatarUrl || payload.account?.avatarUrl || mockSettings.account.avatarUrl,
           },
         };
 

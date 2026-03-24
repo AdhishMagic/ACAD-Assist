@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FileDown, Globe, FileText, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export const ExportOptions = ({ onExport, isExporting, exportSuccess }) => {
+export const ExportOptions = ({ onExport, onOpen, isExporting, exportSuccess }) => {
   const options = [
     {
       id: 'pdf',
@@ -69,10 +69,20 @@ export const ExportOptions = ({ onExport, isExporting, exportSuccess }) => {
                 <Button 
                   className="w-full mt-4" 
                   variant={isSuccess ? 'outline' : 'default'}
-                  onClick={() => onExport(option.id)}
-                  disabled={isExporting || isSuccess}
+                  onClick={() => {
+                    if (isSuccess) {
+                      onOpen?.(option.id);
+                      return;
+                    }
+                    onExport?.(option.id);
+                  }}
+                  disabled={isExporting}
                 >
-                  {isExporting ? 'Exporting...' : isSuccess ? 'Open File' : option.title}
+                  {isExporting
+                    ? 'Exporting...'
+                    : isSuccess
+                      ? (option.id === 'online' ? 'Copy Link / Open' : 'Open File')
+                      : option.title}
                 </Button>
               </CardContent>
             </Card>

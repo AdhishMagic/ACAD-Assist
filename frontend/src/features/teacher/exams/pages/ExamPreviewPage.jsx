@@ -32,13 +32,16 @@ const ExamPreviewPage = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-[72px] bg-background/95 backdrop-blur-sm z-30 py-4 border-b">
+    <div className="container mx-auto py-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 bg-background z-30 py-4 border-b shadow-sm">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight">Exam Paper Preview</h1>
           <p className="text-sm text-muted-foreground">Review the AI-generated questions carefully.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
+            <ArrowLeft className="w-4 h-4" /> Back
+          </Button>
           <Button variant="outline" size="sm" onClick={() => navigate('/teacher/question-generator')} className="gap-2">
             <RefreshCw className="w-4 h-4" /> Regenerate
           </Button>

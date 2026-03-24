@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SettingsCard } from './SettingsCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,10 +14,13 @@ export function AccountSettings() {
   const { settings, updateSettings, isUpdating } = useSettings();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
+  const avatarInputRef = useRef(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
   });
+  const [avatarError, setAvatarError] = useState('');
+  const [isAvatarSaving, setIsAvatarSaving] = useState(false);
 
   useEffect(() => {
     const nameFromAuth = getDisplayNameFromUser(user);
@@ -49,6 +52,56 @@ export function AccountSettings() {
     });
   };
 
+  const readFileAsDataUrl = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePickAvatar = () => {
+    setAvatarError('');
+    avatarInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    // allow selecting the same file again
+    e.target.value = '';
+
+    if (!file) return;
+
+    setAvatarError('');
+
+    if (!file.type?.startsWith('image/')) {
+      setAvatarError('Please select an image file (PNG, JPG, WEBP, etc).');
+      return;
+    }
+
+    const maxBytes = 2 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      setAvatarError('Image is too large. Max size is 2MB.');
+      return;
+    }
+
+    try {
+      setIsAvatarSaving(true);
+      const dataUrl = await readFileAsDataUrl(file);
+
+      // Update auth user (persists to localStorage via authSlice).
+      dispatch(updateCurrentUser({ avatarUrl: dataUrl, avatar: dataUrl }));
+
+      // Best-effort settings update (mocked without backend)
+      await updateSettings({ account: { avatarUrl: dataUrl }, avatarUrl: dataUrl });
+    } catch (err) {
+      setAvatarError(err?.message || 'Failed to update avatar');
+    } finally {
+      setIsAvatarSaving(false);
+    }
+  };
+
   const avatarSrc = user?.avatar || user?.avatarUrl || settings?.account?.avatarUrl || settings?.avatarUrl;
   const initials = getInitials(formData.fullName || user?.email);
 
@@ -64,13 +117,29 @@ export function AccountSettings() {
               </AvatarFallback>
             </Avatar>
             <div className="space-y-2">
-              <Button variant="outline" type="button" className="flex items-center gap-2">
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
+              <Button
+                variant="outline"
+                type="button"
+                className="flex items-center gap-2"
+                onClick={handlePickAvatar}
+                disabled={isAvatarSaving}
+              >
                 <Upload className="w-4 h-4" />
-                Upload New Image
+                {isAvatarSaving ? 'Uploading...' : 'Upload New Image'}
               </Button>
               <p className="text-xs text-muted-foreground">
                 Recommend size: 256x256px. Max 2MB.
               </p>
+              {avatarError ? (
+                <p className="text-xs text-destructive">{avatarError}</p>
+              ) : null}
             </div>
           </div>
           

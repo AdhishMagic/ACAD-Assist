@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { JSONEditor } from '../components/JSONEditor';
 import { useSaveTemplate } from '../hooks/useExamGenerator';
 import { motion } from 'framer-motion';
 import { Save, ArrowRight, Settings, Code } from 'lucide-react';
+import { loadTemplateDraft, saveTemplateDraft } from '../utils/templateStorage';
 
 const initialTemplate = {
   examTitle: "Mid-Term Examination",
@@ -34,12 +35,17 @@ const initialTemplate = {
 
 const JSONTemplateBuilderPage = () => {
   const navigate = useNavigate();
-  const [template, setTemplate] = useState(initialTemplate);
+  const [template, setTemplate] = useState(() => loadTemplateDraft() ?? initialTemplate);
   const saveMutation = useSaveTemplate();
+
+  useEffect(() => {
+    saveTemplateDraft(template);
+  }, [template]);
 
   const handleSave = async () => {
     try {
       await saveMutation.mutateAsync(template);
+      saveTemplateDraft(template);
       navigate('/teacher/template-preview');
     } catch (error) {
       console.error('Failed to save template', error);

@@ -97,11 +97,11 @@ const NotesStudioPage = () => {
             </div>
             
             <div className="flex-1 overflow-hidden">
-              <TabsContent value="editor" className="h-full m-0 p-0 border-0 outline-none flex">
-                <div className="w-1/2 h-full border-r border-gray-200 dark:border-gray-800 flex flex-col">
+              <TabsContent value="editor" className="h-full m-0 p-0 border-0 outline-none flex flex-col md:flex-row min-w-0">
+                <div className="w-full md:w-1/2 h-full border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-800 flex flex-col min-w-0">
                   <NotesEditor content={content} setContent={setContent} />
                 </div>
-                <div className="w-1/2 h-full flex flex-col bg-gray-50/30 dark:bg-gray-900/30">
+                <div className="w-full md:w-1/2 h-full flex flex-col bg-gray-50/30 dark:bg-gray-900/30 min-w-0">
                   <div className="p-2 border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800/50 flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-2">Preview</span>
                     <span className="flex items-center text-xs text-green-600 dark:text-green-400 font-medium">
@@ -112,8 +112,11 @@ const NotesStudioPage = () => {
                 </div>
               </TabsContent>
               
-              <TabsContent value="upload" className="h-full m-0 p-0 border-0 outline-none flex items-center justify-center bg-gray-50/50 dark:bg-gray-950">
-                <div className="w-full max-w-2xl">
+              <TabsContent
+                value="upload"
+                className="h-full w-full m-0 p-0 border-0 outline-none bg-gray-50/50 dark:bg-gray-950 overflow-auto"
+              >
+                <div className="w-full max-w-3xl mx-auto p-6">
                   <UploadPanel onUploadSuccess={handleUploadSuccess} />
                 </div>
               </TabsContent>

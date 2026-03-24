@@ -59,11 +59,11 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       { label: 'Classes Overview', icon: Users, to: '/teacher/classes' },
       { label: 'Student Activity Monitor', icon: Activity, to: '/teacher/activity' },
       { label: 'Notes Creation Studio', icon: FileText, to: '/teacher/notes-studio' },
-      { label: 'Notes Editor Page', icon: FileText, to: '/teacher/notes-editor' },
       { label: 'Materials Upload Page', icon: Upload, to: '/teacher/materials-upload' },
       { label: 'JSON Template Builder', icon: Braces, to: '/teacher/template-builder' },
       { label: 'Template Preview Page', icon: FileText, to: '/teacher/template-preview' },
       { label: 'Question Paper Generator', icon: FileText, to: '/teacher/question-generator' },
+      { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
     ];
 
     const hodItems = [

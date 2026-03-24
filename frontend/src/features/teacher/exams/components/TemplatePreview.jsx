@@ -14,6 +14,14 @@ export const TemplatePreview = ({ template }) => {
 
   const totalQuestions = template.sections.reduce((acc, curr) => acc + (curr.questionCount || 0), 0);
   const totalMarks = template.sections.reduce((acc, curr) => acc + ((curr.questionCount || 0) * (curr.marksPerQuestion || 0)), 0);
+  const difficultyCounts = template.sections.reduce(
+    (acc, curr) => {
+      const diff = curr.difficulty || 'Medium';
+      acc[diff] = (acc[diff] || 0) + 1;
+      return acc;
+    },
+    { Easy: 0, Medium: 0, Hard: 0 }
+  );
 
   return (
     <div className="space-y-6">
@@ -40,9 +48,15 @@ export const TemplatePreview = ({ template }) => {
           <CardContent className="p-4 flex flex-col items-center justify-center text-center space-y-1">
             <span className="text-sm font-medium text-muted-foreground">Difficulty Mix</span>
             <div className="flex gap-1 mt-1">
-              <Badge variant="outline" className="text-[10px] px-1 bg-green-50 text-green-700 border-green-200">E</Badge>
-              <Badge variant="outline" className="text-[10px] px-1 bg-yellow-50 text-yellow-700 border-yellow-200">M</Badge>
-              <Badge variant="outline" className="text-[10px] px-1 bg-red-50 text-red-700 border-red-200">H</Badge>
+              {difficultyCounts.Easy > 0 ? (
+                <Badge variant="outline" className="text-[10px] px-1 bg-green-50 text-green-700 border-green-200">E {difficultyCounts.Easy}</Badge>
+              ) : null}
+              {difficultyCounts.Medium > 0 ? (
+                <Badge variant="outline" className="text-[10px] px-1 bg-yellow-50 text-yellow-700 border-yellow-200">M {difficultyCounts.Medium}</Badge>
+              ) : null}
+              {difficultyCounts.Hard > 0 ? (
+                <Badge variant="outline" className="text-[10px] px-1 bg-red-50 text-red-700 border-red-200">H {difficultyCounts.Hard}</Badge>
+              ) : null}
             </div>
           </CardContent>
         </Card>
@@ -57,7 +71,7 @@ export const TemplatePreview = ({ template }) => {
             transition={{ delay: index * 0.1 }}
             className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
           >
-            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-100 dark:bg-slate-800 text-slate-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-100 dark:bg-slate-800 text-slate-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">
               <span className="font-semibold text-sm">{index + 1}</span>
             </div>
             

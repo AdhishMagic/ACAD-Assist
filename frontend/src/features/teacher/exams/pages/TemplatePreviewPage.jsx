@@ -1,35 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TemplatePreview } from '../components/TemplatePreview';
 import { motion } from 'framer-motion';
 import { ArrowLeft, BrainCircuit } from 'lucide-react';
+import { loadTemplateDraft } from '../utils/templateStorage';
 
 const TemplatePreviewPage = () => {
   const navigate = useNavigate();
-  // In a real application, you would fetch this template from an API or Redux store
-  // For demo purposes, we define a static template matching our builder
-  const [template, setTemplate] = useState({
-    examTitle: "Mid-Term Examination",
-    sections: [
-      {
-        id: "1",
-        name: "Section A: Multiple Choice",
-        questionType: "MCQ",
-        questionCount: 10,
-        marksPerQuestion: 1,
-        difficulty: "Medium"
-      },
-      {
-        id: "2",
-        name: "Section B: Short Answer",
-        questionType: "Short Answer",
-        questionCount: 5,
-        marksPerQuestion: 3,
-        difficulty: "Medium"
+  const [template] = useState(() => {
+    const draft = loadTemplateDraft();
+    return (
+      draft ?? {
+        examTitle: 'Mid-Term Examination',
+        sections: [],
       }
-    ]
+    );
   });
 
   return (
