@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Shield, Users, GraduationCap, UserCog, Settings2 } from 'lucide-react';
+import { Shield, Users, GraduationCap, UserCog } from 'lucide-react';
 
 import { AuthCard } from '../components/AuthCard';
 import { Button } from '@/components/ui/button';
@@ -33,12 +33,6 @@ const ROLE_OPTIONS = [
     description: 'System analytics, user/role management, logs, storage.',
     icon: Shield,
   },
-  {
-    key: 'system',
-    title: 'System',
-    description: 'System-level tools and monitoring.',
-    icon: Settings2,
-  },
 ];
 
 export const RoleConfirmPage = () => {
@@ -62,7 +56,7 @@ export const RoleConfirmPage = () => {
   return (
     <AuthCard
       title={`Choose your access type${user?.first_name ? `, ${user.first_name}` : ''}`}
-      description="Select Admin / HOD / Student / System / Teacher first. Then sign in to access only that role's pages."
+      description="Select Admin / HOD / Student / Teacher first. Then sign in to access only that role's pages."
     >
       <div className="space-y-4">
         {message ? (

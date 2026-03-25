@@ -38,6 +38,52 @@ const ActivityLogTable = ({ logs, isLoading }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterModule, setFilterModule] = useState("All");
 
+  const toCsvCell = (value) => {
+    if (value === null || value === undefined) return '""';
+    const str = String(value);
+    // Escape quotes for CSV and wrap in quotes to safely handle commas/newlines.
+    return `"${str.replace(/"/g, '""')}"`;
+  };
+
+  const exportLogsToCsv = () => {
+    if (!filteredLogs.length) return;
+
+    const headers = ['ID', 'User', 'Action', 'Module', 'Timestamp', 'Status'];
+    const rows = filteredLogs.map((log) => {
+      const isoTimestamp = (() => {
+        try {
+          return new Date(log.timestamp).toISOString();
+        } catch {
+          return log.timestamp;
+        }
+      })();
+
+      return [
+        toCsvCell(log.id),
+        toCsvCell(log.user),
+        toCsvCell(log.action),
+        toCsvCell(log.module),
+        toCsvCell(isoTimestamp),
+        toCsvCell(log.status),
+      ].join(',');
+    });
+
+    const csv = ['\uFEFF' + headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    const fileName = `activity-logs-${dateStamp}.csv`;
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
   const filteredLogs = logs?.filter(log => {
     const matchesSearch = 
       log.action.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -81,7 +127,14 @@ const ActivityLogTable = ({ logs, isLoading }) => {
           </h2>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="hidden sm:flex">
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden sm:flex"
+              onClick={exportLogsToCsv}
+              disabled={isLoading || filteredLogs.length === 0}
+              title={filteredLogs.length === 0 ? 'No logs to export' : 'Export filtered logs as CSV'}
+            >
               <Download className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
