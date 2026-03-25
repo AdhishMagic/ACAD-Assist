@@ -1,0 +1,12 @@
+Sorting Algorithms Worksheet (Preview)
+
+1) Trace insertion sort for: [7, 2, 4, 1]
+2) For quicksort, show one partition step (pivot = last element).
+3) Define stability. Which sorts are stable and why?
+4) Compare average/worst-case time complexity for:
+   - Merge sort
+   - Quick sort
+   - Heap sort
+
+Challenge:
+- Count inversions in [2, 3, 8, 6, 1]

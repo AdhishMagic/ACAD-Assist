@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Table,
@@ -10,7 +10,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { ApprovalActions } from './ApprovalActions';
+import { MaterialDetailsDialog } from './MaterialDetailsDialog';
 
 const statusColors = {
   Pending: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800',
@@ -20,6 +22,14 @@ const statusColors = {
 };
 
 export function CourseApprovalTable({ approvals, title = 'Materials Needing Approval', description }) {
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const openDetails = (material) => {
+    setSelectedMaterial(material);
+    setDetailsOpen(true);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -53,7 +63,16 @@ export function CourseApprovalTable({ approvals, title = 'Materials Needing Appr
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="border-b transition-colors hover:bg-muted/50"
                   >
-                    <TableCell className="font-medium max-w-[200px] truncate">{item.title}</TableCell>
+                    <TableCell className="font-medium max-w-[240px]">
+                      <Button
+                        variant="link"
+                        className="h-auto p-0 text-left max-w-[240px] truncate"
+                        onClick={() => openDetails(item)}
+                        title="View material details"
+                      >
+                        {item.title}
+                      </Button>
+                    </TableCell>
                     <TableCell>{item.teacher}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="font-normal">{item.course}</Badge>
@@ -74,6 +93,15 @@ export function CourseApprovalTable({ approvals, title = 'Materials Needing Appr
           </div>
         )}
       </CardContent>
+
+      <MaterialDetailsDialog
+        open={detailsOpen}
+        onOpenChange={(open) => {
+          setDetailsOpen(open);
+          if (!open) setSelectedMaterial(null);
+        }}
+        material={selectedMaterial}
+      />
     </Card>
   );
 }

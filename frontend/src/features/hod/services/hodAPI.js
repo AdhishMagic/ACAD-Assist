@@ -4,6 +4,138 @@
 const MOCK_DELAY = 500;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// In-memory mock store so mutations reflect in subsequent reads.
+let materialApprovalsStore = [
+  {
+    id: 1,
+    title: 'Neural Network Lab Manual',
+    teacher: 'Dr. Sarah Smith',
+    course: 'Advanced AI',
+    date: '2026-03-16',
+    status: 'Pending',
+    materialType: 'Lab Manual',
+    description: 'Lab manual for Module 5: Backpropagation and optimization. Includes objectives, experiments, and expected outputs.',
+    attachments: [{ name: 'Neural Network Lab Manual', type: 'html', url: '/materials/neural-network-lab-manual.html' }],
+    previewText: 'Overview:\n- Objective: Implement backprop for a 2-layer NN\n- Dataset: MNIST subset\n- Tasks: forward pass, loss, gradients, SGD\n\nChecklist:\n[ ] Code compiles\n[ ] Screenshots included\n[ ] Report PDF attached',
+  },
+  {
+    id: 2,
+    title: 'React Hooks Deep Dive Notes',
+    teacher: 'Prof. John Doe',
+    course: 'Web Dev',
+    date: '2026-03-15',
+    status: 'Pending',
+    materialType: 'Lecture Notes',
+    description: 'Notes covering useEffect pitfalls, custom hooks, and performance patterns. Intended for Week 7.',
+    attachments: [{ name: 'React Hooks Deep Dive Notes', type: 'html', url: '/materials/react-hooks-deep-dive.html' }],
+    previewText: 'Topics:\n1) Rules of Hooks\n2) useEffect dependency patterns\n3) useMemo/useCallback\n4) Custom hooks examples\n\nIncludes short exercises and solutions.',
+  },
+  {
+    id: 3,
+    title: 'Sorting Algorithms Worksheet',
+    teacher: 'Dr. Emily Chen',
+    course: 'Data Structures',
+    date: '2026-03-14',
+    status: 'Approved',
+    materialType: 'Worksheet',
+    description: 'Worksheet with 12 problems on sorting and stability; includes complexity analysis questions.',
+    attachments: [{ name: 'Sorting Worksheet (preview)', type: 'txt', url: '/materials/sorting-worksheet-preview.txt' }],
+    previewText: 'Problems include: insertion sort trace, quicksort partitioning, counting inversions, and stability proofs.',
+  },
+  {
+    id: 4,
+    title: 'AWS Deployment Guide',
+    teacher: 'Prof. Mike Johnson',
+    course: 'Cloud Computing',
+    date: '2026-03-13',
+    status: 'Rejected',
+    materialType: 'Guide',
+    description: 'Step-by-step deployment guide for a sample app on AWS. Requires update to IAM best practices.',
+    attachments: [{ name: 'AWS Deployment Guide (preview)', type: 'txt', url: '/materials/aws-deployment-guide-preview.txt' }],
+    previewText: 'Note: This submission was rejected previously due to missing least-privilege IAM policy examples.',
+  },
+  {
+    id: 5,
+    title: 'TensorFlow Tutorial Series',
+    teacher: 'Dr. Lisa Wang',
+    course: 'Machine Learning',
+    date: '2026-03-12',
+    status: 'Pending',
+    materialType: 'Tutorial',
+    description: 'Beginner-friendly TensorFlow tutorial series (Part 1-3). Includes code snippets and exercises.',
+    attachments: [{ name: 'TensorFlow Tutorial Series', type: 'html', url: '/materials/tensorflow-tutorial-series.html' }],
+    previewText: 'Part 1: Tensors & operations\nPart 2: Training loops\nPart 3: CNN example\n\nExercise: Build a simple image classifier.',
+  },
+  {
+    id: 6,
+    title: 'Graph Theory Problem Set',
+    teacher: 'Dr. Emily Chen',
+    course: 'Data Structures',
+    date: '2026-03-11',
+    status: 'Approved',
+    materialType: 'Problem Set',
+    description: 'Problem set on BFS/DFS, connectivity, and shortest paths.',
+    attachments: [{ name: 'Graph Theory Problem Set (preview)', type: 'txt', url: '/materials/graph-theory-problem-set-preview.txt' }],
+    previewText: 'Includes 10 questions + optional challenge section on DAG topological ordering.',
+  },
+  {
+    id: 7,
+    title: 'Docker Containerization Lab',
+    teacher: 'Prof. Mike Johnson',
+    course: 'Cloud Computing',
+    date: '2026-03-10',
+    status: 'Revision Requested',
+    materialType: 'Lab',
+    description: 'Hands-on Docker lab. Revision requested to add Windows setup steps and fix a broken image tag.',
+    attachments: [{ name: 'Docker Containerization Lab (preview)', type: 'txt', url: '/materials/docker-lab-preview.txt' }],
+    previewText: 'Revision requested:\n- Add Windows Docker Desktop setup\n- Fix image tag in step 3\n- Add troubleshooting for port conflicts',
+  },
+];
+
+const updateMaterialApprovalStatus = (id, status) => {
+  const numericId = Number(id);
+  const idx = materialApprovalsStore.findIndex(a => a.id === numericId);
+  if (idx === -1) return null;
+
+  materialApprovalsStore[idx] = { ...materialApprovalsStore[idx], status };
+  return { ...materialApprovalsStore[idx] };
+};
+
+let projectApprovalsStore = [
+  {
+    id: 101,
+    student: 'Alice Johnson',
+    title: 'AI-Based Attendance System',
+    date: '2026-03-15',
+    status: 'Pending',
+    description: 'Face-recognition assisted attendance with admin dashboard, exportable reports, and role-based access.',
+    techStack: ['React', 'Node.js', 'Python', 'OpenCV'],
+    attachments: [
+      { name: 'Project Report (Preview)', type: 'html', url: '/projects/ai-attendance-system.html' },
+    ],
+  },
+  {
+    id: 102,
+    student: 'Bob Smith',
+    title: 'Blockchain Certificate Verification',
+    date: '2026-03-14',
+    status: 'Pending',
+    description: 'Immutable certificate issuance and verification portal using smart contracts. QR-based verification flow.',
+    techStack: ['Solidity', 'Web3', 'React'],
+    attachments: [
+      { name: 'Project Report (Preview)', type: 'html', url: '/projects/blockchain-certificate-verification.html' },
+    ],
+  },
+];
+
+const updateProjectApprovalStatus = (id, status) => {
+  const numericId = Number(id);
+  const idx = projectApprovalsStore.findIndex(p => p.id === numericId);
+  if (idx === -1) return null;
+  projectApprovalsStore[idx] = { ...projectApprovalsStore[idx], status };
+  return { ...projectApprovalsStore[idx] };
+};
+
 export const hodAPI = {
   // ─── Dashboard ───────────────────────────────────────────────
   getDashboard: async () => {
@@ -106,15 +238,7 @@ export const hodAPI = {
     await delay(MOCK_DELAY);
     return {
       data: {
-        approvals: [
-          { id: 1, title: 'Neural Network Lab Manual', teacher: 'Dr. Sarah Smith', course: 'Advanced AI', date: '2026-03-16', status: 'Pending' },
-          { id: 2, title: 'React Hooks Deep Dive Notes', teacher: 'Prof. John Doe', course: 'Web Dev', date: '2026-03-15', status: 'Pending' },
-          { id: 3, title: 'Sorting Algorithms Worksheet', teacher: 'Dr. Emily Chen', course: 'Data Structures', date: '2026-03-14', status: 'Approved' },
-          { id: 4, title: 'AWS Deployment Guide', teacher: 'Prof. Mike Johnson', course: 'Cloud Computing', date: '2026-03-13', status: 'Rejected' },
-          { id: 5, title: 'TensorFlow Tutorial Series', teacher: 'Dr. Lisa Wang', course: 'Machine Learning', date: '2026-03-12', status: 'Pending' },
-          { id: 6, title: 'Graph Theory Problem Set', teacher: 'Dr. Emily Chen', course: 'Data Structures', date: '2026-03-11', status: 'Approved' },
-          { id: 7, title: 'Docker Containerization Lab', teacher: 'Prof. Mike Johnson', course: 'Cloud Computing', date: '2026-03-10', status: 'Revision Requested' },
-        ]
+        approvals: materialApprovalsStore.map(a => ({ ...a }))
       }
     };
   },
@@ -152,18 +276,42 @@ export const hodAPI = {
     };
   },
 
+  // ─── Project Approvals ───────────────────────────────────────
+  getProjectApprovals: async () => {
+    await delay(MOCK_DELAY);
+    return {
+      data: {
+        approvals: projectApprovalsStore.map(p => ({ ...p }))
+      }
+    };
+  },
+
   // ─── Approval Mutations ─────────────────────────────────────
   approveMaterial: async (id) => {
     await delay(MOCK_DELAY);
-    return { data: { success: true, id, status: 'Approved' } };
+    const updated = updateMaterialApprovalStatus(id, 'Approved');
+    return { data: { success: Boolean(updated), id, status: updated?.status } };
   },
   rejectMaterial: async (id) => {
     await delay(MOCK_DELAY);
-    return { data: { success: true, id, status: 'Rejected' } };
+    const updated = updateMaterialApprovalStatus(id, 'Rejected');
+    return { data: { success: Boolean(updated), id, status: updated?.status } };
   },
   requestMaterialRevision: async (id) => {
     await delay(MOCK_DELAY);
-    return { data: { success: true, id, status: 'Revision Requested' } };
+    const updated = updateMaterialApprovalStatus(id, 'Revision Requested');
+    return { data: { success: Boolean(updated), id, status: updated?.status } };
+  },
+
+  approveProject: async (id) => {
+    await delay(MOCK_DELAY);
+    const updated = updateProjectApprovalStatus(id, 'Approved');
+    return { data: { success: Boolean(updated), id, status: updated?.status } };
+  },
+  rejectProject: async (id) => {
+    await delay(MOCK_DELAY);
+    const updated = updateProjectApprovalStatus(id, 'Rejected');
+    return { data: { success: Boolean(updated), id, status: updated?.status } };
   },
 
   // ─── Legacy (kept for backward compatibility) ───────────────

@@ -56,6 +56,42 @@ export const useStudentEngagement = () => {
   });
 };
 
+// ─── Project Approvals ──────────────────────────────────────
+export const useProjectApprovals = () => {
+  return useQuery({
+    queryKey: ['hod-project-approvals'],
+    queryFn: async () => {
+      const response = await hodAPI.getProjectApprovals();
+      return response.data;
+    }
+  });
+};
+
+export const useProjectApprovalActions = () => {
+  const queryClient = useQueryClient();
+
+  const approveMutation = useMutation({
+    mutationFn: (id) => hodAPI.approveProject(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hod-project-approvals'] });
+    }
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: (id) => hodAPI.rejectProject(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hod-project-approvals'] });
+    }
+  });
+
+  return {
+    approve: approveMutation.mutate,
+    reject: rejectMutation.mutate,
+    isApproving: approveMutation.isPending,
+    isRejecting: rejectMutation.isPending,
+  };
+};
+
 // ─── Material Approval Actions ──────────────────────────────
 export const useMaterialApprovalActions = () => {
   const queryClient = useQueryClient();

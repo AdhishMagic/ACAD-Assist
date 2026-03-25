@@ -1,0 +1,14 @@
+Docker Containerization Lab (Preview)
+
+Part A: Build and run
+- Write a Dockerfile for a Node app
+- Build image: docker build -t myapp .
+- Run: docker run -p 5173:5173 myapp
+
+Part B: Compose
+- Create docker-compose.yml with app + redis
+
+Revision requested:
+- Add Windows Docker Desktop setup instructions
+- Fix broken image tag in step 3
+- Add troubleshooting for port conflicts (5173, 3000)
