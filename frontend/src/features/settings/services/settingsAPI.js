@@ -1,90 +1,63 @@
-import axios from "axios";
+import { apiClient } from "@/shared/lib/http/axios";
+import { isMockMode, shouldFallbackToMock } from "@/shared/lib/http/apiMode";
+import { mockSettingsInitial } from "@/shared/mocks/settings.mock";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+let mockSettings = { ...mockSettingsInitial };
 
-const api = axios.create({
-  baseURL: API_URL,
-  withCredentials: true,
-});
+function updateMockSettings(settingsPayload) {
+  const payload = settingsPayload || {};
+  const next = {
+    ...mockSettings,
+    account: {
+      ...mockSettings.account,
+      ...(payload.account || {}),
+      name: payload.fullName || payload.account?.name || mockSettings.account.name,
+      email: payload.email || payload.account?.email || mockSettings.account.email,
+      avatarUrl: payload.avatarUrl || payload.account?.avatarUrl || mockSettings.account.avatarUrl,
+    },
+    appearance: {
+      ...mockSettings.appearance,
+      ...(payload.appearance || {}),
+      theme: payload.appearance?.theme || payload.theme || mockSettings.appearance?.theme || "system",
+    },
+  };
 
-// Mock data to handle cases without a backend
-let mockSettings = {
-  account: {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Teacher",
-    avatarUrl: null,
-  },
-  appearance: {
-    theme: "light",
-    fontSize: "medium",
-    colorScheme: "blue",
-  },
-  notifications: {
-    emailAlerts: true,
-    pushNotifications: false,
-    weeklyDigest: true,
-  },
-  security: {
-    twoFactorEnabled: false,
-    lastPasswordChange: "2026-01-15T10:00:00Z",
-  }
-};
-
-// Add interceptor to mock responses instead of failing
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const path = error.config?.url || "";
-    
-    if (path.includes("/user/settings")) {
-      if (error.config.method === "get") {
-        return Promise.resolve({ data: mockSettings });
-      } else if (error.config.method === "put") {
-        let payload = {};
-        try {
-          payload = error.config?.data ? JSON.parse(error.config.data) : {};
-        } catch {
-          payload = {};
-        }
-
-        // Support both flat payloads ({ fullName, email }) and nested ({ account: { name, email } }).
-        const next = {
-          ...mockSettings,
-          account: {
-            ...mockSettings.account,
-            ...(payload.account || {}),
-            name: payload.fullName || payload.account?.name || mockSettings.account.name,
-            email: payload.email || payload.account?.email || mockSettings.account.email,
-            avatarUrl: payload.avatarUrl || payload.account?.avatarUrl || mockSettings.account.avatarUrl,
-          },
-        };
-
-        mockSettings = next;
-        return Promise.resolve({ data: mockSettings });
-      }
-    }
-    
-    if (path.includes("/user/password")) {
-      return Promise.resolve({ data: { success: true, message: "Password updated successfully" } });
-    }
-    
-    // Generic fallback for any other settings route
-    return Promise.resolve({ data: { success: true } });
-  }
-);
+  mockSettings = next;
+  return mockSettings;
+}
 
 export const getSettings = async () => {
-  const { data } = await api.get("/user/settings");
-  return data;
+  if (isMockMode) return mockSettings;
+
+  try {
+    const { data } = await apiClient.get("/user/settings");
+    return data;
+  } catch (error) {
+    if (!shouldFallbackToMock(error)) throw error;
+    return mockSettings;
+  }
 };
 
 export const updateSettings = async (settingsPayload) => {
-  const { data } = await api.put("/user/settings", settingsPayload);
-  return data;
+  if (isMockMode) return updateMockSettings(settingsPayload);
+
+  try {
+    const { data } = await apiClient.put("/user/settings", settingsPayload);
+    return data;
+  } catch (error) {
+    if (!shouldFallbackToMock(error)) throw error;
+    return updateMockSettings(settingsPayload);
+  }
 };
 
 export const updatePassword = async (passwordPayload) => {
-  const { data } = await api.put("/user/password", passwordPayload);
-  return data;
+  if (isMockMode) return { success: true, message: "Password updated successfully" };
+
+  try {
+    const { data } = await apiClient.put("/user/password", passwordPayload);
+    return data;
+  } catch (error) {
+    if (!shouldFallbackToMock(error)) throw error;
+    return { success: true, message: "Password updated successfully" };
+  }
 };

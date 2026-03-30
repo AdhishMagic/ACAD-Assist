@@ -1,9 +1,5 @@
-import axios from 'axios';
-
-// Base API setup, assuming generic /api prefix
-const apiClient = axios.create({
-  baseURL: '/api'
-});
+import { apiClient } from '@/shared/lib/http/axios';
+import { isMockMode } from '@/shared/lib/http/apiMode';
 
 // Mock data to prevent proxy ECONNREFUSED errors when backend is not running
 const MOCK_NOTES = [
@@ -129,7 +125,7 @@ const applyNotesQuery = (notes = [], params = {}) => {
 export const notesAPI = {
   getAllNotes: async (params) => {
     try {
-      if (import.meta.env.VITE_USE_MOCK_API === 'true' || true) { // Force mock for now
+      if (isMockMode) {
         await delay(150);
         return { notes: applyNotesQuery(MOCK_NOTES, params) };
       }
@@ -143,7 +139,7 @@ export const notesAPI = {
   
   getNotesBySubject: async (subjectId, params) => {
     try {
-      if (true) {
+      if (isMockMode) {
         await delay(150);
         const subjectSlug = slugify(subjectId);
         const subjectNotes = MOCK_NOTES.filter((n) => slugify(n?.subject) === subjectSlug);
@@ -160,7 +156,7 @@ export const notesAPI = {
   
   getNoteById: async (noteId) => {
     try {
-      if (true) {
+      if (isMockMode) {
         await delay(150);
         const numericId = Number(noteId);
         const base = MOCK_NOTES.find((n) => String(n.id) === String(noteId) || (Number.isFinite(numericId) && n.id === numericId));
@@ -190,7 +186,7 @@ export const notesAPI = {
   
   toggleBookmark: async (noteId) => {
     try {
-      if (true) {
+      if (isMockMode) {
         await delay(300);
         return { success: true };
       }

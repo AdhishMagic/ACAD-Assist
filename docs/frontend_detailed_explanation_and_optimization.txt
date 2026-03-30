@@ -1,0 +1,489 @@
+ACAD-Assist Frontend Detailed Explanation and Optimization Guide
+Date: 2026-03-30
+Scope: frontend source architecture, page-level responsibilities, duplicate reduction, and separation of concerns
+
+============================================================
+1) HOW THE FRONTEND CURRENTLY RUNS (END-TO-END FLOW)
+============================================================
+
+1. Entry point
+- File: frontend/src/main.jsx
+- What it does:
+  - Bootstraps React with StrictMode.
+  - Wraps app with Redux Provider and React Query QueryClientProvider.
+  - Uses BrowserRouter for route handling.
+- Why this matters:
+  - This file is the root composition point for app-wide providers and app-wide behavior.
+
+2. App shell handoff
+- File: frontend/src/App.jsx
+- What it does:
+  - Renders AppRoutes only.
+- Why this matters:
+  - Keeps app shell minimal and delegates navigation responsibilities to routes.
+
+3. Route orchestration
+- File: frontend/src/routes/AppRoutes.jsx
+- What it does:
+  - Defines all route trees for guest/authenticated users and role-based routing.
+  - Wraps protected areas with ProtectedRoute and RoleGuard.
+  - Maps route constants for teacher/hod/admin sections.
+- High-impact issue found:
+  - Duplicate route declaration exists for /system/dashboard (declared twice).
+
+4. Authentication and role guarding
+- File: frontend/src/routes/ProtectedRoute.jsx
+  - Enforces isAuthenticated before rendering protected outlet.
+- File: frontend/src/routes/RoleGuard.jsx
+  - Enforces allowed roles and redirects unauthorized users.
+- File: frontend/src/routes/RoleBasedRedirect.jsx
+  - Converts active role to dashboard path.
+
+5. Layout layers
+- Dashboard layout: frontend/src/layouts/DashboardLayout/DashboardLayout.jsx
+  - Main authenticated shell (sidebar, navbar, right panel, outlet).
+  - Contains UI state for sidebar collapse/mobile and dark mode.
+- Auth layout: frontend/src/layouts/AuthLayout/AuthLayout.jsx
+  - Split screen branding + auth form outlet.
+- Main layout: frontend/src/layouts/MainLayout/MainLayout.jsx
+  - Generic marketing shell, currently not the main route wrapper in AppRoutes.
+- Legacy/extra layout: frontend/src/layouts/AppLayout/index.jsx
+  - Appears to be another dashboard-like shell and risks duplication with DashboardLayout.
+
+6. Global state and reducers
+- File: frontend/src/store/store.js
+  - Configures Redux store with rootReducer and apiMiddleware.
+- File: frontend/src/store/rootReducer.js
+  - Combines auth, courses, ai, knowledge, qpaper slices.
+- Important inconsistency:
+  - Two auth slices exist:
+    - frontend/src/features/auth/store/authSlice.js (the one used by rootReducer)
+    - frontend/src/features/auth/authSlice.js (parallel implementation)
+
+7. API layer
+- Central api client: frontend/src/services/api/axios.js
+- Feature api clients:
+  - frontend/src/services/api/auth.api.js
+  - frontend/src/services/api/courses.api.js
+  - frontend/src/services/api/ai.api.js
+  - frontend/src/services/api/rag.api.js
+  - frontend/src/services/api/qpaper.api.js
+- Duplicate concern:
+  - Additional per-feature API files under feature folders also create axios instances and mock logic, creating multiple transport styles.
+
+============================================================
+2) PAGE-BY-PAGE EXPLANATION (CURRENT RESPONSIBILITIES)
+============================================================
+
+Note: This section explains every page entry file in frontend/src/**/pages and how each should be optimized.
+
+--------------------------------------------
+A) Core app-level pages
+--------------------------------------------
+
+1. frontend/src/pages/ErrorPage.jsx
+- Role: Generic error boundary page.
+- Concern: Should be integrated into route-level errorElement strategy if using data routers later.
+
+2. frontend/src/pages/NotFoundPage.jsx
+- Role: Generic 404 page.
+- Concern: There is also a system NotFound page under feature/system/pages.
+- Optimization: Keep one shared NotFound with optional variant prop.
+
+--------------------------------------------
+B) Landing and auth pages
+--------------------------------------------
+
+1. frontend/src/features/landing/pages/LandingPage.jsx
+- Role: Public homepage.
+- Responsibility split:
+  - Should contain mostly presentational sections.
+  - API or auth logic should stay in hooks/services.
+
+2. frontend/src/features/auth/pages/RoleConfirmPage.jsx
+- Role: User picks active role before login flow.
+- Dependency: auth state pendingRole/activeRole handling.
+- Optimization: Move role transition logic to auth service + auth slice thunk for consistency.
+
+3. frontend/src/features/auth/pages/LoginPage.jsx
+- Role: Login form container and role prerequisite enforcement.
+- Current behavior:
+  - Redirects to choose-role if no pendingRole and not authenticated.
+- Optimization:
+  - Keep routing checks in a dedicated hook useRequirePendingRole() to avoid repeated logic.
+
+4. frontend/src/features/auth/pages/RegisterPage.jsx
+- Role: Register form container.
+- Optimization:
+  - Keep as pure view + submit handler hook.
+
+5. frontend/src/features/auth/pages/ForgotPasswordPage.jsx
+- Role: Password reset request page.
+- Optimization:
+  - Keep API shape aligned with central auth.api.js.
+
+Legacy duplicate auth pages (not used by AppRoutes):
+- frontend/src/pages/auth/LoginPage.jsx
+- frontend/src/pages/auth/RegisterPage.jsx
+- frontend/src/pages/auth/ForgotPasswordPage.jsx
+These are template/stub duplicates and should be removed or moved to an archive folder.
+
+--------------------------------------------
+C) Student pages
+--------------------------------------------
+
+1. frontend/src/features/student/pages/StudentDashboard.jsx
+- Role: Student home metrics and activity snapshot.
+- Typical dependencies: studentAPI, cards/charts components.
+- Optimization:
+  - Keep data fetch in feature hook (useStudentDashboardQuery).
+
+2. frontend/src/features/student/pages/StudyOverviewPage.jsx
+- Role: Study progress and overview.
+- Optimization:
+  - Reuse shared stat-card/chart primitives.
+
+3. frontend/src/features/student/pages/StudyAnalyticsPage.jsx
+- Role: Analytics visualizations.
+- Risk:
+  - Often duplicates chart setup and filter state with other analytics pages.
+- Optimization:
+  - Build reusable analytics widgets under shared components.
+
+4. frontend/src/features/student/pages/ProjectSubmissionPage.jsx
+- Role: Student project upload/submit flow.
+- Optimization:
+  - Isolate file upload logic in hook/service; page remains orchestration UI.
+
+5. frontend/src/features/student/pages/OnlineTestPage.jsx
+- Role: Runtime test-taking experience.
+- Optimization:
+  - Keep timer/test session state in dedicated hook/store module.
+
+6. frontend/src/features/student/pages/OnlineTestLegacyRedirect.jsx
+- Role: Redirect from old URL pattern.
+- Good practice:
+  - Keep this tiny and pure redirect only.
+
+--------------------------------------------
+D) Course and knowledge pages
+--------------------------------------------
+
+1. frontend/src/pages/courses/CoursesPage.jsx
+- Role: Course listing page.
+- Dependency: courses API and list filtering.
+
+2. frontend/src/pages/courses/CourseDetailPage.jsx
+- Role: Single course detail with modules/lessons.
+
+3. frontend/src/pages/courses/LessonPage.jsx
+- Role: Specific lesson view.
+
+4. frontend/src/pages/knowledge-repo/KnowledgeRepoPage.jsx
+- Role: Knowledge/document index.
+
+5. frontend/src/pages/knowledge-repo/DocumentDetailPage.jsx
+- Role: Document detail/preview.
+
+Optimization for this group:
+- Standardize list/detail data patterns with React Query hooks.
+- Avoid localStorage fallback logic spread in page files; keep fallback inside service adapters.
+
+--------------------------------------------
+E) Notes system pages
+--------------------------------------------
+
+1. frontend/src/features/notes/pages/NotesExplorer.jsx
+- Role: Search/filter notes catalog.
+
+2. frontend/src/features/notes/pages/SubjectNotesPage.jsx
+- Role: Notes by subject.
+
+3. frontend/src/features/notes/pages/NotesViewer.jsx
+- Role: Detailed note view.
+
+Optimization:
+- The notes API currently forces mock branch logic with hardcoded true checks.
+- Introduce environment strategy (mock vs real) once in a central adapter.
+
+--------------------------------------------
+F) AI pages
+--------------------------------------------
+
+1. frontend/src/features/ai/pages/AIChatPage.jsx
+- Role: Chat interaction and context file handling.
+
+2. frontend/src/features/ai/pages/SavedNotesPage.jsx
+- Role: Saved AI notes management.
+
+3. frontend/src/features/ai/pages/GeneratedNotesLibraryPage.jsx
+- Role: Generated notes listing.
+
+4. frontend/src/features/ai/pages/GeneratedNotesPage.jsx
+- Role: Generated note details.
+
+Optimization:
+- Unify AI service calls to one client (services/api/ai.api.js) and remove duplicate feature-level aiAPI transport.
+
+--------------------------------------------
+G) QPaper pages
+--------------------------------------------
+
+1. frontend/src/pages/qpaper/GeneratorPage.jsx
+- Role: Question paper generation form/workflow.
+
+2. frontend/src/pages/qpaper/PaperPreviewPage.jsx
+- Role: Generated paper preview/export.
+
+Optimization:
+- Keep generation/export actions in qpaper API layer and use typed adapters.
+
+--------------------------------------------
+H) Teacher pages
+--------------------------------------------
+
+1. frontend/src/features/teacher/pages/TeacherDashboard.jsx
+- Role: Teacher summary metrics and quick actions.
+
+2. frontend/src/features/teacher/pages/ClassesOverviewPage.jsx
+- Role: Teacher classes listing and filtering.
+
+3. frontend/src/features/teacher/pages/StudentActivityPage.jsx
+- Role: Student engagement/activity table.
+
+4. frontend/src/features/teacher/pages/NotesStudioPage.jsx
+- Role: Notes workflow shell.
+
+5. frontend/src/features/teacher/pages/NotesEditorPage.jsx
+- Role: Notes content editing.
+
+Exam pages (teacher subdomain):
+6. frontend/src/features/teacher/exams/pages/MaterialsUploadPage.jsx
+7. frontend/src/features/teacher/exams/pages/JSONTemplateBuilderPage.jsx
+8. frontend/src/features/teacher/exams/pages/TemplatePreviewPage.jsx
+9. frontend/src/features/teacher/exams/pages/QuestionGeneratorPage.jsx
+10. frontend/src/features/teacher/exams/pages/ExamPreviewPage.jsx
+11. frontend/src/features/teacher/exams/pages/ExamExportPage.jsx
+12. frontend/src/features/teacher/exams/pages/OnlineTestsPage.jsx
+13. frontend/src/features/teacher/exams/pages/OnlineTestResultsPage.jsx
+
+Optimization:
+- This domain has high table/form duplication.
+- Build shared teacher UI blocks (FilterToolbar, DataTableShell, EmptyState, KPI cards).
+
+--------------------------------------------
+I) HOD pages
+--------------------------------------------
+
+1. frontend/src/features/hod/pages/HODDashboard.jsx
+2. frontend/src/features/hod/pages/DepartmentPerformancePage.jsx
+3. frontend/src/features/hod/pages/TeacherContributionsPage.jsx
+4. frontend/src/features/hod/pages/CourseMaterialsApprovalPage.jsx
+5. frontend/src/features/hod/pages/StudentEngagementPage.jsx
+6. frontend/src/features/hod/pages/ProjectApprovalsPage.jsx
+
+Optimization:
+- HOD pages use similar chart/table/filter structures as Admin and Teacher pages.
+- Extract shared analytics + approval workflow components to reduce repetition.
+
+--------------------------------------------
+J) Admin pages
+--------------------------------------------
+
+1. frontend/src/features/admin/pages/AdminDashboard.jsx
+2. frontend/src/features/admin/pages/SystemAnalyticsPage.jsx
+3. frontend/src/features/admin/pages/UserManagementPage.jsx
+4. frontend/src/features/admin/pages/RoleManagementPage.jsx
+5. frontend/src/features/admin/pages/ActivityLogsPage.jsx
+6. frontend/src/features/admin/pages/StorageManagementPage.jsx
+7. frontend/src/features/admin/pages/AIUsageAnalyticsPage.jsx
+
+Optimization:
+- Keep admin route lazy loading (already good).
+- Remove giant inline mock datasets from service file and move to mock fixtures.
+
+--------------------------------------------
+K) System utility pages
+--------------------------------------------
+
+1. frontend/src/features/system/pages/SystemDashboardPage.jsx
+2. frontend/src/features/system/pages/NotificationsPage.jsx
+3. frontend/src/features/system/pages/GlobalSearchPage.jsx
+4. frontend/src/features/system/pages/ProfilePage.jsx
+5. frontend/src/features/system/pages/FileUploadManagerPage.jsx
+6. frontend/src/features/system/pages/FilePreviewPage.jsx
+7. frontend/src/features/system/pages/ActivityFeedPage.jsx
+8. frontend/src/features/system/pages/NotFoundPage.jsx
+
+Optimization:
+- Unify this NotFound with global NotFound page.
+- Standardize endpoint base URL usage to same API client.
+
+--------------------------------------------
+L) Extra duplicate pages
+--------------------------------------------
+
+1. frontend/src/pages/settings/SettingsPage.jsx
+2. frontend/src/features/settings/pages/SettingsPage.jsx
+- AppRoutes imports features/settings variant.
+- The pages/settings version looks redundant.
+
+3. frontend/src/pages/dashboard/DashboardPage.jsx
+4. frontend/src/pages/ai-assistant/AiAssistantPage.jsx
+- Not part of current AppRoutes tree.
+- Either integrate or remove.
+
+============================================================
+3) DUPLICATE CODE / ARCHITECTURE GAPS FOUND
+============================================================
+
+1. Duplicate route entries
+- /system/dashboard appears twice in AppRoutes.
+
+2. Duplicate auth slice implementations
+- features/auth/store/authSlice.js and features/auth/authSlice.js.
+- Root reducer currently uses store/authSlice, so the other is likely dead code.
+
+3. Duplicate page modules
+- Legacy auth pages under src/pages/auth and active auth pages under src/features/auth/pages.
+- Duplicate settings page under src/pages/settings and src/features/settings/pages.
+- Multiple NotFound pages.
+
+4. Multiple API client patterns
+- services/api/* has one style.
+- feature-specific service files create additional axios clients and independent mock interceptors.
+- Different env vars used: VITE_API_BASE_URL vs VITE_API_URL.
+
+5. Mock data spread across service files
+- teacherAPI, hodAPI, adminAPI, notesAPI, settingsAPI, aiAPI all include mock logic inline.
+- This mixes transport, fallback policy, and mock data in one place.
+
+6. UI duplication in table/list pages
+- Teacher/HOD/Admin pages repeat the same table shell + filter toolbar + empty state patterns.
+
+7. Layout overlap
+- DashboardLayout and AppLayout both represent dashboard shells.
+- MainLayout exists but not strongly integrated in route tree.
+
+============================================================
+4) SEPARATION OF CONCERNS TARGET DESIGN
+============================================================
+
+A. Presentation layer
+- Keep pages as composition-only shells.
+- Move business/data logic into:
+  - hooks (useXxxQuery/useXxxMutation/useXxxFilters)
+  - services/api adapters
+  - redux slices only when truly global
+
+B. Domain feature boundaries
+- Keep each feature self-contained:
+  - features/<domain>/pages
+  - features/<domain>/components
+  - features/<domain>/hooks
+  - features/<domain>/api
+  - features/<domain>/mappers
+  - features/<domain>/types
+
+C. Shared layer boundaries
+- shared/ui: reusable visual components only
+- shared/lib/http: one axios base client + auth refresh interceptor
+- shared/lib/query: shared React Query key factories and utilities
+- shared/utils: pure helpers only (no side effects)
+
+D. Mock strategy
+- Create one mock adapter switch by environment:
+  - VITE_API_MODE=real|mock
+- Keep mock payloads in fixtures files, not in service functions.
+
+============================================================
+5) OPTIMIZATION PLAN (NO DUPLICATES)
+============================================================
+
+Phase 1: Safe cleanup (no behavior change)
+1. Remove duplicate /system/dashboard route declaration.
+2. Remove or archive unused page stubs:
+   - src/pages/auth/*
+   - src/pages/settings/SettingsPage.jsx (if unused)
+   - any unreferenced page shells.
+3. Keep only one auth slice implementation (recommended: features/auth/store/authSlice.js).
+4. Keep one NotFound page and route all 404s to it with optional role-aware copy.
+
+Phase 2: API unification
+1. Define a single http client in services/api/axios.js.
+2. Convert feature service files to use that client only.
+3. Standardize env var naming:
+   - Use VITE_API_BASE_URL, VITE_AI_SERVICE_URL, VITE_RAG_SERVICE_URL consistently.
+4. Move fallback/mock logic to a separate adapter layer.
+
+Phase 3: Reusable UI patterns
+1. Extract shared data table shell component with:
+   - header actions slot
+   - filter toolbar slot
+   - loading state
+   - empty state
+2. Reuse across admin/teacher/hod list pages.
+3. Extract shared analytics card and chart wrappers.
+
+Phase 4: Hooks and query separation
+1. Add hooks per domain:
+   - useAuth, useCourses, useTeacherDashboard, useAdminUsers, useHodApprovals, etc.
+2. Keep page files under 150 lines where possible.
+3. Pages orchestrate only:
+   - read URL params
+   - call hooks
+   - render components
+
+============================================================
+6) CODE-LEVEL GUIDELINES TO PREVENT FUTURE DUPLICATION
+============================================================
+
+1. One source of truth for each concern:
+- One auth slice.
+- One API client base.
+- One route registry per role domain.
+
+2. No axios.create inside page-specific service files unless domain-isolated and justified.
+
+3. No inline mock datasets in production service files.
+- Keep fixtures in a dedicated mock folder.
+
+4. Route constants and links must use centralized route generators.
+- Prevent hardcoded path drift between sidebar and AppRoutes.
+
+5. Keep feature modules vertically sliced.
+- Do not place active feature pages under src/pages and src/features simultaneously.
+
+============================================================
+7) HIGH-PRIORITY FILES TO REFACTOR FIRST
+============================================================
+
+1. frontend/src/routes/AppRoutes.jsx
+- Remove duplicate route declaration and simplify route tree.
+
+2. frontend/src/features/auth/store/authSlice.js + frontend/src/features/auth/authSlice.js
+- Merge into a single auth state implementation.
+
+3. frontend/src/services/api/axios.js and per-feature API services
+- Unify transport layer and token refresh behavior.
+
+4. frontend/src/features/admin/services/adminAPI.js
+5. frontend/src/features/hod/services/hodAPI.js
+6. frontend/src/features/teacher/services/teacherAPI.js
+7. frontend/src/features/notes/services/notesAPI.js
+- Move large mock payloads to fixtures and split service responsibilities.
+
+============================================================
+8) SUMMARY
+============================================================
+
+Your frontend already has good domain segmentation by role/features, but duplication exists in routing, auth state, API clients, and legacy page stubs.
+
+To optimize with no duplicates and clean separation of concerns:
+- Keep one routing map per role and one fallback page.
+- Keep one auth slice and one API client strategy.
+- Move mock data and fallback rules out of service methods.
+- Convert repetitive page tables/forms/charts into reusable feature-agnostic components.
+- Keep pages thin and push logic into hooks/services.
+
+This document is now your baseline refactor map for frontend cleanup and scalability.

@@ -3,15 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Folder, FolderOpen, LayoutGrid } from 'lucide-react';
 import { NOTES_ROUTES } from '../constants/notesRoutes';
-
-// Mock data, normally fetched from API
-const MOCK_SUBJECTS = [
-  { id: 'mathematics', name: 'Mathematics', count: 1 },
-  { id: 'physics', name: 'Physics', count: 1 },
-  { id: 'chemistry', name: 'Chemistry', count: 1 },
-  { id: 'computer-networks', name: 'Computer Networks', count: 1 },
-  { id: 'data-structures', name: 'Data Structures', count: 1 },
-];
+import { mockNoteSubjects } from '@/shared/mocks/notes.mock';
 
 const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end }) => {
   const location = useLocation();
@@ -75,7 +67,7 @@ const SubjectSidebar = () => {
           </p>
         </div>
         
-        {MOCK_SUBJECTS.map((subject) => (
+        {mockNoteSubjects.map((subject) => (
           <SidebarLink
             key={subject.id}
             to={NOTES_ROUTES.SUBJECT(subject.id)}

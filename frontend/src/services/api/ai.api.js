@@ -1,14 +1,8 @@
-import axios from "axios";
-
-const aiApi = axios.create({
-  baseURL: import.meta.env.VITE_AI_SERVICE_URL || "/ai/v1",
-  timeout: 60000,
-  headers: { "Content-Type": "application/json" },
-});
+import { aiClient } from "@/shared/lib/http/axios";
 
 export const aiService = {
-  chat: (payload) => aiApi.post("/chat/", payload),
-  summarize: (payload) => aiApi.post("/summarize/", payload),
-  generateEmbeddings: (payload) => aiApi.post("/embeddings/", payload),
-  healthCheck: () => aiApi.get("/health/"),
+  chat: (payload) => aiClient.post("/chat/", payload),
+  summarize: (payload) => aiClient.post("/summarize/", payload),
+  generateEmbeddings: (payload) => aiClient.post("/embeddings/", payload),
+  healthCheck: () => aiClient.get("/health/"),
 };

@@ -8,45 +8,74 @@ import {
 import { CommandPalette } from '@/features/system/components/CommandPalette';
 
 const DashboardLayout = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Handle theme
-  useEffect(() => {
-    // Check local storage or system preference
-    const isDark = localStorage.getItem('theme') === 'dark' || 
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
-    setIsDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+  const applyTheme = useCallback((themeMode) => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const shouldUseDark = themeMode === 'dark' || (themeMode === 'system' && media.matches);
+    document.documentElement.classList.toggle('dark', shouldUseDark);
+    setIsDarkMode(shouldUseDark);
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    setIsDarkMode(prev => {
-      const newMode = !prev;
-      if (newMode) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const storedTheme = localStorage.getItem('theme') || 'system';
+    applyTheme(storedTheme);
+
+    const handleSystemThemeChange = () => {
+      const currentTheme = localStorage.getItem('theme') || 'system';
+      if (currentTheme === 'system') {
+        applyTheme('system');
       }
-      return newMode;
-    });
-  }, []);
+    };
+
+    const handleStorageThemeChange = (event) => {
+      if (event.key === 'theme') {
+        applyTheme(event.newValue || 'system');
+      }
+    };
+
+    const handleCustomThemeChange = (event) => {
+      const nextTheme = event?.detail?.theme || localStorage.getItem('theme') || 'system';
+      applyTheme(nextTheme);
+    };
+
+    if (media.addEventListener) {
+      media.addEventListener('change', handleSystemThemeChange);
+    } else {
+      media.addListener(handleSystemThemeChange);
+    }
+
+    window.addEventListener('storage', handleStorageThemeChange);
+    window.addEventListener('theme-change', handleCustomThemeChange);
+
+    return () => {
+      if (media.removeEventListener) {
+        media.removeEventListener('change', handleSystemThemeChange);
+      } else {
+        media.removeListener(handleSystemThemeChange);
+      }
+      window.removeEventListener('storage', handleStorageThemeChange);
+      window.removeEventListener('theme-change', handleCustomThemeChange);
+    };
+  }, [applyTheme]);
+
+  const toggleTheme = useCallback(() => {
+    const currentTheme = localStorage.getItem('theme') || 'system';
+    const isCurrentlyDark = currentTheme === 'dark' || (currentTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const nextTheme = isCurrentlyDark ? 'light' : 'dark';
+    localStorage.setItem('theme', nextTheme);
+    applyTheme(nextTheme);
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: nextTheme } }));
+  }, [applyTheme]);
 
   // Handle responsive behavior
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSidebarCollapsed(false);
-      } else if (window.innerWidth < 1024) {
+      if (window.innerWidth < 1024) {
         setIsSidebarCollapsed(true);
       }
     };

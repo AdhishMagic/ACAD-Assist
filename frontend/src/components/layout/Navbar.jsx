@@ -16,9 +16,9 @@ const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
           <Menu className="h-6 w-6" />
         </button>
         
-        <div className="hidden md:flex items-center mr-8">
-          <Link to="/dashboard" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-            ACAD-Assist
+        <div className="flex items-center mr-4 sm:mr-8">
+          <Link to="/dashboard" className="text-lg sm:text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 whitespace-nowrap">
+            ACAD Assist
           </Link>
         </div>
 

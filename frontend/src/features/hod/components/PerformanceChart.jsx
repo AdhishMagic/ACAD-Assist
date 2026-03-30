@@ -42,7 +42,7 @@ export function PerformanceChart({ data }) {
             {/* Course Activity Chart */}
             <TabsContent value="courseActivity">
               <motion.div {...chartReveal} className="h-[380px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                   <BarChart data={data.courseActivity} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -60,7 +60,7 @@ export function PerformanceChart({ data }) {
             {/* Materials per Course Chart */}
             <TabsContent value="materials">
               <motion.div {...chartReveal} className="h-[380px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                   <BarChart data={data.materialsPerCourse} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -78,7 +78,7 @@ export function PerformanceChart({ data }) {
             {/* AI Content Usage Chart */}
             <TabsContent value="aiContent">
               <motion.div {...chartReveal} className="h-[380px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                   <AreaChart data={data.aiContentUsage} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="perfGenerated" x1="0" y1="0" x2="0" y2="1">

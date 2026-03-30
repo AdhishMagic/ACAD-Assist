@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SettingsCard } from './SettingsCard';
 import { Label } from '@/components/ui/label';
 import { useSettings } from '../hooks/useSettings';
@@ -8,14 +8,29 @@ import { motion } from 'framer-motion';
 
 export function AppearanceSettings() {
   const { settings, updateSettings } = useSettings();
-  
-  const currentTheme = settings?.theme || 'system';
 
-  const handleThemeChange = (theme) => {
-    updateSettings({ theme });
-    // Side effect: update document body class or theme provider
-    if (theme === 'dark') document.documentElement.classList.add('dark');
-    else if (theme === 'light') document.documentElement.classList.remove('dark');
+  const currentTheme = settings?.appearance?.theme || settings?.theme || localStorage.getItem('theme') || 'system';
+  const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+
+  useEffect(() => {
+    setSelectedTheme(currentTheme);
+  }, [currentTheme]);
+
+  const applyTheme = (theme) => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldUseDark = theme === 'dark' || (theme === 'system' && prefersDark);
+    document.documentElement.classList.toggle('dark', shouldUseDark);
+    localStorage.setItem('theme', theme);
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme } }));
+  };
+
+  const handleThemeChange = async (theme) => {
+    setSelectedTheme(theme);
+    applyTheme(theme);
+    await updateSettings({
+      appearance: { theme },
+      theme,
+    });
   };
 
   const themes = [
@@ -31,7 +46,7 @@ export function AppearanceSettings() {
           <Label className="text-base font-semibold">Interface Theme</Label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
             {themes.map(({ id, icon: Icon, label, desc }) => {
-              const isActive = currentTheme === id;
+              const isActive = selectedTheme === id;
               return (
                 <button
                   key={id}

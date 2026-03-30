@@ -1,17 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useCallback } from "react";
-import { loginThunk, registerThunk, logoutThunk, getProfileThunk } from "@/features/auth/authThunks";
-import { clearError } from "@/features/auth/authSlice";
+import { logout, selectCurrentUser, selectIsAuthenticated } from "@/features/auth/store/authSlice";
 
 export function useAuth() {
   const dispatch = useDispatch();
-  const { user, isAuthenticated, isLoading, error } = useSelector((state) => state.auth);
+  const user = useSelector(selectCurrentUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  const login = useCallback((credentials) => dispatch(loginThunk(credentials)), [dispatch]);
-  const register = useCallback((userData) => dispatch(registerThunk(userData)), [dispatch]);
-  const logout = useCallback(() => dispatch(logoutThunk()), [dispatch]);
-  const fetchProfile = useCallback(() => dispatch(getProfileThunk()), [dispatch]);
-  const resetError = useCallback(() => dispatch(clearError()), [dispatch]);
+  const logoutUser = useCallback(() => dispatch(logout()), [dispatch]);
 
-  return { user, isAuthenticated, isLoading, error, login, register, logout, fetchProfile, resetError };
+  return { user, isAuthenticated, logout: logoutUser };
 }

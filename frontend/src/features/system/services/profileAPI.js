@@ -1,9 +1,6 @@
-import axios from "axios";
 import { getDisplayNameFromUser, toTitleCase } from "@/utils/helpers";
-
-const api = axios.create({
-  baseURL: "/api",
-});
+import { apiClient } from "@/shared/lib/http/axios";
+import { delay, shouldFallbackToMock } from "@/shared/lib/http/apiMode";
 
 const getStoredAuthUser = () => {
   try {
@@ -24,17 +21,17 @@ const getStoredActiveRole = () => {
 
 export const profileAPI = {
   getProfile: async () => {
-    // const response = await api.get('/user/profile');
-    // return response.data;
-
-    // Frontend fallback (no backend yet): derive profile from the logged-in user.
-    return new Promise((resolve) => {
-      setTimeout(() => {
+    try {
+      const response = await apiClient.get('/user/profile');
+      return response.data;
+    } catch (error) {
+      if (!shouldFallbackToMock(error)) throw error;
+      await delay(150);
         const user = getStoredAuthUser();
         const activeRole = getStoredActiveRole();
         const roleRaw = activeRole || user?.role || "student";
 
-        resolve({
+        return {
           id: user?.id ?? "u123",
           name: getDisplayNameFromUser(user) || "User",
           email: user?.email || "",
@@ -46,17 +43,16 @@ export const profileAPI = {
             notesSaved: 12,
             testsTaken: 3,
           },
-        });
-      }, 150);
-    });
+        };
+    }
   },
   updateProfile: async (data) => {
-    // const response = await api.put('/user/profile', data);
-    // return response.data;
-
-    // Frontend fallback: persist changes to localStorage so the UI updates.
-    return new Promise((resolve) => {
-      setTimeout(() => {
+    try {
+      const response = await apiClient.put('/user/profile', data);
+      return response.data;
+    } catch (error) {
+      if (!shouldFallbackToMock(error)) throw error;
+      await delay(300);
         try {
           const user = getStoredAuthUser() || {};
           const next = { ...user, ...(data || {}) };
@@ -64,13 +60,17 @@ export const profileAPI = {
         } catch {
           // ignore storage failures
         }
-        resolve({ success: true });
-      }, 300);
-    });
+        return { success: true };
+    }
   },
   updatePassword: async (data) => {
-    // const response = await api.put('/user/password', data);
-    // return response.data;
-    return new Promise(resolve => setTimeout(() => resolve({ success: true }), 500));
+    try {
+      const response = await apiClient.put('/user/password', data);
+      return response.data;
+    } catch (error) {
+      if (!shouldFallbackToMock(error)) throw error;
+      await delay(500);
+      return { success: true };
+    }
   }
 };

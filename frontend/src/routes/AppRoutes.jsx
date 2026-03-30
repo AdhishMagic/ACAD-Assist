@@ -1,49 +1,11 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import { DashboardLayout, AuthLayout, MainLayout } from "@/layouts";
-import LandingPage from "@/features/landing/pages/LandingPage";
+import { DashboardLayout, AuthLayout } from "@/layouts";
+import { ROUTE_PATHS } from "@/app/routes/routePaths";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { RoleGuard } from "./RoleGuard";
 import { RoleBasedRedirect } from "./RoleBasedRedirect";
-import { LoginPage } from "@/features/auth/pages/LoginPage";
-import { RegisterPage } from "@/features/auth/pages/RegisterPage";
-import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
-import RoleConfirmPage from "@/features/auth/pages/RoleConfirmPage";
-import StudentDashboard from "@/features/student/pages/StudentDashboard";
-import StudyOverviewPage from "@/features/student/pages/StudyOverviewPage";
-import StudyAnalyticsPage from "@/features/student/pages/StudyAnalyticsPage";
-import ProjectSubmissionPage from "@/features/student/pages/ProjectSubmissionPage";
-import OnlineTestPage from "@/features/student/pages/OnlineTestPage";
-import OnlineTestLegacyRedirect from "@/features/student/pages/OnlineTestLegacyRedirect";
-import CoursesPage from "@/pages/courses/CoursesPage";
-import CourseDetailPage from "@/pages/courses/CourseDetailPage";
-import LessonPage from "@/pages/courses/LessonPage";
-import KnowledgeRepoPage from "@/pages/knowledge-repo/KnowledgeRepoPage";
-import DocumentDetailPage from "@/pages/knowledge-repo/DocumentDetailPage";
-import GeneratorPage from "@/pages/qpaper/GeneratorPage";
-import PaperPreviewPage from "@/pages/qpaper/PaperPreviewPage";
-import SettingsPage from "@/features/settings/pages/SettingsPage";
 import NotFoundPage from "@/pages/NotFoundPage";
-
-// System Utility Pages
-import NotificationsPage from "@/features/system/pages/NotificationsPage";
-import GlobalSearchPage from "@/features/system/pages/GlobalSearchPage";
-import ProfilePage from "@/features/system/pages/ProfilePage";
-import { FileUploadManagerPage } from "@/features/system/pages/FileUploadManagerPage";
-import { FilePreviewPage } from "@/features/system/pages/FilePreviewPage";
-import { ActivityFeedPage } from "@/features/system/pages/ActivityFeedPage";
-import { NotFoundPage as SystemNotFoundPage } from "@/features/system/pages/NotFoundPage";
-import SystemDashboardPage from "@/features/system/pages/SystemDashboardPage";
-
-// Notes System
-import NotesExplorer from "@/features/notes/pages/NotesExplorer";
-import SubjectNotesPage from "@/features/notes/pages/SubjectNotesPage";
-import NotesViewer from "@/features/notes/pages/NotesViewer";
-
-// AI Study System Pages
-import AIChatPage from "@/features/ai/pages/AIChatPage";
-import SavedNotesPage from "@/features/ai/pages/SavedNotesPage";
-import GeneratedNotesPage from "@/features/ai/pages/GeneratedNotesPage";
-import GeneratedNotesLibraryPage from "@/features/ai/pages/GeneratedNotesLibraryPage";
 
 // Teacher Management System
 import { teacherRoutes } from "@/features/teacher/constants/teacherRoutes";
@@ -55,29 +17,67 @@ import { hodRoutes } from "@/features/hod/constants/hodRoutes";
 // Admin System
 import { adminRoutes } from "@/features/admin/constants/adminRoutes.jsx";
 
+const LandingPage = lazy(() => import("@/features/landing/pages/LandingPage"));
+const RoleConfirmPage = lazy(() => import("@/features/auth/pages/RoleConfirmPage"));
+const SettingsPage = lazy(() => import("@/features/settings/pages/SettingsPage"));
+const StudentDashboard = lazy(() => import("@/features/student/pages/StudentDashboard"));
+const StudyOverviewPage = lazy(() => import("@/features/student/pages/StudyOverviewPage"));
+const StudyAnalyticsPage = lazy(() => import("@/features/student/pages/StudyAnalyticsPage"));
+const ProjectSubmissionPage = lazy(() => import("@/features/student/pages/ProjectSubmissionPage"));
+const OnlineTestPage = lazy(() => import("@/features/student/pages/OnlineTestPage"));
+const OnlineTestLegacyRedirect = lazy(() => import("@/features/student/pages/OnlineTestLegacyRedirect"));
+const KnowledgeRepoPage = lazy(() => import("@/pages/knowledge-repo/KnowledgeRepoPage"));
+const DocumentDetailPage = lazy(() => import("@/pages/knowledge-repo/DocumentDetailPage"));
+const GeneratorPage = lazy(() => import("@/pages/qpaper/GeneratorPage"));
+const PaperPreviewPage = lazy(() => import("@/pages/qpaper/PaperPreviewPage"));
+const NotificationsPage = lazy(() => import("@/features/system/pages/NotificationsPage"));
+const ProfilePage = lazy(() => import("@/features/system/pages/ProfilePage"));
+const FileUploadManagerPage = lazy(() =>
+  import("@/features/system/pages/FileUploadManagerPage").then((module) => ({ default: module.FileUploadManagerPage }))
+);
+const FilePreviewPage = lazy(() =>
+  import("@/features/system/pages/FilePreviewPage").then((module) => ({ default: module.FilePreviewPage }))
+);
+const ActivityFeedPage = lazy(() =>
+  import("@/features/system/pages/ActivityFeedPage").then((module) => ({ default: module.ActivityFeedPage }))
+);
+const SystemDashboardPage = lazy(() => import("@/features/system/pages/SystemDashboardPage"));
+const NotesExplorer = lazy(() => import("@/features/notes/pages/NotesExplorer"));
+const SubjectNotesPage = lazy(() => import("@/features/notes/pages/SubjectNotesPage"));
+const NotesViewer = lazy(() => import("@/features/notes/pages/NotesViewer"));
+const AIChatPage = lazy(() => import("@/features/ai/pages/AIChatPage"));
+const SavedNotesPage = lazy(() => import("@/features/ai/pages/SavedNotesPage"));
+const GeneratedNotesPage = lazy(() => import("@/features/ai/pages/GeneratedNotesPage"));
+const GeneratedNotesLibraryPage = lazy(() => import("@/features/ai/pages/GeneratedNotesLibraryPage"));
+const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage").then((module) => ({ default: module.LoginPage })));
+const RegisterPage = lazy(() => import("@/features/auth/pages/RegisterPage").then((module) => ({ default: module.RegisterPage })));
+const ForgotPasswordPage = lazy(() =>
+  import("@/features/auth/pages/ForgotPasswordPage").then((module) => ({ default: module.ForgotPasswordPage }))
+);
+
 export function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
+    <Suspense fallback={<div className="p-8 text-sm text-muted-foreground">Loading...</div>}>
+      <Routes>
+      <Route path={ROUTE_PATHS.ROOT} element={<LandingPage />} />
 
       <Route element={<AuthLayout />}>
-        <Route path="/choose-role" element={<RoleConfirmPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path={ROUTE_PATHS.CHOOSE_ROLE} element={<RoleConfirmPage />} />
+        <Route path={ROUTE_PATHS.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTE_PATHS.REGISTER} element={<RegisterPage />} />
+        <Route path={ROUTE_PATHS.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           {/* Common Authenticated Routes */}
-          <Route path="/dashboard" element={<RoleBasedRedirect />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/search" element={<GlobalSearchPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/file-manager" element={<FileUploadManagerPage />} />
-          <Route path="/file-preview/:fileId" element={<FilePreviewPage />} />
-          <Route path="/activity-feed" element={<ActivityFeedPage />} />
+          <Route path={ROUTE_PATHS.DASHBOARD} element={<RoleBasedRedirect />} />
+          <Route path={ROUTE_PATHS.NOTIFICATIONS} element={<NotificationsPage />} />
+          <Route path={ROUTE_PATHS.PROFILE} element={<ProfilePage />} />
+          <Route path={ROUTE_PATHS.SETTINGS} element={<SettingsPage />} />
+          <Route path={ROUTE_PATHS.FILE_MANAGER} element={<FileUploadManagerPage />} />
+          <Route path={ROUTE_PATHS.FILE_PREVIEW} element={<FilePreviewPage />} />
+          <Route path={ROUTE_PATHS.ACTIVITY_FEED} element={<ActivityFeedPage />} />
 
           {/* Published Online Test (all authenticated roles) */}
           <Route path="/online-test/:examId" element={<OnlineTestPage />} />
@@ -86,7 +86,7 @@ export function AppRoutes() {
 
           {/* System Routes */}
           <Route element={<RoleGuard allowedRoles={['system']} />}>
-            <Route path="/system/dashboard" element={<SystemDashboardPage />} />
+            <Route path={ROUTE_PATHS.SYSTEM_DASHBOARD} element={<SystemDashboardPage />} />
           </Route>
 
           {/* Student Routes */}
@@ -94,9 +94,6 @@ export function AppRoutes() {
             <Route path="/student">
               <Route path="dashboard" element={<StudentDashboard />} />
               <Route path="study-overview" element={<StudyOverviewPage />} />
-              <Route path="courses" element={<CoursesPage />} />
-              <Route path="courses/:id" element={<CourseDetailPage />} />
-              <Route path="courses/:courseId/lessons/:lessonId" element={<LessonPage />} />
               <Route path="knowledge" element={<KnowledgeRepoPage />} />
               <Route path="knowledge/:id" element={<DocumentDetailPage />} />
               <Route path="qpaper/generate" element={<GeneratorPage />} />
@@ -139,14 +136,11 @@ export function AppRoutes() {
             ))}
           </Route>
 
-          {/* System Role Routes */}
-          <Route element={<RoleGuard allowedRoles={['system']} />}>
-            <Route path="/system/dashboard" element={<SystemDashboardPage />} />
-          </Route>
         </Route>
       </Route>
 
-      <Route path="*" element={<SystemNotFoundPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </Suspense>
   );
 }

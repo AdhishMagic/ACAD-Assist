@@ -18,7 +18,7 @@ export const SystemUsageChart = ({ data }) => {
       </CardHeader>
       <CardContent className="h-[300px]">
         {data && data.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
             <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />

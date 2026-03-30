@@ -13,6 +13,11 @@ export function RoleGuard({ allowedRoles, children }) {
     return <Navigate to="/choose-role" replace />;
   }
 
+  // Admin is treated as a super-role with access to all feature areas.
+  if (activeRole === 'admin') {
+    return children ? children : <Outlet />;
+  }
+
   if (!allowedRoles.includes(activeRole)) {
     return <Navigate to="/dashboard" replace />;
   }

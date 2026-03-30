@@ -43,7 +43,7 @@ export function EngagementChart({ data }) {
             {/* Student Activity per Course */}
             <TabsContent value="activity">
               <motion.div {...chartReveal} className="h-[380px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                   <BarChart data={data.activityPerCourse} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -60,7 +60,7 @@ export function EngagementChart({ data }) {
             {/* Avg Study Hours */}
             <TabsContent value="studyHours">
               <motion.div {...chartReveal} className="h-[380px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                   <LineChart data={data.avgStudyHours} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -83,7 +83,7 @@ export function EngagementChart({ data }) {
             {/* AI Assistant Usage */}
             <TabsContent value="aiUsage">
               <motion.div {...chartReveal} className="h-[380px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
                   <AreaChart data={data.aiAssistantUsage} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="engQueries" x1="0" y1="0" x2="0" y2="1">

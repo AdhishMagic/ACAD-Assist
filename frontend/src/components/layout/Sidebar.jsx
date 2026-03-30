@@ -1,112 +1,194 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  LayoutDashboard, 
-  PlayCircle,
+  LayoutDashboard,
   BookOpen, 
-  Library,
   BrainCircuit, 
+  FileText,
+  FileQuestion,
+  BarChart3,
   Bookmark,
-  BarChart,
-  Bell,
-  Search,
-  User,
+  Upload,
   Settings, 
+  LogOut,
   ChevronLeft,
   ChevronRight,
   X,
   Users,
   Activity,
-  FileText,
   CheckSquare,
   TrendingUp,
   FileCheck,
   ShieldCheck,
-  Database,
-  Upload,
-  Braces
+  Database
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
+import { logout, selectCurrentUser } from '../../features/auth/store/authSlice';
+import { getDisplayNameFromUser, getInitials, toTitleCase } from '@/utils/helpers';
 
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
-  const { user, activeRole } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
+  const user = useSelector(selectCurrentUser);
+  const activeRole = useSelector((state) => state.auth.activeRole);
+  const { pathname } = useLocation();
   const userRole = activeRole || user?.role || 'student'; // fallback
+  const displayName = getDisplayNameFromUser(user) || 'User';
+  const initials = getInitials(displayName || user?.email);
+  const roleLabel = toTitleCase(userRole || 'student');
 
-  const getNavItems = () => {
-    const commonItems = [
-      { label: 'Search', icon: Search, to: '/search' },
-      { label: 'Notifications', icon: Bell, to: '/notifications' },
-      { label: 'Profile', icon: User, to: '/profile' },
-      { label: 'Settings', icon: Settings, to: '/settings' },
-    ];
-
-    const studentItems = [
-      { label: 'Student Dashboard', icon: LayoutDashboard, to: '/student/dashboard' },
-      { label: 'Study Overview', icon: PlayCircle, to: '/student/study-overview' },
-      { label: 'Courses', icon: Library, to: '/student/courses' },
-      { label: 'Notes Explorer', icon: BookOpen, to: '/student/notes' },
-      { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai' },
-      { label: 'Saved / Bookmarked Notes', icon: Bookmark, to: '/student/ai/saved-notes' },
-      { label: 'AI Generated Notes Viewer', icon: FileText, to: '/student/ai/generated' },
-      { label: 'Question Paper', icon: FileText, to: '/student/qpaper/generate' },
-      { label: 'Student Analytics', icon: BarChart, to: '/student/analytics' },
-      { label: 'Project Submission', icon: FileText, to: '/student/project-submission' },
-    ];
-
-    const teacherItems = [
-      { label: 'Teacher Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
-      { label: 'Classes Overview', icon: Users, to: '/teacher/classes' },
-      { label: 'Student Activity Monitor', icon: Activity, to: '/teacher/activity' },
-      { label: 'Notes Creation Studio', icon: FileText, to: '/teacher/notes-studio' },
-      { label: 'Materials Upload Page', icon: Upload, to: '/teacher/materials-upload' },
-      { label: 'JSON Template Builder', icon: Braces, to: '/teacher/template-builder' },
-      { label: 'Template Preview Page', icon: FileText, to: '/teacher/template-preview' },
-      { label: 'Question Paper Generator', icon: FileText, to: '/teacher/question-generator' },
-      { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
-    ];
-
-    const hodItems = [
-      { label: 'HOD Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
-      { label: 'Department Performance', icon: TrendingUp, to: '/hod/performance' },
-      { label: 'Teacher Contributions', icon: Users, to: '/hod/teacher-contributions' },
-      { label: 'Course Materials Approval', icon: CheckSquare, to: '/hod/material-approval' },
-      { label: 'Student Engagement Analytics', icon: Activity, to: '/hod/student-engagement' },
-      { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
-    ];
-
-    const adminItems = [
-      { label: 'Admin Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
-      { label: 'System Analytics', icon: BarChart, to: '/admin/analytics' },
-      { label: 'User Management', icon: Users, to: '/admin/users' },
-      { label: 'Role Management', icon: ShieldCheck, to: '/admin/roles' },
-      { label: 'Activity Logs', icon: Activity, to: '/admin/activity-logs' },
-      { label: 'Storage Management', icon: Database, to: '/admin/storage' },
-      { label: 'AI Usage Analytics', icon: BrainCircuit, to: '/admin/ai-usage' },
-    ];
-
-    const systemItems = [
-      { label: 'System Dashboard', icon: LayoutDashboard, to: '/system/dashboard' },
-      { label: 'Activity Feed', icon: Activity, to: '/activity-feed' },
-      { label: 'File Manager', icon: Database, to: '/file-manager' },
-    ];
-
-    switch (userRole) {
-      case 'admin':
-        return [...adminItems, ...commonItems];
-      case 'hod':
-        return [...hodItems, ...commonItems];
-      case 'teacher':
-        return [...teacherItems, ...commonItems];
-      case 'system':
-        return [...systemItems, ...commonItems];
-      case 'student':
-      default:
-        return [...studentItems, ...commonItems];
-    }
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
   };
 
-  const navItems = getNavItems();
+  const normalizePath = (path) => {
+    if (!path) return '/';
+    const normalized = path.replace(/\/+$/, '');
+    return normalized || '/';
+  };
+
+  const navSections = useMemo(() => {
+    const studentSections = [
+      {
+        title: 'Academic',
+        items: [
+          { label: 'Study Overview', icon: LayoutDashboard, to: '/student/study-overview' },
+          { label: 'Notes Explorer', icon: BookOpen, to: '/student/notes' },
+        ],
+      },
+      {
+        title: 'AI Tools',
+        items: [
+          { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai', end: true },
+          { label: 'AI Generated Notes', icon: FileText, to: '/student/ai/generated' },
+          { label: 'Question Paper', icon: FileQuestion, to: '/student/qpaper/generate' },
+        ],
+      },
+      {
+        title: 'Insights',
+        items: [
+          { label: 'Student Analytics', icon: BarChart3, to: '/student/analytics' },
+          { label: 'Saved / Bookmarked', icon: Bookmark, to: '/student/ai/saved-notes' },
+        ],
+      },
+      {
+        title: 'System',
+        items: [
+          { label: 'Project Submission', icon: Upload, to: '/student/project-submission' },
+        ],
+      },
+    ];
+
+    const roleItems = {
+      teacher: [
+        { label: 'Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
+        { label: 'Classes', icon: Users, to: '/teacher/classes' },
+        { label: 'Activity Monitor', icon: Activity, to: '/teacher/activity' },
+        { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
+        { label: 'AI Exam Generation', icon: Upload, to: '/teacher/materials-upload' },
+        { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
+      ],
+      hod: [
+        { label: 'Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
+        { label: 'Department Performance', icon: TrendingUp, to: '/hod/performance' },
+        { label: 'Teacher Contributions', icon: Users, to: '/hod/teacher-contributions' },
+        { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
+        { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
+      ],
+    };
+
+    if (userRole === 'student') {
+      return studentSections;
+    }
+
+    if (userRole === 'admin') {
+      return [
+        {
+          title: 'Admin',
+          items: [
+            { label: 'Admin Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
+            { label: 'System Analytics', icon: BarChart3, to: '/admin/analytics' },
+            { label: 'User Management', icon: Users, to: '/admin/users' },
+            { label: 'Role Management', icon: ShieldCheck, to: '/admin/roles' },
+            { label: 'Activity Logs', icon: Activity, to: '/admin/activity-logs' },
+            { label: 'Storage Management', icon: Database, to: '/admin/storage' },
+            { label: 'AI Usage Analytics', icon: BrainCircuit, to: '/admin/ai-usage' },
+          ],
+        },
+        {
+          title: 'Student Features',
+          items: [
+            { label: 'Student Dashboard', icon: LayoutDashboard, to: '/student/dashboard' },
+            { label: 'Study Overview', icon: LayoutDashboard, to: '/student/study-overview' },
+            { label: 'Knowledge Repository', icon: BookOpen, to: '/student/knowledge' },
+            { label: 'Notes Explorer', icon: BookOpen, to: '/student/notes' },
+            { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai', end: true },
+            { label: 'Saved / Bookmarked', icon: Bookmark, to: '/student/ai/saved-notes' },
+            { label: 'AI Generated Notes', icon: FileText, to: '/student/ai/generated' },
+            { label: 'Question Paper', icon: FileQuestion, to: '/student/qpaper/generate' },
+            { label: 'Student Analytics', icon: BarChart3, to: '/student/analytics' },
+            { label: 'Project Submission', icon: Upload, to: '/student/project-submission' },
+          ],
+        },
+        {
+          title: 'Teacher Features',
+          items: [
+            { label: 'Teacher Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
+            { label: 'Classes', icon: Users, to: '/teacher/classes' },
+            { label: 'Activity Monitor', icon: Activity, to: '/teacher/activity' },
+            { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
+            { label: 'AI Exam Generation', icon: Upload, to: '/teacher/materials-upload' },
+            { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
+          ],
+        },
+        {
+          title: 'HOD Features',
+          items: [
+            { label: 'HOD Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
+            { label: 'Department Performance', icon: TrendingUp, to: '/hod/performance' },
+            { label: 'Teacher Contributions', icon: Users, to: '/hod/teacher-contributions' },
+            { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
+            { label: 'Student Engagement', icon: Activity, to: '/hod/student-engagement' },
+            { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
+          ],
+        },
+      ];
+    }
+
+    return [
+      {
+        title: 'Workspace',
+        items: roleItems[userRole] || [{ label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' }],
+      },
+      {
+        title: 'System',
+        items: [],
+      },
+    ];
+  }, [userRole]);
+
+  const visibleNavSections = navSections.filter((section) => section.items.length > 0);
+
+  const navItems = visibleNavSections.flatMap((section) => section.items);
+  const currentPath = normalizePath(pathname);
+  const isExpanded = isMobileOpen || !isCollapsed || isHovered;
+
+  const matchesItem = (item) => {
+    const targetPath = normalizePath(item.to);
+    if (item.end) {
+      return currentPath === targetPath;
+    }
+    return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+  };
+
+  const activeItem = navItems
+    .filter(matchesItem)
+    .sort((a, b) => normalizePath(b.to).length - normalizePath(a.to).length)[0];
+  const activePath = activeItem ? normalizePath(activeItem.to) : '';
 
   return (
     <>
@@ -122,26 +204,25 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       <motion.aside
         initial={false}
         animate={{ 
-          width: isMobileOpen || !isCollapsed ? 240 : 72,
-          x: isMobileOpen ? 0 : 0
+          width: isExpanded ? 264 : 72,
+          x: 0
         }}
-        className={`fixed md:sticky top-0 left-0 z-40 h-screen flex flex-col bg-slate-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-transform md:translate-x-0 ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        transition={{ duration: 0.26, ease: 'easeInOut' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`fixed md:sticky top-0 left-0 z-40 h-screen flex flex-col bg-slate-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-transform duration-300 ease-in-out md:translate-x-0 ${
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
-          <div className="flex items-center">
-            {/* Show logo or simple icon depending on collapse state */}
-            {(!isCollapsed || isMobileOpen) && (
-              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                ACAD-Assist
-              </span>
-            )}
-            {isCollapsed && !isMobileOpen && (
-              <div className="w-8 h-8 rounded bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold ml-1">
-                A
-              </div>
-            )}
+          <div className="w-full flex items-center justify-center md:justify-start">
+            <button
+              type="button"
+              className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold shadow-sm"
+              aria-label="ACAD Assist"
+            >
+              A
+            </button>
           </div>
           
           <button 
@@ -152,25 +233,66 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 scrollbar-hide">
-          {navItems.map((item) => (
-            <SidebarItem
-              key={item.to}
-              icon={item.icon}
-              label={item.label}
-              to={item.to}
-              isCollapsed={isCollapsed && !isMobileOpen}
-            />
+        <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-hide">
+          {visibleNavSections.map((section) => (
+            <div key={section.title} className="mb-5">
+              {isExpanded && (
+                <p className="px-3 mb-1.5 text-[11px] font-semibold tracking-[0.08em] uppercase text-gray-400 dark:text-gray-500">
+                  {section.title}
+                </p>
+              )}
+              {section.items.map((item) => (
+                <SidebarItem
+                  key={item.to}
+                  icon={item.icon}
+                  label={item.label}
+                  to={item.to}
+                  isActive={normalizePath(item.to) === activePath}
+                  isCollapsed={!isExpanded}
+                />
+              ))}
+            </div>
           ))}
         </nav>
 
-        <div className="p-3 border-t border-gray-200 dark:border-gray-800 hidden md:flex justify-end">
-          <button
-            onClick={toggleCollapse}
-            className="p-1.5 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors w-full flex justify-center"
-          >
-            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-          </button>
+        <div className="p-3 border-t border-gray-200 dark:border-gray-800 space-y-3">
+          <div className="flex items-center gap-2.5 min-h-10">
+            <div className="h-9 w-9 rounded-full bg-blue-500/90 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
+              {initials}
+            </div>
+            {isExpanded && (
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{displayName}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{roleLabel}</p>
+              </div>
+            )}
+          </div>
+
+          <div className={`flex items-center ${isExpanded ? 'justify-between' : 'justify-center flex-col gap-2'}`}>
+            <button
+              onClick={toggleCollapse}
+              title={isCollapsed ? 'Pin sidebar open' : 'Collapse sidebar'}
+              className="p-2 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-200"
+            >
+              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </button>
+
+            <button
+              onClick={() => navigate('/settings')}
+              title="Settings"
+              className="p-2 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-200"
+            >
+              <Settings className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={handleLogout}
+              title="Sign out"
+              className="p-2 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </motion.aside>
     </>
