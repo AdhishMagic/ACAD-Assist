@@ -25,7 +25,7 @@ export const RegisterForm = () => {
   const registerMutation = useMutation({
     mutationFn: authAPI.register,
     onSuccess: () => {
-      navigate(AUTH_ROUTES.CHOOSE_ROLE, { state: { message: 'Registration successful. Please choose your access type, then sign in to continue.' } });
+      navigate(AUTH_ROUTES.LOGIN, { state: { message: 'Registration successful. Please sign in to continue.' } });
     },
   });
 
@@ -56,12 +56,10 @@ export const RegisterForm = () => {
     const lastName = nameParts.slice(1).join(' ') || '';
 
     registerMutation.mutate({
-      username: formData.email.split('@')[0], // Create a default username from email
       first_name: firstName,
       last_name: lastName,
       email: formData.email,
       password: formData.password,
-      password_confirm: formData.confirmPassword
     });
   };
 

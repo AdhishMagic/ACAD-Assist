@@ -3,7 +3,6 @@ export const ROUTE_PATHS = {
   LOGIN: "/login",
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",
-  CHOOSE_ROLE: "/choose-role",
   DASHBOARD: "/dashboard",
   SETTINGS: "/settings",
   NOTIFICATIONS: "/notifications",

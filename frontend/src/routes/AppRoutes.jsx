@@ -18,7 +18,6 @@ import { hodRoutes } from "@/features/hod/constants/hodRoutes";
 import { adminRoutes } from "@/features/admin/constants/adminRoutes.jsx";
 
 const LandingPage = lazy(() => import("@/features/landing/pages/LandingPage"));
-const RoleConfirmPage = lazy(() => import("@/features/auth/pages/RoleConfirmPage"));
 const SettingsPage = lazy(() => import("@/features/settings/pages/SettingsPage"));
 const StudentDashboard = lazy(() => import("@/features/student/pages/StudentDashboard"));
 const StudyOverviewPage = lazy(() => import("@/features/student/pages/StudyOverviewPage"));
@@ -62,7 +61,6 @@ export function AppRoutes() {
       <Route path={ROUTE_PATHS.ROOT} element={<LandingPage />} />
 
       <Route element={<AuthLayout />}>
-        <Route path={ROUTE_PATHS.CHOOSE_ROLE} element={<RoleConfirmPage />} />
         <Route path={ROUTE_PATHS.LOGIN} element={<LoginPage />} />
         <Route path={ROUTE_PATHS.REGISTER} element={<RegisterPage />} />
         <Route path={ROUTE_PATHS.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />

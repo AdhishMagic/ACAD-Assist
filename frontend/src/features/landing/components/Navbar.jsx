@@ -109,7 +109,7 @@ const Navbar = () => {
         
         <div className="flex items-center gap-4">
           <Button variant="ghost" asChild className="hidden sm:inline-flex">
-            <Link to="/choose-role">Login</Link>
+            <Link to="/login">Login</Link>
           </Button>
           <Button asChild>
             <Link to="/register">Get Started</Link>
@@ -163,7 +163,7 @@ const Navbar = () => {
 
             <div className="pt-2 flex flex-col gap-2 sm:hidden">
               <Button variant="ghost" asChild className="justify-start">
-                <Link to="/choose-role" onClick={() => setMobileOpen(false)}>
+                <Link to="/login" onClick={() => setMobileOpen(false)}>
                   Login
                 </Link>
               </Button>

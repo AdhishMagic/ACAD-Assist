@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { AuthCard } from '../components/AuthCard';
 import { LoginForm } from '../components/LoginForm';
 import { AUTH_ROUTES } from '../constants/authRoutes';
@@ -12,15 +11,6 @@ export const LoginPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const message = location.state?.message;
-  const pendingRole = useSelector((state) => state.auth.pendingRole);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  React.useEffect(() => {
-    // Require role selection only before login.
-    if (!isAuthenticated && !pendingRole) {
-      navigate(AUTH_ROUTES.CHOOSE_ROLE, { replace: true });
-    }
-  }, [pendingRole, isAuthenticated, navigate]);
 
   return (
     <div className="w-full flex flex-col">
@@ -41,7 +31,7 @@ export const LoginPage = () => {
               type="button"
               variant="outline"
               className="w-full"
-              onClick={() => navigate(AUTH_ROUTES.CHOOSE_ROLE)}
+              onClick={() => navigate('/')}
             >
               Back
             </Button>

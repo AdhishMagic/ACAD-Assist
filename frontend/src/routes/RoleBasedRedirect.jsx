@@ -4,17 +4,11 @@ import { Navigate } from 'react-router-dom';
 
 export function RoleBasedRedirect() {
   const { user, isAuthenticated, activeRole } = useSelector((state) => state.auth);
+  const role = activeRole || user?.role || 'student';
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-
-  if (!activeRole) {
-    return <Navigate to="/choose-role" replace />;
-  }
-
-  // activeRole is the confirmed role used for navigation and UI
-  const role = activeRole || user?.role || 'student';
 
   switch (role) {
     case 'admin':

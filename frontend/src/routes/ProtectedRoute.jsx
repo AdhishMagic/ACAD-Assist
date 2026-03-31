@@ -5,7 +5,7 @@ export function ProtectedRoute() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   if (!isAuthenticated) {
-    return <Navigate to="/choose-role" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;

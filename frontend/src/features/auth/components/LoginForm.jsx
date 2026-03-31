@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2, Mail, Lock } from 'lucide-react';
@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { authAPI } from '../services/authAPI';
-import { setActiveRole, setCredentials, setPendingRole } from '../store/authSlice';
+import { setCredentials } from '../store/authSlice';
 import { AUTH_ROUTES } from '../constants/authRoutes';
 
 export const LoginForm = () => {
@@ -17,23 +17,29 @@ export const LoginForm = () => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const pendingRole = useSelector((state) => state.auth.pendingRole);
 
   const loginMutation = useMutation({
     mutationFn: authAPI.login,
     onSuccess: (data) => {
-      dispatch(setCredentials({ user: data.user, token: data.access }));
-      const roleToActivate = pendingRole || data.user?.role || 'student';
-      dispatch(setActiveRole(roleToActivate));
-      dispatch(setPendingRole(null));
+      dispatch(setCredentials({ user: data.user, token: data.access, refreshToken: data.refresh }));
       navigate('/dashboard', { replace: true });
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    loginMutation.mutate({ email, password });
+    loginMutation.mutate({
+      email: email.trim().toLowerCase(),
+      password: password.trim(),
+    });
   };
+
+  const apiError = loginMutation.error?.response?.data;
+  const errorMessage =
+    apiError?.detail ||
+    apiError?.message ||
+    (Array.isArray(apiError?.non_field_errors) ? apiError.non_field_errors[0] : null) ||
+    'Login failed. Please check your credentials and try again.';
 
   return (
     <div className="mt-8">
@@ -45,7 +51,7 @@ export const LoginForm = () => {
           >
             <Alert variant="destructive" className="bg-red-50/50 border-red-200/50 text-red-800 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
               <AlertDescription>
-                {loginMutation.error?.response?.data?.message || 'Login failed. Please check your credentials and try again.'}
+                {errorMessage}
               </AlertDescription>
             </Alert>
           </motion.div>

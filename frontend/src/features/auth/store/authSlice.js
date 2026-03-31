@@ -3,23 +3,25 @@ import { createSlice } from '@reduxjs/toolkit';
 const getInitialState = () => {
   try {
     const user = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token') || localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refresh_token');
     const activeRole = localStorage.getItem('activeRole');
-    const pendingRole = localStorage.getItem('pendingRole');
+    const parsedUser = user ? JSON.parse(user) : null;
+    const role = activeRole || parsedUser?.role || null;
     return {
-      user: user ? JSON.parse(user) : null,
+      user: parsedUser,
       token: token ? token : null,
+      refreshToken: refreshToken ? refreshToken : null,
       isAuthenticated: !!token,
-      activeRole: activeRole ? activeRole : null,
-      pendingRole: pendingRole ? pendingRole : null,
+      activeRole: role,
     };
   } catch (error) {
     return {
       user: null,
       token: null,
+      refreshToken: null,
       isAuthenticated: false,
       activeRole: null,
-      pendingRole: null,
     };
   }
 };
@@ -31,22 +33,24 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { user, token } = action.payload;
+      const { user, token, refreshToken } = action.payload;
       state.user = user;
       state.token = token;
+      state.refreshToken = refreshToken || null;
       state.isAuthenticated = true;
-      // activeRole is chosen pre-login (pendingRole) and applied on success.
-      state.activeRole = null;
+      state.activeRole = user?.role || null;
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token);
-      localStorage.removeItem('activeRole');
-    },
-    setPendingRole: (state, action) => {
-      state.pendingRole = action.payload;
-      if (action.payload) {
-        localStorage.setItem('pendingRole', action.payload);
+      localStorage.setItem('access_token', token);
+      if (refreshToken) {
+        localStorage.setItem('refresh_token', refreshToken);
       } else {
-        localStorage.removeItem('pendingRole');
+        localStorage.removeItem('refresh_token');
+      }
+      if (user?.role) {
+        localStorage.setItem('activeRole', user.role);
+      } else {
+        localStorage.removeItem('activeRole');
       }
     },
     setActiveRole: (state, action) => {
@@ -60,13 +64,14 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.refreshToken = null;
       state.isAuthenticated = false;
       state.activeRole = null;
-      state.pendingRole = null;
       localStorage.removeItem('user');
       localStorage.removeItem('token');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       localStorage.removeItem('activeRole');
-      localStorage.removeItem('pendingRole');
     },
 
     updateCurrentUser: (state, action) => {
@@ -81,11 +86,10 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setPendingRole, setActiveRole, logout, updateCurrentUser } = authSlice.actions;
+export const { setCredentials, setActiveRole, logout, updateCurrentUser } = authSlice.actions;
 
 export const selectCurrentUser = (state) => state.auth.user;
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
 export const selectActiveRole = (state) => state.auth.activeRole;
-export const selectPendingRole = (state) => state.auth.pendingRole;
 
 export default authSlice.reducer;
