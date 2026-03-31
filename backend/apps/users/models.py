@@ -1,14 +1,21 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from db_design.base import AuditModel
+from db_design.constants import UserRole
 
-class User(AbstractUser):
-    class Role(models.TextChoices):
-        STUDENT = "student", "Student"
-        STAFF = "staff", "Staff"
-        ADMIN = "admin", "Admin"
 
-    role = models.CharField(max_length=20, choices=Role.choices, default=Role.STUDENT)
+class User(AuditModel, AbstractUser):
+	email = models.EmailField(unique=True, db_index=True)
+	role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.STUDENT, db_index=True)
 
-    def __str__(self) -> str:
-        return f"{self.username} ({self.role})"
+	class Meta:
+		ordering = ['-created_at']
+		indexes = [
+			models.Index(fields=["role"], name="idx_user_role"),
+		]
+		verbose_name = "User"
+		verbose_name_plural = "Users"
+
+	def __str__(self):
+		return f"{self.username} ({self.role})"

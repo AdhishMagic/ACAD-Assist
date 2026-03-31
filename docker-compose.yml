@@ -20,11 +20,11 @@ services:
       - acad_network
 
   db:
-    image: postgres:15
+    image: pgvector/pgvector:pg15
     container_name: acad_assist_db
     restart: unless-stopped
     env_file:
-      - ./backend/.env
+      - ./.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -42,12 +42,14 @@ services:
     container_name: acad_assist_web
     restart: unless-stopped
     env_file:
-      - ./backend/.env
+      - ./.env
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./backend:/app
     networks:
       - acad_network
 

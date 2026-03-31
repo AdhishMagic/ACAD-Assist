@@ -2,5 +2,6 @@ from django.apps import AppConfig
 
 
 class QueriesConfig(AppConfig):
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.queries"
+	default_auto_field = "django.db.models.BigAutoField"
+	name = "apps.queries"
+	label = "queries"

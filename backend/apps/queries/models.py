@@ -1,16 +1,40 @@
 from django.conf import settings
 from django.db import models
 
+from db_design.base import AuditModel
+from db_design.constants import QueryStatus
 
-class QueryLog(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="query_logs",
-    )
-    question = models.TextField()
-    response = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
-        return f"Query {self.id} by {self.user}"
+class Query(AuditModel):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="queries")
+	prompt = models.TextField()
+	context = models.JSONField(default=dict, blank=True)
+	status = models.CharField(max_length=20, choices=QueryStatus.choices, default=QueryStatus.OPEN, db_index=True)
+
+	class Meta:
+		ordering = ['-created_at']
+		indexes = [
+			models.Index(fields=["user"], name="idx_query_user"),
+		]
+		verbose_name = "Query"
+		verbose_name_plural = "Queries"
+
+	def __str__(self):
+		return f"Query {self.id}"
+
+
+class Response(AuditModel):
+	query = models.OneToOneField(Query, on_delete=models.CASCADE, related_name="response")
+	responder = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+	response_text = models.TextField()
+	latency_ms = models.PositiveIntegerField(default=0)
+	model_name = models.CharField(max_length=100)
+	token_usage = models.JSONField(default=dict, blank=True)
+
+	class Meta:
+		ordering = ['-created_at']
+		verbose_name = "Response"
+		verbose_name_plural = "Responses"
+
+	def __str__(self):
+		return f"Response for {self.query_id}"
