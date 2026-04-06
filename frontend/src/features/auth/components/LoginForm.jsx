@@ -34,11 +34,8 @@ export const LoginForm = () => {
     });
   };
 
-  const apiError = loginMutation.error?.response?.data;
   const errorMessage =
-    apiError?.detail ||
-    apiError?.message ||
-    (Array.isArray(apiError?.non_field_errors) ? apiError.non_field_errors[0] : null) ||
+    loginMutation.error?.message ||
     'Login failed. Please check your credentials and try again.';
 
   return (

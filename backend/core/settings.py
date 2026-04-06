@@ -18,6 +18,7 @@ INSTALLED_APPS = [
 	"django.contrib.sessions",
 	"django.contrib.messages",
 	"django.contrib.staticfiles",
+	"corsheaders",
 	"rest_framework",
 	"rest_framework_simplejwt",
 	"accounts.apps.AccountsConfig",
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
 	"django.middleware.security.SecurityMiddleware",
+	"corsheaders.middleware.CorsMiddleware",
 	"django.contrib.sessions.middleware.SessionMiddleware",
 	"django.middleware.common.CommonMiddleware",
 	"django.middleware.csrf.CsrfViewMiddleware",
@@ -111,6 +113,20 @@ SIMPLE_JWT = {
 	"BLACKLIST_AFTER_ROTATION": False,
 	"AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+
+CORS_ALLOWED_ORIGINS = [
+	origin.strip()
+	for origin in os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+	if origin.strip()
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+	r"^https?://localhost(:\d+)?$",
+	r"^https?://127\.0\.0\.1(:\d+)?$",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 LOGGING = {

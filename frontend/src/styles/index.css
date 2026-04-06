@@ -60,6 +60,20 @@
     scroll-padding-top: 6rem;
   }
 
+  html,
+  body {
+    transition-property: background-color, color, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html,
+    body {
+      transition: none;
+    }
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }

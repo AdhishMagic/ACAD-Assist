@@ -5,6 +5,11 @@ import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
 
 const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
+  const handleThemeToggle = () => {
+    console.log("🌙 Toggle theme button in Navbar clicked, isDark:", isDark);
+    toggleTheme();
+  };
+
   return (
     <header className="h-16 flex-shrink-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 z-20">
       <div className="flex items-center flex-1">
@@ -27,7 +32,7 @@ const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
 
       <div className="ml-4 flex items-center space-x-3 sm:space-x-4">
         <button 
-          onClick={toggleTheme}
+          onClick={handleThemeToggle}
           className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
         >
           {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}

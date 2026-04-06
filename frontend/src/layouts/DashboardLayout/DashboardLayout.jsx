@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { 
   Navbar, 
@@ -6,71 +6,15 @@ import {
   RightPanel 
 } from '../../components/layout';
 import { CommandPalette } from '@/features/system/components/CommandPalette';
+import { useTheme } from '@/app/providers';
 
 const DashboardLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { resolvedTheme, toggleTheme } = useTheme();
 
-  const applyTheme = useCallback((themeMode) => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const shouldUseDark = themeMode === 'dark' || (themeMode === 'system' && media.matches);
-    document.documentElement.classList.toggle('dark', shouldUseDark);
-    setIsDarkMode(shouldUseDark);
-  }, []);
-
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const storedTheme = localStorage.getItem('theme') || 'system';
-    applyTheme(storedTheme);
-
-    const handleSystemThemeChange = () => {
-      const currentTheme = localStorage.getItem('theme') || 'system';
-      if (currentTheme === 'system') {
-        applyTheme('system');
-      }
-    };
-
-    const handleStorageThemeChange = (event) => {
-      if (event.key === 'theme') {
-        applyTheme(event.newValue || 'system');
-      }
-    };
-
-    const handleCustomThemeChange = (event) => {
-      const nextTheme = event?.detail?.theme || localStorage.getItem('theme') || 'system';
-      applyTheme(nextTheme);
-    };
-
-    if (media.addEventListener) {
-      media.addEventListener('change', handleSystemThemeChange);
-    } else {
-      media.addListener(handleSystemThemeChange);
-    }
-
-    window.addEventListener('storage', handleStorageThemeChange);
-    window.addEventListener('theme-change', handleCustomThemeChange);
-
-    return () => {
-      if (media.removeEventListener) {
-        media.removeEventListener('change', handleSystemThemeChange);
-      } else {
-        media.removeListener(handleSystemThemeChange);
-      }
-      window.removeEventListener('storage', handleStorageThemeChange);
-      window.removeEventListener('theme-change', handleCustomThemeChange);
-    };
-  }, [applyTheme]);
-
-  const toggleTheme = useCallback(() => {
-    const currentTheme = localStorage.getItem('theme') || 'system';
-    const isCurrentlyDark = currentTheme === 'dark' || (currentTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    const nextTheme = isCurrentlyDark ? 'light' : 'dark';
-    localStorage.setItem('theme', nextTheme);
-    applyTheme(nextTheme);
-    window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: nextTheme } }));
-  }, [applyTheme]);
+  console.log("📊 DashboardLayout - Current resolvedTheme:", resolvedTheme);
 
   // Handle responsive behavior
   useEffect(() => {
@@ -101,7 +45,7 @@ const DashboardLayout = () => {
         <Navbar 
           toggleSidebar={() => setIsMobileSidebarOpen(true)}
           toggleRightPanel={() => setIsRightPanelOpen(!isRightPanelOpen)}
-          isDark={isDarkMode}
+          isDark={resolvedTheme === 'dark'}
           toggleTheme={toggleTheme}
         />
         

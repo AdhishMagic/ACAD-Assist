@@ -42,6 +42,10 @@ export const RegisterForm = () => {
     e.preventDefault();
     setValidationError('');
 
+    const fullName = formData.fullName.trim();
+    const [firstName = '', ...restNameParts] = fullName.split(/\s+/).filter(Boolean);
+    const lastName = restNameParts.join(' ');
+
     if (formData.password !== formData.confirmPassword) {
       setValidationError('Passwords do not match');
       return;
@@ -51,15 +55,11 @@ export const RegisterForm = () => {
       return;
     }
 
-    const nameParts = formData.fullName.trim().split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
-
     registerMutation.mutate({
+      email: formData.email.trim().toLowerCase(),
+      password: formData.password,
       first_name: firstName,
       last_name: lastName,
-      email: formData.email,
-      password: formData.password,
     });
   };
 
@@ -73,7 +73,7 @@ export const RegisterForm = () => {
           >
             <Alert variant="destructive" className="bg-red-50/50 border-red-200/50 text-red-800 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
               <AlertDescription>
-                {validationError || registerMutation.error?.response?.data?.message || 'Registration failed. Please try again.'}
+                {validationError || registerMutation.error?.message || 'Registration failed. Please try again.'}
               </AlertDescription>
             </Alert>
           </motion.div>

@@ -5,10 +5,15 @@ from django.utils import timezone
 
 
 class UserRole(models.TextChoices):
-    STUDENT = "student", "Student"
-    TEACHER = "teacher", "Teacher"
-    HOD = "hod", "HOD"
-    ADMIN = "admin", "Admin"
+    STUDENT = "STUDENT", "Student"
+    FACULTY = "FACULTY", "Faculty"
+    HOD = "HOD", "HOD"
+
+
+class RoleRequestStatus(models.TextChoices):
+    PENDING = "PENDING", "Pending"
+    APPROVED = "APPROVED", "Approved"
+    REJECTED = "REJECTED", "Rejected"
 
 
 class UserManager(BaseUserManager):
@@ -19,6 +24,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Email is required")
 
         email = self.normalize_email(email)
+        extra_fields.pop("role", None)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -56,3 +62,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return self.email
+
+
+class RoleRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="role_requests")
+    requested_role = models.CharField(
+        max_length=20,
+        choices=((UserRole.FACULTY, "Faculty"), (UserRole.HOD, "HOD")),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=RoleRequestStatus.choices,
+        default=RoleRequestStatus.PENDING,
+        db_index=True,
+    )
+
+    def __str__(self) -> str:
+        return f"{self.user.email} -> {self.requested_role} ({self.status})"

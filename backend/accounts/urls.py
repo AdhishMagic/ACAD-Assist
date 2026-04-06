@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import LoginView, MeView, RefreshTokenView, RegisterView
+from .views import LoginView, MeView, RefreshTokenView, RegisterView, RoleRequestView
 
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path("login", LoginView.as_view(), name="login"),
     path("token/refresh", RefreshTokenView.as_view(), name="token_refresh"),
     path("me", MeView.as_view(), name="me"),
+    path("request-role", RoleRequestView.as_view(), name="request_role"),
 ]
