@@ -15,4 +15,4 @@ RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["sh", "-lc", "tr -d '\r' < /app/entrypoint.sh > /tmp/entrypoint.sh && chmod +x /tmp/entrypoint.sh && exec /tmp/entrypoint.sh"]

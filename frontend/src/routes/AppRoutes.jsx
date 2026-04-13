@@ -78,9 +78,9 @@ export function AppRoutes() {
           <Route path={ROUTE_PATHS.ACTIVITY_FEED} element={<ActivityFeedPage />} />
 
           {/* Published Online Test (all authenticated roles) */}
-          <Route path="/online-test/:examId" element={<OnlineTestPage />} />
+          <Route path="online-test/:examId" element={<OnlineTestPage />} />
           {/* Legacy link support */}
-          <Route path="/student/online-test/:examId" element={<OnlineTestLegacyRedirect />} />
+          <Route path="student/online-test/:examId" element={<OnlineTestLegacyRedirect />} />
 
           {/* System Routes */}
           <Route element={<RoleGuard allowedRoles={['system']} />}>
@@ -89,7 +89,7 @@ export function AppRoutes() {
 
           {/* Student Routes */}
           <Route element={<RoleGuard allowedRoles={['student']} />}>
-            <Route path="/student">
+            <Route path="student">
               <Route path="dashboard" element={<StudentDashboard />} />
               <Route path="study-overview" element={<StudyOverviewPage />} />
               <Route path="knowledge" element={<KnowledgeRepoPage />} />
@@ -115,14 +115,14 @@ export function AppRoutes() {
           {/* Teacher System Routes */}
           <Route element={<RoleGuard allowedRoles={['teacher']} />}>
             {teacherRoutes.map((route) => (
-              <Route key={route.path} path={`/teacher/${route.path}`} element={route.element} />
+              <Route key={route.path} path={`teacher/${route.path}`} element={route.element} />
             ))}
           </Route>
 
           {/* HOD System Routes */}
           <Route element={<RoleGuard allowedRoles={['hod']} />}>
             {hodRoutes.map((route) => (
-              <Route key={route.path} path={`/hod/${route.path}`} element={route.element} />
+              <Route key={route.path} path={`hod/${route.path}`} element={route.element} />
             ))}
 
           </Route>
@@ -130,7 +130,7 @@ export function AppRoutes() {
           {/* Admin System Routes */}
           <Route element={<RoleGuard allowedRoles={['admin']} />}>
             {adminRoutes.map((route) => (
-              <Route key={route.path} path={`/admin/${route.path}`} element={route.element} />
+              <Route key={route.path} path={`admin/${route.path}`} element={route.element} />
             ))}
           </Route>
 

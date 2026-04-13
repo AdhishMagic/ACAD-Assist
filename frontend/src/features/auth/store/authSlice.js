@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { DEFAULT_ROLE, normalizeRole, normalizeUserRole } from '../utils/role';
 
 const getInitialState = () => {
   try {
@@ -6,8 +7,8 @@ const getInitialState = () => {
     const token = localStorage.getItem('access_token') || localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refresh_token');
     const activeRole = localStorage.getItem('activeRole');
-    const parsedUser = user ? JSON.parse(user) : null;
-    const role = activeRole || parsedUser?.role || null;
+    const parsedUser = normalizeUserRole(user ? JSON.parse(user) : null);
+    const role = normalizeRole(activeRole || parsedUser?.role) || (token ? DEFAULT_ROLE : null);
     return {
       user: parsedUser,
       token: token ? token : null,
@@ -34,12 +35,18 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       const { user, token, refreshToken } = action.payload;
-      state.user = user;
+      const normalizedUser = normalizeUserRole(user);
+      const normalizedRole = normalizeRole(normalizedUser?.role) || DEFAULT_ROLE;
+
+      state.user = {
+        ...normalizedUser,
+        role: normalizedRole,
+      };
       state.token = token;
       state.refreshToken = refreshToken || null;
       state.isAuthenticated = true;
-      state.activeRole = user?.role || null;
-      localStorage.setItem('user', JSON.stringify(user));
+      state.activeRole = normalizedRole;
+      localStorage.setItem('user', JSON.stringify(state.user));
       localStorage.setItem('token', token);
       localStorage.setItem('access_token', token);
       if (refreshToken) {
@@ -47,16 +54,17 @@ const authSlice = createSlice({
       } else {
         localStorage.removeItem('refresh_token');
       }
-      if (user?.role) {
-        localStorage.setItem('activeRole', user.role);
+      if (normalizedRole) {
+        localStorage.setItem('activeRole', normalizedRole);
       } else {
         localStorage.removeItem('activeRole');
       }
     },
     setActiveRole: (state, action) => {
-      state.activeRole = action.payload;
-      if (action.payload) {
-        localStorage.setItem('activeRole', action.payload);
+      const normalizedRole = normalizeRole(action.payload);
+      state.activeRole = normalizedRole;
+      if (normalizedRole) {
+        localStorage.setItem('activeRole', normalizedRole);
       } else {
         localStorage.removeItem('activeRole');
       }
@@ -76,7 +84,13 @@ const authSlice = createSlice({
 
     updateCurrentUser: (state, action) => {
       const patch = action.payload || {};
-      state.user = state.user ? { ...state.user, ...patch } : { ...patch };
+      const normalizedPatch = {
+        ...patch,
+        role: Object.prototype.hasOwnProperty.call(patch, 'role')
+          ? normalizeRole(patch.role) || DEFAULT_ROLE
+          : state.user?.role || DEFAULT_ROLE,
+      };
+      state.user = state.user ? { ...state.user, ...normalizedPatch } : { ...normalizedPatch };
       try {
         localStorage.setItem('user', JSON.stringify(state.user));
       } catch {

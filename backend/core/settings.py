@@ -4,11 +4,44 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_SECRET_KEY = "change-me-to-a-strong-64-char-secret-key-for-production-use-2026"
+DEFAULT_ALLOWED_HOSTS = "127.0.0.1,localhost"
 
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "change-me-to-a-strong-64-char-secret-key-for-production-use-2026")
-DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if host.strip()]
+def load_env_file(env_path: Path) -> None:
+	if not env_path.exists():
+		return
+
+	for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+		line = raw_line.strip()
+		if not line or line.startswith("#") or "=" not in line:
+			continue
+
+		key, value = line.split("=", 1)
+		key = key.strip()
+		if not key or key in os.environ:
+			continue
+
+		os.environ.setdefault(key, value.strip().strip('"').strip("'"))
+
+
+load_env_file(BASE_DIR.parent / ".env")
+
+
+SECRET_KEY = os.getenv(
+	"DJANGO_SECRET_KEY",
+	os.getenv("SECRET_KEY", DEFAULT_SECRET_KEY),
+)
+DEBUG = os.getenv("DJANGO_DEBUG", os.getenv("DEBUG", "False")).lower() == "true"
+allowed_hosts_value = os.getenv(
+	"DJANGO_ALLOWED_HOSTS",
+	os.getenv("ALLOWED_HOSTS", DEFAULT_ALLOWED_HOSTS),
+)
+ALLOWED_HOSTS = [
+	host.strip()
+	for host in allowed_hosts_value.split(",")
+	if host.strip()
+]
 
 
 INSTALLED_APPS = [
@@ -117,7 +150,10 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
 	origin.strip()
-	for origin in os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+	for origin in os.getenv(
+		"DJANGO_CORS_ALLOWED_ORIGINS",
+		"http://localhost:5173,http://127.0.0.1:5173",
+	).split(",")
 	if origin.strip()
 ]
 
