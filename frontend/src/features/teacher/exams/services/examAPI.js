@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { loadTemplateDraft } from '../utils/templateStorage';
 import { jsPDF } from 'jspdf';
 import {

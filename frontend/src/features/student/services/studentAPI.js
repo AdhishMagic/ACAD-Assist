@@ -1,23 +1,23 @@
-import axiosInstance from '../../../lib/axios';
+import { apiClient } from '@/shared/lib/http/axios';
 
 export const studentAPI = {
   getDashboard: async () => {
-    const response = await axiosInstance.get('/api/student/dashboard');
+    const response = await apiClient.get('/student/dashboard');
     return response.data;
   },
   
   getOverview: async () => {
-    const response = await axiosInstance.get('/api/student/overview');
+    const response = await apiClient.get('/student/overview');
     return response.data;
   },
   
   getRecentNotes: async () => {
-    const response = await axiosInstance.get('/api/student/recent-notes');
+    const response = await apiClient.get('/student/recent-notes');
     return response.data;
   },
 
   getUpcomingTests: async () => {
-    const response = await axiosInstance.get('/api/student/upcoming-tests');
+    const response = await apiClient.get('/student/upcoming-tests');
     return response.data;
   }
 };

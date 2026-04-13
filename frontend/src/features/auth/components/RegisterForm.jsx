@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { authAPI } from '../services/authAPI';
-import { AUTH_ROUTES } from '../constants/authRoutes';
 
 export const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ export const RegisterForm = () => {
   const registerMutation = useMutation({
     mutationFn: authAPI.register,
     onSuccess: () => {
-      navigate(AUTH_ROUTES.LOGIN, { state: { message: 'Registration successful. Please sign in to continue.' } });
+      navigate(ROUTE_PATHS.LOGIN, { state: { message: 'Registration successful. Please sign in to continue.' } });
     },
   });
 

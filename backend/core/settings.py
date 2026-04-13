@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 	"rest_framework",
 	"rest_framework_simplejwt",
 	"accounts.apps.AccountsConfig",
+	"projects.apps.ProjectsConfig",
 ]
 
 
@@ -96,9 +97,9 @@ ASGI_APPLICATION = "core.asgi.application"
 DATABASES = {
 	"default": {
 		"ENGINE": "django.db.backends.postgresql",
-		"NAME": os.getenv("POSTGRES_DB", "app_db"),
-		"USER": os.getenv("POSTGRES_USER", "app_user"),
-		"PASSWORD": os.getenv("POSTGRES_PASSWORD", "app_password"),
+		"NAME": os.getenv("POSTGRES_DB", "acad_assist"),
+		"USER": os.getenv("POSTGRES_USER", "acad_user"),
+		"PASSWORD": os.getenv("POSTGRES_PASSWORD", "acad_pass"),
 		"HOST": os.getenv("POSTGRES_HOST", "db"),
 		"PORT": os.getenv("POSTGRES_PORT", "5432"),
 		"CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "120")),
@@ -122,6 +123,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -183,6 +186,11 @@ LOGGING = {
 		"accounts": {
 			"handlers": ["console"],
 			"level": os.getenv("DJANGO_AUTH_LOG_LEVEL", "INFO"),
+			"propagate": False,
+		},
+		"projects": {
+			"handlers": ["console"],
+			"level": os.getenv("DJANGO_PROJECTS_LOG_LEVEL", "INFO"),
 			"propagate": False,
 		},
 		"django.request": {

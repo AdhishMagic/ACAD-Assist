@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Folder, FolderOpen, LayoutGrid } from 'lucide-react';
-import { NOTES_ROUTES } from '../constants/notesRoutes';
+import { ROUTE_PATHS, buildPath } from '@/app/routes/routePaths';
 import { mockNoteSubjects } from '@/shared/mocks/notes.mock';
 
 const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end }) => {
@@ -55,7 +55,7 @@ const SubjectSidebar = () => {
       
       <div className="flex-1 overflow-y-auto p-4 space-y-1">
         <SidebarLink 
-          to={NOTES_ROUTES.EXPLORER} 
+          to={ROUTE_PATHS.STUDENT_NOTES}
           icon={LayoutGrid} 
           label="All Notes" 
           end 
@@ -70,7 +70,7 @@ const SubjectSidebar = () => {
         {mockNoteSubjects.map((subject) => (
           <SidebarLink
             key={subject.id}
-            to={NOTES_ROUTES.SUBJECT(subject.id)}
+            to={buildPath.studentNotesSubject(subject.id)}
             icon={Folder}
             activeIcon={FolderOpen}
             label={subject.name}

@@ -1,4 +1,5 @@
 // examRoutes.js
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import MaterialsUploadPage from '../pages/MaterialsUploadPage';
 import JSONTemplateBuilderPage from '../pages/JSONTemplateBuilderPage';
 import TemplatePreviewPage from '../pages/TemplatePreviewPage';
@@ -10,35 +11,35 @@ import OnlineTestResultsPage from '../pages/OnlineTestResultsPage';
 
 export const examRoutes = [
   {
-    path: 'materials-upload',
+    path: ROUTE_PATHS.TEACHER_MATERIALS_UPLOAD,
     element: <MaterialsUploadPage />
   },
   {
-    path: 'template-builder',
+    path: ROUTE_PATHS.TEACHER_TEMPLATE_BUILDER,
     element: <JSONTemplateBuilderPage />
   },
   {
-    path: 'template-preview',
+    path: ROUTE_PATHS.TEACHER_TEMPLATE_PREVIEW,
     element: <TemplatePreviewPage />
   },
   {
-    path: 'question-generator',
+    path: ROUTE_PATHS.TEACHER_QUESTION_GENERATOR,
     element: <QuestionGeneratorPage />
   },
   {
-    path: 'exam-preview',
+    path: ROUTE_PATHS.TEACHER_EXAM_PREVIEW,
     element: <ExamPreviewPage />
   },
   {
-    path: 'exam-export',
+    path: ROUTE_PATHS.TEACHER_EXAM_EXPORT,
     element: <ExamExportPage />
   },
   {
-    path: 'online-tests',
+    path: ROUTE_PATHS.TEACHER_ONLINE_TESTS,
     element: <OnlineTestsPage />
   },
   {
-    path: 'online-test-results/:examId',
+    path: ROUTE_PATHS.TEACHER_ONLINE_TEST_RESULTS,
     element: <OnlineTestResultsPage />
   }
 ];

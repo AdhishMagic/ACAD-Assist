@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { NOTES_ROUTES } from '../constants/notesRoutes';
+import { buildPath } from '@/app/routes/routePaths';
 import BookmarkButton from './BookmarkButton';
 
 const NoteCard = ({ note, onNoteClick }) => {
@@ -23,7 +23,7 @@ const NoteCard = ({ note, onNoteClick }) => {
             onNoteClick(note);
             return;
           }
-          navigate(NOTES_ROUTES.VIEWER(note.id));
+          navigate(buildPath.studentNoteViewer(note.id));
         }}
       >
         {/* Optional preview image/banner */}

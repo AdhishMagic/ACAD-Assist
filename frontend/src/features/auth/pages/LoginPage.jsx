@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { AuthCard } from '../components/AuthCard';
 import { LoginForm } from '../components/LoginForm';
-import { AUTH_ROUTES } from '../constants/authRoutes';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 
@@ -31,14 +31,14 @@ export const LoginPage = () => {
               type="button"
               variant="outline"
               className="w-full"
-              onClick={() => navigate('/')}
+              onClick={() => navigate(ROUTE_PATHS.ROOT)}
             >
               Back
             </Button>
 
             <div className="text-sm text-muted-foreground w-full flex justify-center lg:justify-start">
               Don't have an account?{' '}
-              <Link to={AUTH_ROUTES.REGISTER} className="ml-1 font-semibold text-primary hover:text-primary/80 transition-colors">
+              <Link to={ROUTE_PATHS.REGISTER} className="ml-1 font-semibold text-primary hover:text-primary/80 transition-colors">
                 Sign up
               </Link>
             </div>

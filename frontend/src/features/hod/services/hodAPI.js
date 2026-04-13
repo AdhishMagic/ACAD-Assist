@@ -1,6 +1,8 @@
 // hodAPI.js
 // Mock implementations are provided to prevent proxy errors, aligning with previous features.
 
+import { projectsApi } from '@/services/api';
+
 const MOCK_DELAY = 500;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -101,39 +103,33 @@ const updateMaterialApprovalStatus = (id, status) => {
   return { ...materialApprovalsStore[idx] };
 };
 
-let projectApprovalsStore = [
-  {
-    id: 101,
-    student: 'Alice Johnson',
-    title: 'AI-Based Attendance System',
-    date: '2026-03-15',
-    status: 'Pending',
-    description: 'Face-recognition assisted attendance with admin dashboard, exportable reports, and role-based access.',
-    techStack: ['React', 'Node.js', 'Python', 'OpenCV'],
-    attachments: [
-      { name: 'Project Report (Preview)', type: 'html', url: '/projects/ai-attendance-system.html' },
-    ],
-  },
-  {
-    id: 102,
-    student: 'Bob Smith',
-    title: 'Blockchain Certificate Verification',
-    date: '2026-03-14',
-    status: 'Pending',
-    description: 'Immutable certificate issuance and verification portal using smart contracts. QR-based verification flow.',
-    techStack: ['Solidity', 'Web3', 'React'],
-    attachments: [
-      { name: 'Project Report (Preview)', type: 'html', url: '/projects/blockchain-certificate-verification.html' },
-    ],
-  },
-];
+const formatStatus = (status) => {
+  if (!status) return 'Pending';
+  const normalized = String(status).toLowerCase();
+  if (normalized === 'approved') return 'Approved';
+  if (normalized === 'rejected') return 'Rejected';
+  return 'Pending';
+};
 
-const updateProjectApprovalStatus = (id, status) => {
-  const numericId = Number(id);
-  const idx = projectApprovalsStore.findIndex(p => p.id === numericId);
-  if (idx === -1) return null;
-  projectApprovalsStore[idx] = { ...projectApprovalsStore[idx], status };
-  return { ...projectApprovalsStore[idx] };
+const mapProjectApproval = (project) => {
+  const fileUrl = project.file || '';
+  const extension = fileUrl.includes('.') ? fileUrl.split('.').pop().toLowerCase() : '';
+
+  return {
+    id: project.id,
+    student: project.student_name,
+    title: project.title,
+    date: project.created_at ? new Date(project.created_at).toLocaleString() : '-',
+    status: formatStatus(project.status),
+    description: project.description,
+    attachments: fileUrl
+      ? [{
+          name: fileUrl.split('/').pop() || 'Project File',
+          type: extension,
+          url: fileUrl,
+        }]
+      : [],
+  };
 };
 
 export const hodAPI = {
@@ -278,10 +274,10 @@ export const hodAPI = {
 
   // ─── Project Approvals ───────────────────────────────────────
   getProjectApprovals: async () => {
-    await delay(MOCK_DELAY);
+    const response = await projectsApi.all();
     return {
       data: {
-        approvals: projectApprovalsStore.map(p => ({ ...p }))
+        approvals: (response.data || []).map(mapProjectApproval),
       }
     };
   },
@@ -304,14 +300,10 @@ export const hodAPI = {
   },
 
   approveProject: async (id) => {
-    await delay(MOCK_DELAY);
-    const updated = updateProjectApprovalStatus(id, 'Approved');
-    return { data: { success: Boolean(updated), id, status: updated?.status } };
+    return projectsApi.approve(id);
   },
   rejectProject: async (id) => {
-    await delay(MOCK_DELAY);
-    const updated = updateProjectApprovalStatus(id, 'Rejected');
-    return { data: { success: Boolean(updated), id, status: updated?.status } };
+    return projectsApi.reject(id);
   },
 
   // ─── Legacy (kept for backward compatibility) ───────────────

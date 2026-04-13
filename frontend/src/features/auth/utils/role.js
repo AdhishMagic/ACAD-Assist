@@ -1,3 +1,5 @@
+import { ROUTE_PATHS } from "@/app/routes/routePaths";
+
 export const DEFAULT_ROLE = 'student';
 
 export function normalizeRole(role) {
@@ -54,15 +56,15 @@ export function getHomePathForRole(role) {
 
   switch (normalizedRole) {
     case 'admin':
-      return '/admin/dashboard';
+      return ROUTE_PATHS.ADMIN_DASHBOARD;
     case 'hod':
-      return '/hod/dashboard';
+      return ROUTE_PATHS.HOD_DASHBOARD;
     case 'teacher':
-      return '/teacher/dashboard';
+      return ROUTE_PATHS.TEACHER_DASHBOARD;
     case 'system':
-      return '/system/dashboard';
+      return ROUTE_PATHS.SYSTEM_DASHBOARD;
     case 'student':
     default:
-      return '/student/dashboard';
+      return ROUTE_PATHS.STUDENT_DASHBOARD;
   }
 }

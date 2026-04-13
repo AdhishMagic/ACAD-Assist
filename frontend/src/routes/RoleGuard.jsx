@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { ROUTE_PATHS } from "@/app/routes/routePaths";
 import { DEFAULT_ROLE, getHomePathForRole, normalizeRole } from "@/features/auth/utils/role";
 
 export function RoleGuard({ allowedRoles, children }) {
@@ -12,11 +13,11 @@ export function RoleGuard({ allowedRoles, children }) {
     : [];
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={ROUTE_PATHS.LOGIN} replace />;
   }
 
   if (!role) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={ROUTE_PATHS.LOGIN} replace />;
   }
 
   // Admin is treated as a super-role with access to all feature areas.

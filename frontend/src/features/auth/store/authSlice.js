@@ -1,26 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { DEFAULT_ROLE, normalizeRole, normalizeUserRole } from '../utils/role';
 
+function hasStoredAccessToken() {
+  try {
+    return Boolean(localStorage.getItem('access_token') || localStorage.getItem('token'));
+  } catch {
+    return false;
+  }
+}
+
 const getInitialState = () => {
   try {
     const user = localStorage.getItem('user');
-    const token = localStorage.getItem('access_token') || localStorage.getItem('token');
-    const refreshToken = localStorage.getItem('refresh_token');
+    const isAuthenticated = hasStoredAccessToken();
     const activeRole = localStorage.getItem('activeRole');
     const parsedUser = normalizeUserRole(user ? JSON.parse(user) : null);
-    const role = normalizeRole(activeRole || parsedUser?.role) || (token ? DEFAULT_ROLE : null);
+    const role = normalizeRole(activeRole || parsedUser?.role) || (isAuthenticated ? DEFAULT_ROLE : null);
     return {
       user: parsedUser,
-      token: token ? token : null,
-      refreshToken: refreshToken ? refreshToken : null,
-      isAuthenticated: !!token,
+      isAuthenticated,
       activeRole: role,
     };
   } catch (error) {
     return {
       user: null,
-      token: null,
-      refreshToken: null,
       isAuthenticated: false,
       activeRole: null,
     };
@@ -42,13 +45,16 @@ const authSlice = createSlice({
         ...normalizedUser,
         role: normalizedRole,
       };
-      state.token = token;
-      state.refreshToken = refreshToken || null;
-      state.isAuthenticated = true;
+      state.isAuthenticated = Boolean(token);
       state.activeRole = normalizedRole;
       localStorage.setItem('user', JSON.stringify(state.user));
-      localStorage.setItem('token', token);
-      localStorage.setItem('access_token', token);
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('access_token', token);
+      } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('access_token');
+      }
       if (refreshToken) {
         localStorage.setItem('refresh_token', refreshToken);
       } else {
@@ -69,10 +75,14 @@ const authSlice = createSlice({
         localStorage.removeItem('activeRole');
       }
     },
+    syncAuthFromStorage: (state) => {
+      state.isAuthenticated = hasStoredAccessToken();
+      if (!state.isAuthenticated) {
+        state.activeRole = null;
+      }
+    },
     logout: (state) => {
       state.user = null;
-      state.token = null;
-      state.refreshToken = null;
       state.isAuthenticated = false;
       state.activeRole = null;
       localStorage.removeItem('user');
@@ -100,7 +110,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setActiveRole, logout, updateCurrentUser } = authSlice.actions;
+export const { setCredentials, setActiveRole, syncAuthFromStorage, logout, updateCurrentUser } = authSlice.actions;
 
 export const selectCurrentUser = (state) => state.auth.user;
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;

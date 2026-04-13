@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { authAPI } from '../services/authAPI';
-import { AUTH_ROUTES } from '../constants/authRoutes';
 
 export const ForgotPasswordForm = () => {
   const [email, setEmail] = useState('');
@@ -63,7 +63,7 @@ export const ForgotPasswordForm = () => {
 
       <div className="text-center mt-4">
         <Link 
-          to={AUTH_ROUTES.LOGIN} 
+          to={ROUTE_PATHS.LOGIN} 
           className="text-sm font-medium text-muted-foreground hover:text-primary"
         >
           Back to login

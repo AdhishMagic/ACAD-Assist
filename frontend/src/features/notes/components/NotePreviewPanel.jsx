@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X, Calendar, User, FileText, Download, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { NOTES_ROUTES } from '../constants/notesRoutes';
+import { buildPath } from '@/app/routes/routePaths';
 import BookmarkButton from './BookmarkButton';
 import { useNoteDetails } from '../hooks/useNotes';
 import { downloadNoteAsPdf } from '../utils/noteActions';
@@ -93,7 +93,7 @@ const NotePreviewPanel = ({ note, onClose }) => {
           <div className="p-4 border-t border-border/50 bg-muted/10 flex flex-col gap-3">
             <Button 
               className="w-full gap-2" 
-              onClick={() => navigate(NOTES_ROUTES.VIEWER(note.id))}
+              onClick={() => navigate(buildPath.studentNoteViewer(note.id))}
             >
               <ExternalLink className="h-4 w-4" />
               Open Full Note

@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import { ROUTE_PATHS } from "@/app/routes/routePaths";
 
 const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 const SystemAnalyticsPage = lazy(() => import("../pages/SystemAnalyticsPage"));
@@ -10,31 +11,31 @@ const AIUsageAnalyticsPage = lazy(() => import("../pages/AIUsageAnalyticsPage"))
 
 export const adminRoutes = [
   {
-    path: "dashboard",
+    path: ROUTE_PATHS.ADMIN_DASHBOARD,
     element: <AdminDashboard />,
   },
   {
-    path: "analytics",
+    path: ROUTE_PATHS.ADMIN_ANALYTICS,
     element: <SystemAnalyticsPage />,
   },
   {
-    path: "users",
+    path: ROUTE_PATHS.ADMIN_USERS,
     element: <UserManagementPage />,
   },
   {
-    path: "roles",
+    path: ROUTE_PATHS.ADMIN_ROLES,
     element: <RoleManagementPage />,
   },
   {
-    path: "activity-logs",
+    path: ROUTE_PATHS.ADMIN_ACTIVITY_LOGS,
     element: <ActivityLogsPage />,
   },
   {
-    path: "storage",
+    path: ROUTE_PATHS.ADMIN_STORAGE,
     element: <StorageManagementPage />,
   },
   {
-    path: "ai-usage",
+    path: ROUTE_PATHS.ADMIN_AI_USAGE,
     element: <AIUsageAnalyticsPage />,
   },
 ];

@@ -8,9 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { authAPI } from '../services/authAPI';
 import { setCredentials } from '../store/authSlice';
-import { AUTH_ROUTES } from '../constants/authRoutes';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ export const LoginForm = () => {
     mutationFn: authAPI.login,
     onSuccess: (data) => {
       dispatch(setCredentials({ user: data.user, token: data.access, refreshToken: data.refresh }));
-      navigate('/dashboard', { replace: true });
+      navigate(ROUTE_PATHS.DASHBOARD, { replace: true });
     },
   });
 
@@ -78,7 +78,7 @@ export const LoginForm = () => {
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
             <Link 
-              to={AUTH_ROUTES.FORGOT_PASSWORD} 
+              to={ROUTE_PATHS.FORGOT_PASSWORD} 
               className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
               Forgot password?

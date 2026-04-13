@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { AuthCard } from '../components/AuthCard';
 import { RegisterForm } from '../components/RegisterForm';
-import { AUTH_ROUTES } from '../constants/authRoutes';
 
 export const RegisterPage = () => {
   return (
@@ -13,7 +13,7 @@ export const RegisterPage = () => {
         footer={
           <div className="text-sm text-muted-foreground w-full flex justify-center lg:justify-start">
             Already have an account?{' '}
-            <Link to={AUTH_ROUTES.LOGIN} className="ml-1 font-semibold text-primary hover:text-primary/80 transition-colors">
+            <Link to={ROUTE_PATHS.LOGIN} className="ml-1 font-semibold text-primary hover:text-primary/80 transition-colors">
               Sign in
             </Link>
           </div>
