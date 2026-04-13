@@ -2,6 +2,7 @@
 // Mock implementations are provided to prevent proxy errors, aligning with previous features.
 
 import { projectsApi } from '@/services/api';
+import { getFileUrl } from '@/shared/lib/http/fileUrl';
 
 const MOCK_DELAY = 500;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -111,9 +112,25 @@ const formatStatus = (status) => {
   return 'Pending';
 };
 
+const getFileExtension = (urlValue) => {
+  if (!urlValue) return '';
+
+  try {
+    const parsed = new URL(urlValue, typeof window === 'undefined' ? 'http://localhost' : window.location.origin);
+    const filename = parsed.pathname.split('/').pop() || '';
+    const parts = filename.split('.');
+    return parts.length > 1 ? parts.pop().toLowerCase() : '';
+  } catch {
+    const sanitized = String(urlValue).split('?')[0].split('#')[0];
+    const filename = sanitized.split('/').pop() || '';
+    const parts = filename.split('.');
+    return parts.length > 1 ? parts.pop().toLowerCase() : '';
+  }
+};
+
 const mapProjectApproval = (project) => {
-  const fileUrl = project.file || '';
-  const extension = fileUrl.includes('.') ? fileUrl.split('.').pop().toLowerCase() : '';
+  const fileUrl = getFileUrl(project.file || '');
+  const extension = getFileExtension(fileUrl);
 
   return {
     id: project.id,

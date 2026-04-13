@@ -33,6 +33,7 @@ class ProjectSubmitSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(use_url=True)
     student_name = serializers.SerializerMethodField()
     reviewed_by_name = serializers.SerializerMethodField()
 

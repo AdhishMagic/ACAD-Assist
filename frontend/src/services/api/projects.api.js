@@ -3,11 +3,7 @@ import api from "./axios";
 const PROJECTS_BASE_PATH = "/api/projects";
 
 function getProjectsUrl(path) {
-  if (typeof window === "undefined") {
-    return `${PROJECTS_BASE_PATH}${path}`;
-  }
-
-  return `${window.location.origin}${PROJECTS_BASE_PATH}${path}`;
+  return `${PROJECTS_BASE_PATH}${path}`;
 }
 
 export const projectsApi = {

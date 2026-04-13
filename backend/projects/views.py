@@ -22,7 +22,7 @@ class ProjectSubmitView(APIView):
         serializer = ProjectSubmitSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         project = serializer.save()
-        return Response(ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_201_CREATED)
+        return Response(ProjectSerializer(project).data, status=status.HTTP_201_CREATED)
 
 
 class MyProjectsView(APIView):
@@ -31,7 +31,7 @@ class MyProjectsView(APIView):
     def get(self, request):
         logger.info("My projects fetch request received", extra={"user_id": request.user.id})
         projects = Project.objects.filter(student=request.user).select_related("student", "reviewed_by")
-        return Response(ProjectSerializer(projects, many=True, context={"request": request}).data, status=status.HTTP_200_OK)
+        return Response(ProjectSerializer(projects, many=True).data, status=status.HTTP_200_OK)
 
 
 class AllProjectsView(APIView):
@@ -40,7 +40,7 @@ class AllProjectsView(APIView):
     def get(self, request):
         logger.info("All projects fetch request received", extra={"user_id": request.user.id})
         projects = Project.objects.select_related("student", "reviewed_by").all()
-        return Response(ProjectSerializer(projects, many=True, context={"request": request}).data, status=status.HTTP_200_OK)
+        return Response(ProjectSerializer(projects, many=True).data, status=status.HTTP_200_OK)
 
 
 class _ProjectReviewBaseView(APIView):
@@ -58,7 +58,7 @@ class _ProjectReviewBaseView(APIView):
         project.reviewed_at = timezone.now()
         project.save(update_fields=["status", "reviewed_by", "reviewed_at"])
 
-        return Response(ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_200_OK)
+        return Response(ProjectSerializer(project).data, status=status.HTTP_200_OK)
 
 
 class ApproveProjectView(_ProjectReviewBaseView):

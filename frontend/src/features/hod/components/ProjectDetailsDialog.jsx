@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { getFileUrl } from '@/shared/lib/http/fileUrl';
 
 const statusColors = {
   Pending: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800',
@@ -10,9 +11,8 @@ const statusColors = {
 };
 
 export function ProjectDetailsDialog({ open, onOpenChange, project }) {
-  if (!project) return null;
-
-  const attachments = Array.isArray(project.attachments) ? project.attachments : [];
+  const safeProject = project || {};
+  const attachments = Array.isArray(safeProject.attachments) ? safeProject.attachments : [];
   const [selectedAttachment, setSelectedAttachment] = useState(null);
   const [textContent, setTextContent] = useState('');
   const [textLoading, setTextLoading] = useState(false);
@@ -25,10 +25,10 @@ export function ProjectDetailsDialog({ open, onOpenChange, project }) {
       return;
     }
     setSelectedAttachment(attachments[0] || null);
-  }, [open, project?.id]);
+  }, [open, safeProject?.id]);
 
   const selectedType = (selectedAttachment?.type || '').toLowerCase();
-  const selectedUrl = selectedAttachment?.url || '';
+  const selectedUrl = getFileUrl(selectedAttachment?.url || '');
 
   const canInlinePreview = useMemo(() => {
     if (!selectedUrl) return false;
@@ -63,14 +63,16 @@ export function ProjectDetailsDialog({ open, onOpenChange, project }) {
     };
   }, [open, selectedType, selectedUrl]);
 
+  if (!project) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-start justify-between gap-3">
-            <span className="leading-snug">{project.title}</span>
-            <Badge variant="outline" className={statusColors[project.status] || ''}>
-              {project.status}
+            <span className="leading-snug">{safeProject.title}</span>
+            <Badge variant="outline" className={statusColors[safeProject.status] || ''}>
+              {safeProject.status}
             </Badge>
           </DialogTitle>
           <DialogDescription>
@@ -82,25 +84,25 @@ export function ProjectDetailsDialog({ open, onOpenChange, project }) {
           <div className="space-y-3 text-sm">
             <div className="flex items-center justify-between gap-4">
               <div className="text-muted-foreground">Student</div>
-              <div className="font-medium text-right">{project.student}</div>
+              <div className="font-medium text-right">{safeProject.student}</div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <div className="text-muted-foreground">Submission date</div>
-              <div className="font-medium text-right">{project.date}</div>
+              <div className="font-medium text-right">{safeProject.date}</div>
             </div>
-            {project.description && (
+            {safeProject.description && (
               <div className="pt-2">
                 <div className="text-muted-foreground mb-1">Description</div>
                 <div className="rounded-md border bg-muted/30 p-3 whitespace-pre-wrap">
-                  {project.description}
+                  {safeProject.description}
                 </div>
               </div>
             )}
-            {Array.isArray(project.techStack) && project.techStack.length > 0 && (
+            {Array.isArray(safeProject.techStack) && safeProject.techStack.length > 0 && (
               <div className="pt-2">
                 <div className="text-muted-foreground mb-2">Tech stack</div>
                 <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((t) => (
+                  {safeProject.techStack.map((t) => (
                     <Badge key={t} variant="secondary">{t}</Badge>
                   ))}
                 </div>
@@ -133,7 +135,7 @@ export function ProjectDetailsDialog({ open, onOpenChange, project }) {
                         Preview
                       </Button>
                       <Button asChild variant="outline" size="sm" disabled={!att.url}>
-                        <a href={att.url || '#'} target="_blank" rel="noreferrer">
+                        <a href={getFileUrl(att.url) || '#'} target="_blank" rel="noreferrer">
                           Open
                         </a>
                       </Button>
@@ -159,6 +161,16 @@ export function ProjectDetailsDialog({ open, onOpenChange, project }) {
                 ) : ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(selectedType) ? (
                   <div className="rounded-md border bg-muted/30 p-3">
                     <img src={selectedUrl} alt={selectedAttachment.name} className="max-h-[320px] w-full object-contain" />
+                  </div>
+                ) : selectedType === 'pdf' ? (
+                  <div className="rounded-md border overflow-hidden bg-background">
+                    <iframe
+                      title="Project PDF Preview"
+                      src={selectedUrl}
+                      width="100%"
+                      className="w-full h-[320px]"
+                      style={{ border: 'none' }}
+                    />
                   </div>
                 ) : (
                   <div className="rounded-md border overflow-hidden">
