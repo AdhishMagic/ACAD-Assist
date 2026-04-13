@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 import { logout, selectCurrentUser } from '../../features/auth/store/authSlice';
+import { hasTeacherAccess, normalizeRole } from '@/features/auth/utils/role';
 import { getDisplayNameFromUser, getInitials, toTitleCase } from '@/utils/helpers';
 
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
@@ -35,7 +36,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
   const user = useSelector(selectCurrentUser);
   const activeRole = useSelector((state) => state.auth.activeRole);
   const { pathname } = useLocation();
-  const userRole = activeRole || user?.role || 'student'; // fallback
+  const userRole = normalizeRole(activeRole || user?.role) || 'student';
   const displayName = getDisplayNameFromUser(user) || 'User';
   const initials = getInitials(displayName || user?.email);
   const roleLabel = toTitleCase(userRole || 'student');
@@ -97,7 +98,10 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         { label: 'Department Performance', icon: TrendingUp, to: '/hod/performance' },
         { label: 'Teacher Contributions', icon: Users, to: '/hod/teacher-contributions' },
         { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
+        { label: 'Student Engagement', icon: Activity, to: '/hod/student-engagement' },
         { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
+        { label: 'Notes Upload', icon: FileText, to: '/teacher/notes-studio' },
+        { label: 'AI Features', icon: BrainCircuit, to: '/teacher/materials-upload' },
       ],
     };
 
@@ -159,10 +163,14 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       ];
     }
 
+    const workspaceItems = userRole === 'hod'
+      ? roleItems.hod
+      : (hasTeacherAccess(userRole) ? roleItems.teacher : roleItems[userRole]);
+
     return [
       {
         title: 'Workspace',
-        items: roleItems[userRole] || [{ label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' }],
+        items: workspaceItems || [{ label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' }],
       },
       {
         title: 'System',

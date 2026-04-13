@@ -17,6 +17,7 @@ import {
 import { ArrowLeft, CheckCircle2, Clock } from 'lucide-react';
 import { useExamPreview } from '@/features/teacher/exams/hooks/useExamGenerator';
 import { selectCurrentUser } from '@/features/auth/store/authSlice';
+import { hasTeacherAccess } from '@/features/auth/utils/role';
 import { upsertOnlineTestSubmission } from '@/features/teacher/exams/utils/onlineTestStorage';
 
 const ATTEMPT_STORAGE_PREFIX = 'acadassist.student.onlineTestAttempt.v1.';
@@ -432,7 +433,7 @@ const OnlineTestPage = () => {
     return pct >= 50 ? 'Pass' : 'Fail';
   })();
 
-  const canViewTeacherResults = activeRole === 'teacher';
+  const canViewTeacherResults = hasTeacherAccess(activeRole);
 
   return (
     <div className="container mx-auto py-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

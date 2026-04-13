@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { ROUTE_PATHS } from "@/app/routes/routePaths";
-import { DEFAULT_ROLE, getHomePathForRole, normalizeRole } from "@/features/auth/utils/role";
+import { DEFAULT_ROLE, getHomePathForRole, hasTeacherAccess, normalizeRole } from "@/features/auth/utils/role";
 
 export function RoleGuard({ allowedRoles, children }) {
   const { isAuthenticated, activeRole, user } = useSelector((state) => state.auth);
@@ -29,7 +29,15 @@ export function RoleGuard({ allowedRoles, children }) {
     return children ? children : <Outlet />;
   }
 
-  if (!normalizedAllowedRoles.includes(role)) {
+  const hasAllowedRole = normalizedAllowedRoles.some((allowedRole) => {
+    if (allowedRole === 'teacher') {
+      return hasTeacherAccess(role);
+    }
+
+    return allowedRole === role;
+  });
+
+  if (!hasAllowedRole) {
     const homePath = getHomePathForRole(role);
 
     // Safety fallback: avoid infinite redirects if this guard is mounted on the same target path.

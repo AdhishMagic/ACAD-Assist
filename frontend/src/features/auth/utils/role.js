@@ -2,6 +2,11 @@ import { ROUTE_PATHS } from "@/app/routes/routePaths";
 
 export const DEFAULT_ROLE = 'student';
 
+export function hasTeacherAccess(role) {
+  const normalizedRole = normalizeRole(role);
+  return normalizedRole === 'teacher' || normalizedRole === 'hod';
+}
+
 export function normalizeRole(role) {
   if (role == null) {
     return null;
