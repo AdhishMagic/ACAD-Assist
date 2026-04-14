@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useNotes } from '../hooks/useNotes';
+import { useNoteSubjects } from '../hooks/useNotes';
 import SubjectSidebar from '../components/SubjectSidebar';
 import NotesToolbar from '../components/NotesToolbar';
 import NotesFilters from '../components/NotesFilters';
@@ -11,14 +11,18 @@ import NotePreviewPanel from '../components/NotePreviewPanel';
 const NotesExplorer = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [activeFilters, setActiveFilters] = useState({ teachers: [], tags: [] });
+  const [activeFilters, setActiveFilters] = useState({ subject: '', tags: [] });
   const [sortBy, setSortBy] = useState('newest');
   const [selectedNote, setSelectedNote] = useState(null);
 
-  // Using the hook we created (will fail gracefully or stay loading without a real backend, so we fallback to mock)
-  const { data, isLoading, error } = useNotes({ search: searchTerm, sort: sortBy, filters: activeFilters });
+  const { data, isLoading } = useNotes({ search: searchTerm, sort: sortBy, filters: activeFilters });
+  const { data: subjectData } = useNoteSubjects();
   
+  console.log("NOTES API RESPONSE:", data);
+
   const notes = data?.notes || [];
+  const subjects = Array.isArray(subjectData) ? subjectData : [];
+  const tags = [...new Set(notes.flatMap((note) => (Array.isArray(note.tags) ? note.tags : [])))].sort((a, b) => a.localeCompare(b));
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-background">
@@ -47,8 +51,10 @@ const NotesExplorer = () => {
               isOpen={isFilterActive}
               activeFilters={activeFilters}
               onFilterChange={setActiveFilters}
+              subjects={subjects}
+              tags={tags}
               onClear={() => {
-                setActiveFilters({ teachers: [], tags: [] });
+                setActiveFilters({ subject: '', tags: [] });
                 setIsFilterActive(false);
               }}
             />
@@ -60,6 +66,7 @@ const NotesExplorer = () => {
               notes={notes} 
               isLoading={isLoading} 
               onNoteClick={setSelectedNote}
+              emptyStateTitle="📭 No published notes available"
             />
           </div>
         </div>

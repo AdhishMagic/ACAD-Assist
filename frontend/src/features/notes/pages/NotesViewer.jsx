@@ -1,11 +1,10 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useNoteDetails } from '../hooks/useNotes';
+import { useNoteDetails, useBookmarkNote } from '../hooks/useNotes';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, Calendar, User, FileDown, BookMarked, Share2, Printer, Tag } from 'lucide-react';
-import BookmarkButton from '../components/BookmarkButton';
+import { ChevronLeft, Calendar, User, FileDown, BookMarked, Share2, Printer, Tag, Bookmark, BookmarkCheck } from 'lucide-react';
 import MarkdownViewer from '../components/MarkdownViewer';
 import { downloadNoteAsPdf, printNote } from '../utils/noteActions';
 
@@ -14,12 +13,29 @@ import { downloadNoteAsPdf, printNote } from '../utils/noteActions';
 const NotesViewer = () => {
   const { noteId } = useParams();
   const navigate = useNavigate();
-  const { data, isLoading } = useNoteDetails(noteId);
+  const { data, isLoading, isError } = useNoteDetails(noteId);
 
   const note = data;
 
   if (isLoading && !data) {
     return <div className="p-10 text-center w-full">Loading Note...</div>;
+  }
+
+  if (isError || !note) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full w-full bg-background">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold mb-3">Note Not Found</h3>
+          <p className="text-muted-foreground mb-6">The note you're looking for doesn't exist or has been removed.</p>
+          <button 
+            onClick={() => navigate('/student/notes')}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Return to Notes
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -82,10 +98,7 @@ const NotesViewer = () => {
               <FileDown className="h-4 w-4 mr-2" />
               Export as PDF
             </Button>
-            <Button variant="outline" className="w-full justify-start text-left bg-background hover:bg-muted border-border/50">
-              <BookmarkButton noteId={note.id} isBookmarked={note.isBookmarked} className="h-4 w-4 mr-2 p-0 -ml-1 text-foreground" />
-              Save Note
-            </Button>
+            <SaveNoteButton noteId={note.id} isBookmarked={note.isBookmarked} />
             <Button
               variant="ghost"
               className="w-full justify-start text-left text-muted-foreground hover:text-foreground"
@@ -143,5 +156,26 @@ const NotesViewer = () => {
     </div>
   );
 };
+
+// Helper component to handle bookmark action without nested buttons
+function SaveNoteButton({ noteId, isBookmarked = false }) {
+  const { mutate, isPending } = useBookmarkNote();
+
+  return (
+    <Button 
+      variant="outline" 
+      className="w-full justify-start text-left bg-background hover:bg-muted border-border/50"
+      onClick={() => mutate(noteId)}
+      disabled={isPending}
+    >
+      {isBookmarked ? (
+        <BookmarkCheck className="h-4 w-4 mr-2 text-primary fill-primary" />
+      ) : (
+        <Bookmark className="h-4 w-4 mr-2 text-muted-foreground" />
+      )}
+      Save Note
+    </Button>
+  );
+}
 
 export default NotesViewer;

@@ -95,7 +95,7 @@ export function AppRoutes() {
               <Route path={ROUTE_PATHS.STUDENT_AI_GENERATED_NOTE} element={<GeneratedNotesPage />} />
             </Route>
 
-            <Route element={<RoleGuard allowedRoles={["teacher", "hod"]} />}>
+            <Route element={<RoleGuard allowedRoles={["teacher", "hod", "admin"]} />}>
               {teacherRoutes.map((route) => (
                 <Route key={route.path} path={route.path} element={route.element} />
               ))}

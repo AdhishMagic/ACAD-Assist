@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Folder, FolderOpen, LayoutGrid } from 'lucide-react';
 import { ROUTE_PATHS, buildPath } from '@/app/routes/routePaths';
-import { mockNoteSubjects } from '@/shared/mocks/notes.mock';
+import { useNoteSubjects } from '../hooks/useNotes';
 
 const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end }) => {
   const location = useLocation();
@@ -42,6 +42,9 @@ const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end
 };
 
 const SubjectSidebar = () => {
+  const { data: subjects } = useNoteSubjects();
+  const subjectList = Array.isArray(subjects) ? subjects : [];
+
   return (
     <motion.aside 
       initial={{ x: -20, opacity: 0 }}
@@ -67,7 +70,7 @@ const SubjectSidebar = () => {
           </p>
         </div>
         
-        {mockNoteSubjects.map((subject) => (
+        {subjectList.map((subject) => (
           <SidebarLink
             key={subject.id}
             to={buildPath.studentNotesSubject(subject.id)}

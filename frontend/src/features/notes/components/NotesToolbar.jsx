@@ -19,7 +19,7 @@ const NotesToolbar = ({
         </div>
         <Input
           type="text"
-          placeholder="Search notes by title, topic, or author..."
+          placeholder="Search by title, subject, or tags..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-9 bg-muted/50 border-border/50 focus-visible:ring-primary/20"
@@ -49,8 +49,7 @@ const NotesToolbar = ({
             className="h-full bg-card px-3 text-sm focus:outline-none focus:ring-0 min-w-[120px] cursor-pointer hover:bg-muted/30 transition-colors"
           >
             <option value="newest">Newest First</option>
-            <option value="popular">Most Popular</option>
-            <option value="alphabetical">A-Z</option>
+            <option value="oldest">Oldest First</option>
           </select>
         </div>
       </div>

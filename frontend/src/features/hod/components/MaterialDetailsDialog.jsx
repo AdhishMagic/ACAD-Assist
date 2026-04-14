@@ -113,7 +113,7 @@ export function MaterialDetailsDialog({ open, onOpenChange, material }) {
             <div className="text-sm font-medium">Material (Open / Preview)</div>
             {!attachments.length ? (
               <div className="text-sm text-muted-foreground rounded-md border p-3">
-                No attachments available in this mock dataset.
+                No attachments available.
               </div>
             ) : (
               <div className="space-y-2">

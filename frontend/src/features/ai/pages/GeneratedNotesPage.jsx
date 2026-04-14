@@ -2,12 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GeneratedNoteViewer from "../components/GeneratedNoteViewer";
-import { useAIGeneratedNote } from "../hooks/useAIChat";
+import { useNoteDetails } from "../../notes/hooks/useNotes";
 
 export default function GeneratedNotesPage() {
   const { noteId } = useParams();
   const navigate = useNavigate();
-  const { data: note, isLoading, isError } = useAIGeneratedNote(noteId);
+  const { data: note, isLoading, isError } = useNoteDetails(noteId);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto">

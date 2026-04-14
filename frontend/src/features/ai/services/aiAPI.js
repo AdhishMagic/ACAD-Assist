@@ -1,70 +1,41 @@
 import { aiClient } from '@/shared/lib/http/axios';
-import { shouldFallbackToMock } from '@/shared/lib/http/apiMode';
-import { mockGeneratedAiNote, mockSavedAiNotes } from '@/shared/mocks/ai.mock';
+import { notesAPI } from '@/features/notes/services/notesAPI';
 
 export const aiAPI = {
   chat: async (messages, file = null) => {
-    try {
-      const response = await aiClient.post('/chat', { messages, file });
-      return response.data;
-    } catch (error) {
-      if (!shouldFallbackToMock(error)) throw error;
-      return {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: 'Here is an explanation of the topic. **Key point 1**: Understand the basics. *Note*: This is a simulated response.',
-        timestamp: new Date().toISOString(),
-      };
-    }
+    const response = await aiClient.post('/chat', { messages, file });
+    return response.data;
   },
   
   getHistory: async () => {
-    try {
-      const response = await aiClient.get('/history');
-      return response.data;
-    } catch (error) {
-      if (!shouldFallbackToMock(error)) throw error;
-      return [];
-    }
+    const response = await aiClient.get('/history');
+    return response.data;
   },
   
   getSavedNotes: async () => {
-    try {
-      const response = await aiClient.get('/saved-notes');
-      return response.data;
-    } catch (error) {
-      if (!shouldFallbackToMock(error)) throw error;
-      return mockSavedAiNotes;
-    }
+    const response = await aiClient.get('/saved-notes');
+    return response.data;
   },
   
   getGeneratedNote: async (id) => {
-    try {
-      const response = await aiClient.get(`/generated/${id}`);
-      return response.data;
-    } catch (error) {
-      if (!shouldFallbackToMock(error)) throw error;
-      return { ...mockGeneratedAiNote, id: String(id) };
-    }
+    // Redirect to backend note endpoint instead of AI service
+    return notesAPI.getNoteById(id);
   },
 
+  // Redirect to backend note creation instead of AI service
   saveNote: async (data) => {
-    try {
-      const response = await aiClient.post('/saved-notes', data);
-      return response.data;
-    } catch (error) {
-      if (!shouldFallbackToMock(error)) throw error;
-      return { success: true };
-    }
+    const createdNote = await notesAPI.createNote({
+      title: data.title,
+      content: data.content,
+      subject: data.topic || '',
+      tags: [],
+    });
+    // Automatically bookmark the newly created note
+    return await notesAPI.toggleBookmark(createdNote.id);
   },
 
   deleteNote: async (id) => {
-    try {
-      const response = await aiClient.delete(`/saved-notes/${id}`);
-      return response.data;
-    } catch (error) {
-      if (!shouldFallbackToMock(error)) throw error;
-      return { success: true };
-    }
+    const response = await aiClient.delete(`/saved-notes/${id}`);
+    return response.data;
   }
 };

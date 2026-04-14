@@ -5,7 +5,7 @@ import ClassesOverviewPage from '../pages/ClassesOverviewPage';
 import StudentActivityPage from '../pages/StudentActivityPage';
 import NotesStudio from '@/features/materials/NotesStudio';
 import SavedNotes from '@/features/materials/SavedNotes';
-import ExploreNotes from '@/features/materials/ExploreNotes';
+import NotesExplorer from '@/features/notes/pages/NotesExplorer';
 import { examRoutes } from '../exams/constants/examRoutes';
 
 export const teacherRoutes = [
@@ -31,7 +31,7 @@ export const teacherRoutes = [
   },
   {
     path: ROUTE_PATHS.TEACHER_EXPLORE_NOTES,
-    element: <ExploreNotes />
+    element: <NotesExplorer />
   },
   ...examRoutes
 ];

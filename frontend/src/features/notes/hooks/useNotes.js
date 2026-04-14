@@ -8,6 +8,13 @@ export const useNotes = (params = {}) => {
   });
 };
 
+export const useMyNotes = (params = {}) => {
+  return useQuery({
+    queryKey: ['notes', 'my', params],
+    queryFn: () => notesAPI.getMyNotes(params),
+  });
+};
+
 export const useSubjectNotes = (subjectId, params = {}) => {
   return useQuery({
     queryKey: ['notes', 'subject', subjectId, params],
@@ -24,6 +31,20 @@ export const useNoteDetails = (noteId) => {
   });
 };
 
+export const useNoteSubjects = () => {
+  return useQuery({
+    queryKey: ['notes', 'subjects'],
+    queryFn: () => notesAPI.getSubjects(),
+  });
+};
+
+export const useBookmarkedNotes = (params = {}) => {
+  return useQuery({
+    queryKey: ['notes', 'bookmarked', params],
+    queryFn: () => notesAPI.getBookmarkedNotes(params),
+  });
+};
+
 export const useBookmarkNote = () => {
   const queryClient = useQueryClient();
   
@@ -33,6 +54,7 @@ export const useBookmarkNote = () => {
       // Invalidate relevant queries to refresh bookmark state across the app
       queryClient.invalidateQueries({ queryKey: ['notes'] });
       queryClient.invalidateQueries({ queryKey: ['note'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', 'bookmarked'] });
     }
   });
 };

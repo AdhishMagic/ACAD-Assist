@@ -55,6 +55,11 @@ const NoteCard = ({ note, onNoteClick }) => {
         </CardHeader>
         
         <CardContent className="p-4 pt-2 flex-grow">
+          <div className="mb-2">
+            <Badge variant="outline" className="text-xs border-primary/30 text-primary">
+              {note.type || 'Lecture'}
+            </Badge>
+          </div>
           <div className="flex flex-wrap gap-2 mt-2">
             {note.tags?.slice(0, 3).map((tag) => (
               <Badge key={tag} variant="outline" className="text-xs text-muted-foreground">

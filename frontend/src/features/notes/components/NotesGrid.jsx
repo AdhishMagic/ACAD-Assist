@@ -18,7 +18,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
-const NotesGrid = ({ notes = [], isLoading = false, onNoteClick }) => {
+const NotesGrid = ({ notes = [], isLoading = false, onNoteClick, emptyStateTitle = '📭 No published notes available', emptyStateMessage = '' }) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -35,10 +35,8 @@ const NotesGrid = ({ notes = [], isLoading = false, onNoteClick }) => {
         <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
           <FileQuestion className="h-10 w-10 text-primary" />
         </div>
-        <h3 className="text-lg font-semibold mb-2">No notes found</h3>
-        <p className="text-muted-foreground max-w-sm">
-          We couldn't find any notes matching your current filters. Try adjusting your search criteria.
-        </p>
+        <h3 className="text-lg font-semibold mb-2">{emptyStateTitle}</h3>
+        {emptyStateMessage ? <p className="text-muted-foreground max-w-sm">{emptyStateMessage}</p> : null}
       </div>
     );
   }

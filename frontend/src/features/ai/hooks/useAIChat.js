@@ -8,13 +8,6 @@ export const useAIChatHistory = () => {
   });
 };
 
-export const useAISavedNotes = () => {
-  return useQuery({
-    queryKey: ['ai-saved-notes'],
-    queryFn: aiAPI.getSavedNotes,
-  });
-};
-
 export const useAIGeneratedNote = (id) => {
   return useQuery({
     queryKey: ['ai-generated-note', id],
@@ -38,7 +31,8 @@ export const useAISaveNote = () => {
   return useMutation({
     mutationFn: aiAPI.saveNote,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ai-saved-notes'] });
+      // Invalidate the bookmarked notes cache instead of the old AI saved notes
+      queryClient.invalidateQueries({ queryKey: ['notes', 'bookmarked'] });
     },
   });
 };

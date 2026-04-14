@@ -49,7 +49,7 @@ export default function SavedNoteCard({ note, onDelete }) {
       </CardContent>
       <CardFooter className="pt-4 border-t bg-muted/20">
         <Button asChild variant="ghost" className="w-full justify-between hover:bg-primary hover:text-primary-foreground group/btn transition-colors">
-          <Link to={`/student/ai/generated/${note.id}`}>
+          <Link to={`/student/notes/view/${note.id}`}>
             <span className="flex items-center">
               <BookOpen className="w-4 h-4 mr-2 text-primary group-hover/btn:text-primary-foreground transition-colors" />
               Open Note

@@ -4,13 +4,7 @@ import { Button } from '../../../components/ui/button';
 import { FileText, Clock, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const mockNotes = [
-  { id: 1, title: 'Network Layers Overview', subject: 'Computer Networks', lastOpened: '2 hours ago' },
-  { id: 2, title: 'Process Synchronization', subject: 'Operating Systems', lastOpened: 'Yesterday' },
-  { id: 3, title: 'Normalization Forms', subject: 'Databases', lastOpened: '3 days ago' },
-];
-
-const RecentNotes = ({ notes = mockNotes }) => {
+const RecentNotes = ({ notes = [] }) => {
   const navigate = useNavigate();
 
   return (

@@ -30,7 +30,8 @@ import TemplateBuilder from "@/features/teacher/components/TemplateBuilder";
 import { createMaterial, getMaterialById, getMyMaterials, publishMaterial, updateMaterial } from "./api";
 
 const EMPTY_EDITOR = "# New Study Material\n\nStart typing here...";
-const ALLOWED_EXTENSIONS = ["pdf", "doc", "docx", "txt"];
+const ALLOWED_EXTENSIONS = ["pdf", "docx"];
+const NOTE_TYPES = ["Lecture", "Exam Prep", "Assignment", "Reference", "Summary"];
 
 function getExtension(name = "") {
   if (!name.includes(".")) return "";
@@ -54,6 +55,9 @@ export default function NotesStudio() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState(EMPTY_EDITOR);
+  const [subject, setSubject] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
+  const [noteType, setNoteType] = useState("Lecture");
   const [activeTab, setActiveTab] = useState("editor");
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -173,6 +177,9 @@ export default function NotesStudio() {
   const resetForm = () => {
     setTitle("");
     setContent(EMPTY_EDITOR);
+    setSubject("");
+    setTagsInput("");
+    setNoteType("Lecture");
     setSelectedFile(null);
     setEditingMaterialId(null);
     if (fileInputRef.current) {
@@ -185,6 +192,9 @@ export default function NotesStudio() {
     setLatestMaterial(item);
     setTitle(item.title || "");
     setContent(item.content || "");
+    setSubject(item.subject || "");
+    setTagsInput(Array.isArray(item.tags) ? item.tags.join(", ") : "");
+    setNoteType(item.note_type || "Lecture");
     setSelectedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -194,10 +204,20 @@ export default function NotesStudio() {
   };
 
   const handleSaveMaterial = async () => {
+    if (!subject.trim()) {
+      showToast("error", "Subject is required.");
+      return;
+    }
+
     if (!title.trim()) {
       showToast("error", "Title is required.");
       return;
     }
+
+    const parsedTags = tagsInput
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
 
     setIsSaving(true);
     try {
@@ -205,6 +225,9 @@ export default function NotesStudio() {
         const updated = await updateMaterial(editingMaterialId, {
           title: title.trim(),
           content,
+          subject,
+          tags: parsedTags,
+          type: noteType,
           file: selectedFile,
         });
 
@@ -219,6 +242,9 @@ export default function NotesStudio() {
         const created = await createMaterial({
           title: title.trim(),
           content,
+          subject,
+          tags: parsedTags,
+          type: noteType,
           file: selectedFile,
         });
 
@@ -228,6 +254,10 @@ export default function NotesStudio() {
         showToast("success", "Material saved successfully.");
       }
     } catch (error) {
+      if (error?.response?.data) {
+        console.log("CREATE NOTE ERROR:", error.response.data);
+        console.log(error.response.data);
+      }
       const message =
         error?.response?.data?.detail ||
         error?.response?.data?.file?.[0] ||
@@ -239,18 +269,56 @@ export default function NotesStudio() {
   };
 
   const handlePublishMaterial = async () => {
-    if (!editingMaterialId) {
-      showToast("error", "Open a saved note first before publishing.");
+    const parsedTags = tagsInput
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (!subject.trim()) {
+      showToast("error", "Subject is required.");
+      return;
+    }
+
+    if (!title.trim()) {
+      showToast("error", "Title is required.");
       return;
     }
 
     setIsPublishing(true);
     try {
-      const published = await publishMaterial(editingMaterialId);
+      let noteId = editingMaterialId;
+
+      if (!noteId) {
+        const created = await createMaterial({
+          title: title.trim(),
+          content,
+          subject,
+          tags: parsedTags,
+          type: noteType,
+          file: selectedFile,
+        });
+        noteId = created.id;
+        setEditingMaterialId(created.id);
+      } else {
+        await updateMaterial(noteId, {
+          title: title.trim(),
+          content,
+          subject,
+          tags: parsedTags,
+          type: noteType,
+          file: selectedFile,
+        });
+      }
+
+      const published = await publishMaterial(noteId);
       setLatestMaterial(published);
-      setMaterials((prev) => prev.map((item) => (item.id === published.id ? published : item)));
+      setMaterials((prev) => [published, ...prev.filter((item) => item.id !== published.id)]);
       showToast("success", "Material published. It is now visible in Explore Notes.");
     } catch (error) {
+      if (error?.response?.data) {
+        console.log("CREATE NOTE ERROR:", error.response.data);
+        console.log(error.response.data);
+      }
       showToast("error", error?.response?.data?.detail || "Failed to publish material.");
     } finally {
       setIsPublishing(false);
@@ -290,6 +358,29 @@ export default function NotesStudio() {
             placeholder="Enter material title..."
             className="text-base font-medium border-0 border-b-2 border-transparent focus-visible:ring-0 focus-visible:border-primary rounded-none px-0 bg-transparent h-auto py-1 shadow-none"
           />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
+            <Input
+              value={subject}
+              onChange={(event) => setSubject(event.target.value)}
+              placeholder="Subject"
+              className="h-9"
+            />
+            <Input
+              value={tagsInput}
+              onChange={(event) => setTagsInput(event.target.value)}
+              placeholder="Tags (comma separated)"
+              className="h-9"
+            />
+            <select
+              value={noteType}
+              onChange={(event) => setNoteType(event.target.value)}
+              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+            >
+              {NOTE_TYPES.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="flex gap-2 items-center">
@@ -306,17 +397,15 @@ export default function NotesStudio() {
             <PenTool className="w-4 h-4" />
             + New
           </Button>
-          {editingMaterialId ? (
-            <Button
-              onClick={handlePublishMaterial}
-              disabled={isPublishing || isCurrentlyPublished}
-              size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-            >
-              <Send className="w-4 h-4 mr-2" />
-              {isPublishing ? "Publishing..." : isCurrentlyPublished ? "Published" : "Publish"}
-            </Button>
-          ) : null}
+          <Button
+            onClick={handlePublishMaterial}
+            disabled={isPublishing || isCurrentlyPublished}
+            size="sm"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <Send className="w-4 h-4 mr-2" />
+            {isPublishing ? "Publishing..." : isCurrentlyPublished ? "Published" : "Publish"}
+          </Button>
           <Button
             onClick={handleSaveMaterial}
             disabled={isSaving}
@@ -324,7 +413,7 @@ export default function NotesStudio() {
             className="bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20"
           >
             <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Saving..." : editingMaterialId ? "Update" : "Save"}
+            {isSaving ? "Saving..." : editingMaterialId ? "Update Draft" : "Save as Draft"}
           </Button>
         </div>
       </div>
@@ -337,7 +426,11 @@ export default function NotesStudio() {
             {isCurrentlyPublished ? "Published" : "Draft"}
           </span>
         </div>
-      ) : null}
+      ) : (
+        <div className="rounded-md border border-amber-200 bg-amber-50 text-amber-800 px-3 py-2 text-sm">
+          New notes are saved as drafts until you publish.
+        </div>
+      )}
 
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
         <div className="lg:col-span-8 flex flex-col h-full overflow-hidden border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-950 shadow-sm">
@@ -380,7 +473,7 @@ export default function NotesStudio() {
                         <UploadIcon className="w-8 h-8 text-primary" />
                       </div>
                       <p className="text-lg font-semibold text-gray-900 dark:text-white">Select a file to upload</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Accepted: PDF, DOC, DOCX, TXT</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Accepted: PDF, DOCX</p>
                     </button>
 
                     {selectedFile ? (
@@ -549,6 +642,7 @@ export default function NotesStudio() {
                           <div className="min-w-0">
                             <p className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">{item.title}</p>
                             <p className="text-xs text-gray-500 mt-0.5">{createdAt}</p>
+                            <p className="text-[11px] text-gray-500 mt-0.5 truncate">{item.subject || 'General'} | {item.note_type || 'Lecture'}</p>
                           </div>
                           <div className="flex items-center gap-0.5 flex-shrink-0">
                             <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${item.status === "published" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>

@@ -22,12 +22,12 @@ export const systemAPI = {
   },
 
   saveNote: async (payload) => {
-    const response = await apiClient.post('/api/notes/save/', payload);
+    const response = await apiClient.post('/api/notes/', payload);
     return response.data;
   },
 
   getSavedNotes: async (params = {}) => {
-    const response = await apiClient.get('/api/notes/saved/', { params });
+    const response = await apiClient.get('/api/notes/my/', { params });
     return response.data;
   },
 

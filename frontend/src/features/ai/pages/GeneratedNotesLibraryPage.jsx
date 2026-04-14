@@ -1,8 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText } from 'lucide-react';
-import { mockGeneratedLibrary } from '@/shared/mocks/ai.mock';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function GeneratedNotesLibraryPage() {
   return (
@@ -12,21 +9,11 @@ export default function GeneratedNotesLibraryPage() {
         <p className="text-muted-foreground mt-1">Open any generated note to view and download.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {mockGeneratedLibrary.map((note) => (
-          <Link key={note.id} to={`/student/ai/generated/${note.id}`} className="block">
-            <Card className="hover:shadow-sm transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{note.title}</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs text-muted-foreground">Created: {note.createdAt}</div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      <Alert>
+        <AlertDescription>
+          No generated notes available. This feature requires backend API implementation.
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }

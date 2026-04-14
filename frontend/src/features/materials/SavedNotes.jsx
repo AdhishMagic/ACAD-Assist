@@ -74,6 +74,7 @@ export default function SavedNotes() {
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{item.title}</p>
                   <p className="text-xs text-gray-500 mt-1">{new Date(item.created_at).toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mt-1">{item.subject || 'General'} | {item.note_type || 'Lecture'}</p>
                 </div>
                 <span className={`text-xs px-2 py-1 rounded font-medium capitalize ${statusClasses(item.status)}`}>
                   {item.status}

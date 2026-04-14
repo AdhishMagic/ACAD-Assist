@@ -1,7 +1,12 @@
+import json
+from uuid import UUID
+
+from django.utils.text import slugify
 from rest_framework import serializers
 
+from apps.academics.models import Subject
 from apps.files.models import File
-from apps.files.services import derive_title_from_content
+from apps.files.services import build_upload_metadata, compute_checksum, detect_file_type
 
 from .models import Note
 
@@ -14,6 +19,10 @@ class NoteSerializer(serializers.ModelSerializer):
 	created_by_email = serializers.SerializerMethodField()
 	created_by_name = serializers.SerializerMethodField()
 	status = serializers.SerializerMethodField()
+	subject_name = serializers.SerializerMethodField()
+	subject_code = serializers.SerializerMethodField()
+	type = serializers.CharField(source="note_type", read_only=True)
+	is_bookmarked = serializers.SerializerMethodField()
 
 	class Meta:
 		model = Note
@@ -21,6 +30,12 @@ class NoteSerializer(serializers.ModelSerializer):
 			"id",
 			"title",
 			"content",
+			"subject",
+			"subject_name",
+			"subject_code",
+			"tags",
+			"note_type",
+			"type",
 			"file",
 			"file_id",
 			"file_url",
@@ -28,6 +43,7 @@ class NoteSerializer(serializers.ModelSerializer):
 			"file_type",
 			"is_published",
 			"status",
+			"is_bookmarked",
 			"created_by",
 			"created_by_email",
 			"created_by_name",
@@ -61,59 +77,160 @@ class NoteSerializer(serializers.ModelSerializer):
 	def get_status(self, obj):
 		return "published" if obj.is_published else "draft"
 
+	def get_subject_name(self, obj):
+		return getattr(obj.subject, "name", None)
 
-class NoteSaveSerializer(serializers.Serializer):
-	note_id = serializers.UUIDField(required=False)
-	file_id = serializers.UUIDField()
-	title = serializers.CharField(max_length=255, required=False, allow_blank=True)
-	content = serializers.CharField()
-	is_published = serializers.BooleanField(default=False)
+	def get_subject_code(self, obj):
+		return getattr(obj.subject, "code", None)
 
-	def validate_file_id(self, value):
+	def get_is_bookmarked(self, obj):
+		request = self.context.get("request")
+		if not request or not request.user or not request.user.is_authenticated:
+			return False
+		return request.user.bookmarked_notes.filter(pk=obj.pk).exists()
+
+
+class NoteWriteSerializer(serializers.ModelSerializer):
+	subject = serializers.CharField(required=False, allow_blank=True, write_only=True)
+	file = serializers.FileField(required=False, allow_null=True, write_only=True)
+	subject_input = serializers.CharField(required=False, allow_blank=True, write_only=True)
+	uploaded_file = serializers.FileField(required=False, allow_null=True, write_only=True)
+	content = serializers.CharField(required=False, allow_blank=True)
+	note_type = serializers.CharField(required=False, allow_blank=True)
+	tags = serializers.JSONField(required=False)
+	is_published = serializers.BooleanField(required=False, default=False)
+
+	class Meta:
+		model = Note
+		fields = (
+			"title",
+			"content",
+			"subject",
+			"subject_input",
+			"tags",
+			"note_type",
+			"is_published",
+			"file",
+			"uploaded_file",
+		)
+
+	def _resolve_subject(self, value):
+		if not value:
+			return None
+		normalized = str(value).strip()
+		if not normalized:
+			return None
+		existing = Subject.objects.filter(code__iexact=normalized).first() or Subject.objects.filter(name__iexact=normalized).first()
+		if not existing:
+			try:
+				UUID(normalized)
+			except (TypeError, ValueError, AttributeError):
+				UUID_value = None
+			else:
+				UUID_value = normalized
+
+			if UUID_value:
+				existing = Subject.objects.filter(id=UUID_value).first()
+		if existing:
+			return existing
+
+		code = slugify(normalized)[:30] or normalized[:30]
+		subject, _ = Subject.objects.get_or_create(code=code, defaults={"name": normalized})
+		if subject.name != normalized and normalized:
+			subject.name = normalized
+			subject.save(update_fields=["name"])
+		return subject
+
+	def _create_file_record(self, uploaded_file):
+		if not uploaded_file:
+			return None
+
+		file_type = detect_file_type(uploaded_file.name)
+		if file_type not in {"pdf", "docx"}:
+			raise serializers.ValidationError({"uploaded_file": "Only PDF and DOCX files are allowed for notes."})
+
+		metadata = build_upload_metadata(uploaded_file)
+		checksum = compute_checksum(uploaded_file)
 		request = self.context["request"]
-		file_instance = File.objects.filter(id=value, uploaded_by=request.user).first()
-		if not file_instance:
-			raise serializers.ValidationError("The referenced file was not found.")
-		return value
+		return File.objects.create(
+			file=uploaded_file,
+			file_type=file_type,
+			uploaded_by=request.user,
+			is_editable=file_type == "docx",
+			original_name=uploaded_file.name,
+			storage_path=uploaded_file.name,
+			checksum=checksum,
+			mime_type=metadata["mime_type"],
+			size_bytes=metadata["size_bytes"],
+			metadata=metadata,
+		)
 
-	def validate_content(self, value):
-		if not value or not value.strip():
-			raise serializers.ValidationError("Content cannot be empty.")
-		return value.strip()
+	def validate_tags(self, value):
+		if value is None:
+			return []
+		if isinstance(value, str):
+			try:
+				value = json.loads(value)
+			except json.JSONDecodeError:
+				value = [part.strip() for part in value.split(",") if part.strip()]
+		if not isinstance(value, list):
+			raise serializers.ValidationError("Tags must be a list or JSON array.")
+		normalized = []
+		for tag in value:
+			item = str(tag or "").strip()
+			if item:
+				normalized.append(item)
+		return normalized
 
 	def validate(self, attrs):
-		request = self.context["request"]
-		file_instance = File.objects.filter(id=attrs["file_id"], uploaded_by=request.user).first()
-		attrs["file_instance"] = file_instance
+		subject_value = attrs.pop("subject", None)
+		subject_input = attrs.pop("subject_input", None)
+		if not subject_value and subject_input is not None:
+			subject_value = subject_input
+		attrs["subject"] = self._resolve_subject(subject_value)
 
-		note_id = attrs.get("note_id")
-		if note_id:
-			note = Note.objects.filter(id=note_id, created_by=request.user).first()
-			if not note:
-				raise serializers.ValidationError({"note_id": "The note was not found."})
-			attrs["note_instance"] = note
+		content = (attrs.get("content") or "").strip()
+		uploaded_file = attrs.get("file") or attrs.get("uploaded_file")
+		if not content and not uploaded_file:
+			attrs["content"] = ""
+
+		if attrs.get("note_type") is not None:
+			attrs["note_type"] = str(attrs.get("note_type") or "").strip() or "Lecture"
+
+		if attrs.get("title") is not None:
+			attrs["title"] = str(attrs.get("title") or "").strip()
+
+		if self.instance is None and not attrs.get("title"):
+			raise serializers.ValidationError({"title": "Title is required."})
+
+		if "content" in attrs:
+			attrs["content"] = content
+
 		return attrs
 
 	def create(self, validated_data):
-		request = self.context["request"]
-		file_instance = validated_data["file_instance"]
-		content = validated_data["content"]
-		title = validated_data.get("title") or derive_title_from_content(content, getattr(file_instance, "original_name", ""))
-		is_published = bool(validated_data.get("is_published", False))
+		uploaded_file = validated_data.pop("file", None) or validated_data.pop("uploaded_file", None)
+		validated_data["is_published"] = False
+		validated_data["created_by"] = self.context["request"].user
+		if uploaded_file:
+			validated_data["file"] = self._create_file_record(uploaded_file)
+		if not validated_data.get("note_type"):
+			validated_data["note_type"] = "Lecture"
+		if "tags" not in validated_data:
+			validated_data["tags"] = []
+		return super().create(validated_data)
 
-		note = validated_data.get("note_instance")
-		if note:
-			note.file = file_instance
-			note.title = title
-			note.content = content
-			note.is_published = is_published
-			note.save(update_fields=["file", "title", "content", "is_published", "updated_at"])
-			return note
+	def update(self, instance, validated_data):
+		uploaded_file = validated_data.pop("file", None) or validated_data.pop("uploaded_file", None)
+		if uploaded_file:
+			validated_data["file"] = self._create_file_record(uploaded_file)
+		if "note_type" in validated_data:
+			validated_data["note_type"] = validated_data["note_type"] or instance.note_type or "Lecture"
+		return super().update(instance, validated_data)
 
-		return Note.objects.create(
-			file=file_instance,
-			title=title,
-			content=content,
-			is_published=is_published,
-			created_by=request.user,
-		)
+
+class NotePublishSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Note
+		fields = ("is_published",)
+		read_only_fields = fields

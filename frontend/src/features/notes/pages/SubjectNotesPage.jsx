@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
-import { useSubjectNotes } from '../hooks/useNotes';
+import { useNoteSubjects, useSubjectNotes } from '../hooks/useNotes';
 import SubjectSidebar from '../components/SubjectSidebar';
 import NotesToolbar from '../components/NotesToolbar';
 import NotesFilters from '../components/NotesFilters';
@@ -16,16 +16,22 @@ const SubjectNotesPage = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [activeFilters, setActiveFilters] = useState({ teachers: [], tags: [] });
+  const [activeFilters, setActiveFilters] = useState({ subject: subjectId || '', tags: [] });
   const [sortBy, setSortBy] = useState('newest');
   const [selectedNote, setSelectedNote] = useState(null);
 
   const { data, isLoading } = useSubjectNotes(subjectId, { search: searchTerm, sort: sortBy, filters: activeFilters });
+  const { data: subjectData } = useNoteSubjects();
   
-  // Format subject title from ID (e.g., computer-networks -> Computer Networks)
-  const formattedSubject = subjectId ? subjectId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Subject';
+  const subjects = Array.isArray(subjectData) ? subjectData : [];
+  const selectedSubject = subjects.find((item) => String(item.id) === String(subjectId));
+  const formattedSubject = selectedSubject?.name || 'Subject';
   
   const notes = data?.notes || [];
+  const tags = useMemo(
+    () => [...new Set(notes.flatMap((note) => (Array.isArray(note.tags) ? note.tags : [])))].sort((a, b) => a.localeCompare(b)),
+    [notes]
+  );
 
   return (
     <div className="flex h-full w-full overflow-hidden bg-background">
@@ -61,8 +67,10 @@ const SubjectNotesPage = () => {
               isOpen={isFilterActive}
               activeFilters={activeFilters}
               onFilterChange={setActiveFilters}
+              subjects={subjects}
+              tags={tags}
               onClear={() => {
-                setActiveFilters({ teachers: [], tags: [] });
+                setActiveFilters({ subject: subjectId || '', tags: [] });
                 setIsFilterActive(false);
               }}
             />
