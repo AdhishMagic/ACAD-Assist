@@ -1,9 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { MaterialUploader } from '../components/MaterialUploader';
+import UploadPanel from '../../components/UploadPanel';
 import { useUploadMaterial } from '../hooks/useExamGenerator';
-import { motion } from 'framer-motion';
 
 const MaterialsUploadPage = () => {
   const navigate = useNavigate();
@@ -25,6 +24,10 @@ const MaterialsUploadPage = () => {
     }
   };
 
+  const handleUploadSuccess = ({ file }) => {
+    handleUploadComplete([file]);
+  };
+
   return (
     <div className="container mx-auto max-w-4xl py-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="space-y-2">
@@ -32,23 +35,17 @@ const MaterialsUploadPage = () => {
         <p className="text-muted-foreground">Upload your course materials, notes, or previous question papers to provide context for the AI.</p>
       </div>
 
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <Card className="border shadow-md">
-          <CardHeader className="bg-muted/20 border-b">
-            <CardTitle>Step 1: Upload Source Materials</CardTitle>
-            <CardDescription>
-              We'll extract key concepts, definitions, and topics to generate relevant questions.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 md:p-8">
-            <MaterialUploader onUploadComplete={handleUploadComplete} />
-          </CardContent>
-        </Card>
-      </motion.div>
+      <Card className="border shadow-md">
+        <CardHeader className="bg-muted/20 border-b">
+          <CardTitle>Step 1: Upload Source Materials</CardTitle>
+          <CardDescription>
+            We'll extract key concepts, definitions, and topics to generate relevant questions.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6 md:p-8">
+          <UploadPanel onUploadSuccess={handleUploadSuccess} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

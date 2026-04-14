@@ -5,22 +5,30 @@ from db_design.base import AuditModel
 
 
 class File(AuditModel):
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="files")
-	filename = models.CharField(max_length=255)
-	storage_path = models.CharField(max_length=512)
-	checksum = models.CharField(max_length=128, unique=True, db_index=True)
-	mime_type = models.CharField(max_length=100, blank=True)
+	file = models.FileField(upload_to="uploads/%Y/%m/%d/", null=True, blank=True)
+	file_type = models.CharField(max_length=20, db_index=True)
+	uploaded_by = models.ForeignKey(
+		settings.AUTH_USER_MODEL,
+		on_delete=models.CASCADE,
+		related_name="uploaded_files",
+	)
+	is_editable = models.BooleanField(default=False, db_index=True)
+	original_name = models.CharField(max_length=255)
+	storage_path = models.CharField(max_length=512, blank=True)
+	checksum = models.CharField(max_length=128, db_index=True)
+	mime_type = models.CharField(max_length=150, blank=True)
 	size_bytes = models.BigIntegerField(default=0)
 	metadata = models.JSONField(default=dict, blank=True)
 
 	class Meta:
-		ordering = ['-created_at']
+		ordering = ["-created_at"]
 		indexes = [
-			models.Index(fields=["owner"], name="idx_file_owner"),
+			models.Index(fields=["uploaded_by"], name="idx_file_uploaded_by"),
+			models.Index(fields=["file_type"], name="idx_file_type"),
 			models.Index(fields=["checksum"], name="idx_file_checksum"),
 		]
 		verbose_name = "File"
 		verbose_name_plural = "Files"
 
 	def __str__(self):
-		return self.filename
+		return self.original_name or str(self.id)

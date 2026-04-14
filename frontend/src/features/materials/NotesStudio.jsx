@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import NotesEditor from "@/features/teacher/components/NotesEditor";
@@ -341,7 +341,7 @@ export default function NotesStudio() {
 
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
         <div className="lg:col-span-8 flex flex-col h-full overflow-hidden border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-950 shadow-sm">
-          <Tabs defaultValue="editor" value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col w-full">
+          <Tabs defaultValue="editor" value={activeTab === "upload" ? "upload" : "editor"} onValueChange={setActiveTab} className="h-full flex flex-col w-full">
             <div className="border-b border-gray-200 dark:border-gray-800 px-3 py-1.5 bg-gray-50/50 dark:bg-gray-900/50 flex justify-between items-center">
               <TabsList className="bg-transparent space-x-2">
                 <TabsTrigger
@@ -359,77 +359,79 @@ export default function NotesStudio() {
               </TabsList>
             </div>
 
-            <div className="flex-1 overflow-hidden">
-              <TabsContent value="editor" className="h-full m-0 p-0 border-0 outline-none flex flex-col md:flex-row min-w-0">
-                <div className="w-full md:w-1/2 h-full border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-800 flex flex-col min-w-0">
-                  <NotesEditor content={content} setContent={setContent} />
-                </div>
-                <div className="w-full md:w-1/2 h-full flex flex-col bg-gray-50/30 dark:bg-gray-900/30 min-w-0">
-                  <div className="h-10 px-3 border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800/50 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-2">Preview</span>
-                    <span className="flex items-center text-xs text-green-600 dark:text-green-400 font-medium">
-                      <Sparkles className="w-2.5 h-2.5 mr-1" /> Live Sync
-                    </span>
-                  </div>
-                  <NotesPreview content={content} />
-                </div>
-              </TabsContent>
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              {activeTab === "upload" ? (
+                <div className="flex-1 min-h-0 h-full w-full m-0 p-0 border-0 outline-none bg-gray-50/50 dark:bg-gray-950 overflow-auto">
+                  <div className="w-full max-w-3xl mx-auto p-6 space-y-5">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt"
+                      onChange={onFileChange}
+                      className="hidden"
+                    />
 
-              <TabsContent value="upload" className="h-full w-full m-0 p-0 border-0 outline-none bg-gray-50/50 dark:bg-gray-950 overflow-auto">
-                <div className="w-full max-w-3xl mx-auto p-6 space-y-5">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".pdf,.doc,.docx,.txt"
-                    onChange={onFileChange}
-                    className="hidden"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={onBrowseClick}
-                    className="w-full border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-primary/50 rounded-xl p-10 text-center transition-colors"
-                  >
-                    <div className="mx-auto w-fit p-4 rounded-full bg-primary/10 mb-3">
-                      <UploadIcon className="w-8 h-8 text-primary" />
-                    </div>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">Select a file to upload</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Accepted: PDF, DOC, DOCX, TXT</p>
-                  </button>
-
-                  {selectedFile ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4"
+                    <button
+                      type="button"
+                      onClick={onBrowseClick}
+                      className="w-full border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-primary/50 rounded-xl p-10 text-center transition-colors"
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0 flex items-center gap-3">
-                          <div className="p-2 rounded-md bg-slate-100 dark:bg-slate-800">
-                            <FileText className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">{selectedFile.name}</p>
-                            <p className="text-xs text-gray-500">{(selectedFile.size / 1024).toFixed(1)} KB</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs px-2 py-1 rounded font-semibold ${selectedBadge.classes}`}>{selectedBadge.label}</span>
-                          <button
-                            type="button"
-                            onClick={removeSelectedFile}
-                            className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                            title="Remove selected file"
-                          >
-                            <X className="w-4 h-4 text-gray-500" />
-                          </button>
-                        </div>
+                      <div className="mx-auto w-fit p-4 rounded-full bg-primary/10 mb-3">
+                        <UploadIcon className="w-8 h-8 text-primary" />
                       </div>
-                    </motion.div>
-                  ) : null}
+                      <p className="text-lg font-semibold text-gray-900 dark:text-white">Select a file to upload</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Accepted: PDF, DOC, DOCX, TXT</p>
+                    </button>
+
+                    {selectedFile ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0 flex items-center gap-3">
+                            <div className="p-2 rounded-md bg-slate-100 dark:bg-slate-800">
+                              <FileText className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">{selectedFile.name}</p>
+                              <p className="text-xs text-gray-500">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs px-2 py-1 rounded font-semibold ${selectedBadge.classes}`}>{selectedBadge.label}</span>
+                            <button
+                              type="button"
+                              onClick={removeSelectedFile}
+                              className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                              title="Remove selected file"
+                            >
+                              <X className="w-4 h-4 text-gray-500" />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ) : null}
+                  </div>
                 </div>
-              </TabsContent>
+              ) : (
+                <div className="flex-1 min-h-0 h-full m-0 p-0 border-0 outline-none flex flex-col md:flex-row min-w-0">
+                  <div className="w-full md:w-1/2 h-full border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-800 flex flex-col min-w-0">
+                    <NotesEditor content={content} setContent={setContent} />
+                  </div>
+                  <div className="w-full md:w-1/2 h-full flex flex-col bg-gray-50/30 dark:bg-gray-900/30 min-w-0">
+                    <div className="h-10 px-3 border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800/50 flex items-center justify-between">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-2">Preview</span>
+                      <span className="flex items-center text-xs text-green-600 dark:text-green-400 font-medium">
+                        <Sparkles className="w-2.5 h-2.5 mr-1" /> Live Sync
+                      </span>
+                    </div>
+                    <NotesPreview content={content} />
+                  </div>
+                </div>
+              )}
             </div>
           </Tabs>
         </div>

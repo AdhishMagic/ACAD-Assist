@@ -9,8 +9,10 @@ export const SYSTEM_ROLES = {
 export const FILE_UPLOAD_CONFIG = {
   MAX_SIZE_MB: 10,
   ACCEPTED_TYPES: {
-    'image/*': ['.jpeg', '.jpg', '.png', '.gif'],
     'application/pdf': ['.pdf'],
-    'text/plain': ['.txt', '.csv', '.md']
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    'text/plain': ['.txt'],
+    'image/*': ['.png', '.jpg', '.jpeg'],
+    'application/zip': ['.zip'],
   }
 };

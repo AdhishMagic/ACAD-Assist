@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -9,14 +10,14 @@ from db_design.mixins import ActiveManager
 class AuditModel(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	created_by = models.ForeignKey(
-		'users.User',
+		settings.AUTH_USER_MODEL,
 		on_delete=models.SET_NULL,
 		null=True,
 		blank=True,
 		related_name='+',
 	)
 	updated_by = models.ForeignKey(
-		'users.User',
+		settings.AUTH_USER_MODEL,
 		on_delete=models.SET_NULL,
 		null=True,
 		blank=True,

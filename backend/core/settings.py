@@ -28,6 +28,39 @@ def load_env_file(env_path: Path) -> None:
 load_env_file(BASE_DIR.parent / ".env")
 
 
+def resolve_postgres_host() -> str:
+	host = os.getenv("POSTGRES_HOST")
+	if host and host != "db":
+		return host
+
+	if Path("/.dockerenv").exists():
+		return host or "db"
+
+	return "localhost"
+
+
+def build_database_config() -> dict:
+	if not Path("/.dockerenv").exists():
+		return {
+			"default": {
+				"ENGINE": "django.db.backends.sqlite3",
+				"NAME": BASE_DIR / "db.sqlite3",
+			}
+		}
+
+	return {
+		"default": {
+			"ENGINE": "django.db.backends.postgresql",
+			"NAME": os.getenv("POSTGRES_DB", "acad_assist"),
+			"USER": os.getenv("POSTGRES_USER", "acad_user"),
+			"PASSWORD": os.getenv("POSTGRES_PASSWORD", "acad_pass"),
+			"HOST": resolve_postgres_host(),
+			"PORT": os.getenv("POSTGRES_PORT", "5432"),
+			"CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "120")),
+		}
+	}
+
+
 SECRET_KEY = os.getenv(
 	"DJANGO_SECRET_KEY",
 	os.getenv("SECRET_KEY", DEFAULT_SECRET_KEY),
@@ -55,6 +88,9 @@ INSTALLED_APPS = [
 	"rest_framework",
 	"rest_framework_simplejwt",
 	"accounts.apps.AccountsConfig",
+	"apps.academics.apps.AcademicsConfig",
+	"apps.files.apps.FilesConfig",
+	"apps.notes.apps.NotesConfig",
 	"materials.apps.MaterialsConfig",
 	"projects.apps.ProjectsConfig",
 ]
@@ -95,17 +131,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 ASGI_APPLICATION = "core.asgi.application"
 
 
-DATABASES = {
-	"default": {
-		"ENGINE": "django.db.backends.postgresql",
-		"NAME": os.getenv("POSTGRES_DB", "acad_assist"),
-		"USER": os.getenv("POSTGRES_USER", "acad_user"),
-		"PASSWORD": os.getenv("POSTGRES_PASSWORD", "acad_pass"),
-		"HOST": os.getenv("POSTGRES_HOST", "db"),
-		"PORT": os.getenv("POSTGRES_PORT", "5432"),
-		"CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "120")),
-	}
-}
+DATABASES = build_database_config()
 
 
 AUTH_PASSWORD_VALIDATORS = [

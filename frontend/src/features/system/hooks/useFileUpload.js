@@ -10,6 +10,7 @@ export const useFileUpload = () => {
     mutationFn: (file) => systemAPI.uploadFile(file, setUploadProgress),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['files'] });
+      queryClient.invalidateQueries({ queryKey: ['saved-notes'] });
       setUploadProgress(0);
     },
     onError: () => {
