@@ -12,6 +12,7 @@ import {
   FileText,
   LayoutTemplate,
   PenTool,
+  RefreshCw,
   Send,
   Save,
   Sparkles,
@@ -279,26 +280,37 @@ export default function NotesStudio() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Notes Studio</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Notes Studio</h1>
             <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full font-semibold">Materials</span>
           </div>
           <Input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Enter material title..."
-            className="text-lg font-medium border-0 border-b-2 border-transparent focus-visible:ring-0 focus-visible:border-primary rounded-none px-0 bg-transparent h-auto py-1 shadow-none"
+            className="text-base font-medium border-0 border-b-2 border-transparent focus-visible:ring-0 focus-visible:border-primary rounded-none px-0 bg-transparent h-auto py-1 shadow-none"
           />
         </div>
 
-        <div className="flex gap-3">
-          <Button variant="outline" className="text-gray-600 dark:text-gray-300" onClick={resetForm}>
-            {editingMaterialId ? "Cancel Edit" : "Clear"}
+        <div className="flex gap-2 items-center">
+          <Button variant="outline" size="sm" className="text-gray-600 dark:text-gray-300" onClick={resetForm}>
+            {editingMaterialId ? "Cancel" : "Clear"}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-gray-600 dark:text-gray-300"
+            onClick={resetForm}
+            title="Create new note"
+          >
+            <PenTool className="w-4 h-4" />
+            + New
           </Button>
           {editingMaterialId ? (
             <Button
               onClick={handlePublishMaterial}
               disabled={isPublishing || isCurrentlyPublished}
+              size="sm"
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               <Send className="w-4 h-4 mr-2" />
@@ -308,10 +320,11 @@ export default function NotesStudio() {
           <Button
             onClick={handleSaveMaterial}
             disabled={isSaving}
+            size="sm"
             className="bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20"
           >
             <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Saving..." : editingMaterialId ? "Update Material" : "Save Material"}
+            {isSaving ? "Saving..." : editingMaterialId ? "Update" : "Save"}
           </Button>
         </div>
       </div>
@@ -326,22 +339,22 @@ export default function NotesStudio() {
         </div>
       ) : null}
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
-        <div className="lg:col-span-8 flex flex-col h-full overflow-hidden border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950 shadow-sm">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
+        <div className="lg:col-span-8 flex flex-col h-full overflow-hidden border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-950 shadow-sm">
           <Tabs defaultValue="editor" value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col w-full">
-            <div className="border-b border-gray-200 dark:border-gray-800 px-4 py-2 bg-gray-50/50 dark:bg-gray-900/50 flex justify-between items-center">
+            <div className="border-b border-gray-200 dark:border-gray-800 px-3 py-1.5 bg-gray-50/50 dark:bg-gray-900/50 flex justify-between items-center">
               <TabsList className="bg-transparent space-x-2">
                 <TabsTrigger
                   value="editor"
-                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-gray-700"
+                  className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-gray-700 px-2 py-1.5"
                 >
-                  <PenTool className="w-4 h-4 mr-2" /> Compose
+                  <PenTool className="w-3.5 h-3.5 mr-1.5" /> Compose
                 </TabsTrigger>
                 <TabsTrigger
                   value="upload"
-                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-gray-700"
+                  className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-gray-200 dark:data-[state=active]:border-gray-700 px-2 py-1.5"
                 >
-                  <UploadIcon className="w-4 h-4 mr-2" /> Upload Files
+                  <UploadIcon className="w-3.5 h-3.5 mr-1.5" /> Upload Files
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -352,10 +365,10 @@ export default function NotesStudio() {
                   <NotesEditor content={content} setContent={setContent} />
                 </div>
                 <div className="w-full md:w-1/2 h-full flex flex-col bg-gray-50/30 dark:bg-gray-900/30 min-w-0">
-                  <div className="p-2 border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800/50 flex items-center justify-between">
+                  <div className="h-10 px-3 border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800/50 flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-2">Preview</span>
                     <span className="flex items-center text-xs text-green-600 dark:text-green-400 font-medium">
-                      <Sparkles className="w-3 h-3 mr-1" /> Live Sync
+                      <Sparkles className="w-2.5 h-2.5 mr-1" /> Live Sync
                     </span>
                   </div>
                   <NotesPreview content={content} />
@@ -421,11 +434,11 @@ export default function NotesStudio() {
           </Tabs>
         </div>
 
-        <div className="lg:col-span-4 flex flex-col gap-4 overflow-y-auto">
+        <div className="lg:col-span-4 flex flex-col gap-3 overflow-y-auto">
           <Card className="border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-950">
-            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
-              <LayoutTemplate className="w-5 h-5 text-indigo-500" />
-              <h3 className="font-semibold text-gray-900 dark:text-white">Smart Templates</h3>
+            <div className="p-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+              <LayoutTemplate className="w-4 h-4 text-indigo-500" />
+              <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Smart Templates</h3>
             </div>
             <CardContent className="p-0">
               <TemplateBuilder onInsertTemplate={handleInsertTemplate} />
@@ -433,11 +446,11 @@ export default function NotesStudio() {
           </Card>
 
           <Card className="border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-950">
-            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
-              <File className="w-5 h-5 text-sky-500" />
-              <h3 className="font-semibold text-gray-900 dark:text-white">Attachment Preview</h3>
+            <div className="p-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+              <File className="w-4 h-4 text-sky-500" />
+              <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Attachment Preview</h3>
             </div>
-            <CardContent className="p-4 space-y-3">
+            <CardContent className="p-3 space-y-2.5">
               {!selectedFile && !latestMaterial?.file_url ? (
                 <p className="text-sm text-gray-500">Select a file in Upload Files to preview or save first.</p>
               ) : null}
@@ -493,17 +506,18 @@ export default function NotesStudio() {
           </Card>
 
           <Card className="border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-950">
-            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-2">
+            <div className="p-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-500" />
-                <h3 className="font-semibold text-gray-900 dark:text-white">Saved Materials</h3>
+                <FileText className="w-4 h-4 text-emerald-500" />
+                <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Saved Materials</h3>
               </div>
               <Button type="button" variant="outline" size="sm" onClick={loadMaterials} disabled={isLoadingMaterials}>
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoadingMaterials ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
             </div>
 
-            <CardContent className="p-3">
+            <CardContent className="p-2.5">
               {isLoadingMaterials ? <p className="text-sm text-gray-500">Loading saved materials...</p> : null}
               {materialsError ? <p className="text-sm text-rose-600">{materialsError}</p> : null}
               {!isLoadingMaterials && !materialsError && materials.length === 0 ? (
@@ -511,7 +525,7 @@ export default function NotesStudio() {
               ) : null}
 
               {!isLoadingMaterials && !materialsError && materials.length > 0 ? (
-                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
                   {materials.map((item) => {
                     const itemType = item.file_type || "txt";
                     const badge = getFileBadge(itemType);
@@ -523,7 +537,7 @@ export default function NotesStudio() {
                         type="button"
                         key={item.id}
                         onClick={() => startEditMaterial(item)}
-                        className={`w-full text-left border rounded-lg p-3 transition-colors ${
+                        className={`w-full text-left border rounded-lg p-2.5 transition-colors ${
                           isSelected
                             ? "border-primary bg-primary/5"
                             : "border-gray-200 dark:border-gray-800 hover:border-primary/50"
@@ -531,34 +545,34 @@ export default function NotesStudio() {
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{item.title}</p>
-                            <p className="text-xs text-gray-500 mt-1">{createdAt}</p>
+                            <p className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">{item.title}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{createdAt}</p>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className={`text-xs px-2 py-1 rounded font-semibold ${item.status === "published" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
-                              {item.status === "published" ? "Published" : "Draft"}
+                          <div className="flex items-center gap-0.5 flex-shrink-0">
+                            <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${item.status === "published" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                              {item.status === "published" ? "Pub" : "Draft"}
                             </span>
-                            <span className={`text-xs px-2 py-1 rounded font-semibold ${badge.classes}`}>{badge.label}</span>
+                            <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${badge.classes}`}>{badge.label}</span>
                           </div>
                         </div>
 
                         {item.file_url ? (
-                          <div className="mt-2 flex items-center justify-between">
+                          <div className="mt-1.5 flex items-center justify-between">
                             <a
                               href={item.file_url}
                               target="_blank"
                               rel="noreferrer"
                               onClick={(event) => event.stopPropagation()}
-                              className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
+                              className="text-xs text-primary inline-flex items-center gap-0.5 hover:underline"
                             >
-                              Open file <ChevronRight className="w-3 h-3" />
+                              Open file <ChevronRight className="w-2.5 h-2.5" />
                             </a>
                           </div>
                         ) : (
-                          <p className="text-xs text-gray-500 mt-2">Text-only material</p>
+                          <p className="text-xs text-gray-500 mt-1.5">Text-only material</p>
                         )}
 
-                        <p className="text-[11px] text-emerald-600 mt-2">Click to edit in compose panel</p>
+                        <p className="text-[10px] text-emerald-600 mt-1">Click to edit</p>
                       </button>
                     );
                   })}

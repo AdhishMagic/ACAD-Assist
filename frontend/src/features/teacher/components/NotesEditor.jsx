@@ -128,13 +128,13 @@ const NotesEditor = ({ content, setContent }) => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="bg-gray-100 dark:bg-gray-800/50 p-2 flex gap-2 border-b border-gray-200 dark:border-gray-800 rounded-t-lg">
+      <div className="h-10 px-3 bg-gray-100 dark:bg-gray-800/50 flex items-center gap-1.5 border-b border-gray-200 dark:border-gray-800">
         {/* Simple markdown toolbar mock */}
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={handleBold}
-          className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-bold"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-bold"
           title="Bold"
         >
           B
@@ -143,7 +143,7 @@ const NotesEditor = ({ content, setContent }) => {
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={handleItalic}
-          className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 italic"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 italic"
           title="Italic"
         >
           I
@@ -152,17 +152,17 @@ const NotesEditor = ({ content, setContent }) => {
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={handleUnderline}
-          className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 underline"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 underline"
           title="Underline"
         >
           U
         </button>
-        <div className="w-px bg-gray-300 dark:bg-gray-700 mx-1 my-1"></div>
+        <div className="w-px h-5 bg-gray-300 dark:bg-gray-700 mx-1"></div>
         <button
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={handleCode}
-          className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-mono text-sm"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-700 dark:text-gray-300 font-mono text-sm"
           title="Code"
         >
           {'</>'}

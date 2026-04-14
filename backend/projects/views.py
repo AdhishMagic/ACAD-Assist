@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Project, ProjectStatus
-from .permissions import IsHOD, IsStudent
+from .permissions import CanReviewProject, CanSubmitProject, IsHOD
 from .serializers import ProjectSerializer, ProjectSubmitSerializer
 
 
@@ -15,7 +15,7 @@ logger = logging.getLogger("projects")
 
 
 class ProjectSubmitView(APIView):
-    permission_classes = [IsAuthenticated, IsStudent]
+    permission_classes = [IsAuthenticated, CanSubmitProject]
 
     def post(self, request):
         logger.info("Project submit request received", extra={"user_id": request.user.id})
@@ -26,7 +26,7 @@ class ProjectSubmitView(APIView):
 
 
 class MyProjectsView(APIView):
-    permission_classes = [IsAuthenticated, IsStudent]
+    permission_classes = [IsAuthenticated, CanSubmitProject]
 
     def get(self, request):
         logger.info("My projects fetch request received", extra={"user_id": request.user.id})
@@ -35,7 +35,7 @@ class MyProjectsView(APIView):
 
 
 class AllProjectsView(APIView):
-    permission_classes = [IsAuthenticated, IsHOD]
+    permission_classes = [IsAuthenticated, CanReviewProject]
 
     def get(self, request):
         logger.info("All projects fetch request received", extra={"user_id": request.user.id})
@@ -44,7 +44,7 @@ class AllProjectsView(APIView):
 
 
 class _ProjectReviewBaseView(APIView):
-    permission_classes = [IsAuthenticated, IsHOD]
+    permission_classes = [IsAuthenticated, CanReviewProject]
     target_status = None
 
     def patch(self, request, pk):

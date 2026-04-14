@@ -10,7 +10,7 @@ import NotesEditor from '../components/NotesEditor';
 import NotesPreview from '../components/NotesPreview';
 import UploadPanel from '../components/UploadPanel';
 import TemplateBuilder from '../components/TemplateBuilder';
-import { createMaterial, listMaterials } from '@/features/materials/api';
+import { createMaterial, listMaterials, publishMaterial } from '@/features/materials/api';
 
 const NotesStudioPage = () => {
   const [title, setTitle] = useState('');
@@ -20,6 +20,8 @@ const NotesStudioPage = () => {
   const [materials, setMaterials] = useState([]);
   const [isLoadingMaterials, setIsLoadingMaterials] = useState(true);
   const [materialsError, setMaterialsError] = useState('');
+  const [latestSavedMaterial, setLatestSavedMaterial] = useState(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const loadMaterials = async () => {
     setIsLoadingMaterials(true);
@@ -57,6 +59,7 @@ const NotesStudioPage = () => {
       });
 
       setMaterials((prev) => [created, ...prev.filter((item) => item.id !== created.id)]);
+  setLatestSavedMaterial(created);
       setTitle('');
       setContent('# New Study Material\n\nStart typing here...');
       alert('Notes saved successfully!');
@@ -64,6 +67,25 @@ const NotesStudioPage = () => {
       alert(error?.response?.data?.detail || 'Failed to save notes');
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!latestSavedMaterial?.id) {
+      alert('Save a document first to publish it.');
+      return;
+    }
+
+    setIsPublishing(true);
+    try {
+      const published = await publishMaterial(latestSavedMaterial.id);
+      setLatestSavedMaterial(published);
+      setMaterials((prev) => prev.map((item) => (item.id === published.id ? published : item)));
+      alert('Document published successfully!');
+    } catch (error) {
+      alert(error?.response?.data?.detail || 'Failed to publish document');
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -92,6 +114,15 @@ const NotesStudioPage = () => {
           <Button variant="outline" className="text-gray-600 dark:text-gray-300">
             Cancel
           </Button>
+          {latestSavedMaterial && latestSavedMaterial.status !== 'published' ? (
+            <Button
+              onClick={handlePublish}
+              disabled={isPublishing}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              {isPublishing ? 'Publishing...' : 'Publish'}
+            </Button>
+          ) : null}
           <Button 
             onClick={handleSave} 
             disabled={isUploading}

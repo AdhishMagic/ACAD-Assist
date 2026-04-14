@@ -17,7 +17,7 @@ const NotesPreview = ({ content }) => {
   };
 
   return (
-    <div className="h-full bg-white dark:bg-gray-950 p-6 overflow-y-auto overflow-x-hidden prose prose-sm sm:prose-base dark:prose-invert max-w-none border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800 min-w-0 break-words">
+    <div className="h-full bg-white dark:bg-gray-950 p-4 overflow-y-auto overflow-x-hidden prose prose-sm sm:prose-base dark:prose-invert max-w-none border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800 min-w-0 break-words">
       <div 
         dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} 
         className="text-gray-800 dark:text-gray-200 break-words"

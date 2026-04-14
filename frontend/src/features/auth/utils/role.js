@@ -4,7 +4,7 @@ export const DEFAULT_ROLE = 'student';
 
 export function hasTeacherAccess(role) {
   const normalizedRole = normalizeRole(role);
-  return normalizedRole === 'teacher' || normalizedRole === 'hod';
+  return normalizedRole === 'teacher' || normalizedRole === 'hod' || normalizedRole === 'admin';
 }
 
 export function normalizeRole(role) {

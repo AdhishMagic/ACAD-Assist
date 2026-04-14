@@ -32,8 +32,8 @@ const TemplateBuilder = ({ onInsertTemplate }) => {
   ];
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="mb-4">
+    <div className="p-3 space-y-3">
+      <div className="mb-3">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-1">Quick Templates</h3>
         <p className="text-xs text-gray-500 dark:text-gray-400">Click to insert predefined blocks into your editor.</p>
       </div>
@@ -45,11 +45,11 @@ const TemplateBuilder = ({ onInsertTemplate }) => {
             className="cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors group border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950"
             onClick={() => onInsertTemplate(tpl.content)}
           >
-            <CardContent className="p-4 flex flex-col items-center justify-center text-center gap-2">
-              <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-900 group-hover:bg-primary/10 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors">
-                <tpl.icon size={20} />
+            <CardContent className="p-2.5 flex flex-col items-center justify-center text-center gap-1.5">
+              <div className="p-1.5 rounded-full bg-gray-100 dark:bg-gray-900 group-hover:bg-primary/10 text-gray-600 dark:text-gray-400 group-hover:text-primary transition-colors">
+                <tpl.icon size={16} />
               </div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors">
+              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors">
                 {tpl.title}
               </span>
             </CardContent>
