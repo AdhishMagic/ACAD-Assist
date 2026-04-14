@@ -1,40 +1,70 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Save, Sparkles, BookOpen, PenTool, LayoutTemplate, Upload as UploadIcon, FileText } from 'lucide-react';
+import { Save, Sparkles, BookOpen, PenTool, LayoutTemplate, Upload as UploadIcon, FileText, RefreshCw, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import NotesEditor from '../components/NotesEditor';
 import NotesPreview from '../components/NotesPreview';
 import UploadPanel from '../components/UploadPanel';
 import TemplateBuilder from '../components/TemplateBuilder';
-import { useUploadNotes } from '../hooks/useTeacherDashboard';
+import { createMaterial, listMaterials } from '@/features/materials/api';
 
 const NotesStudioPage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('# New Study Material\n\nStart typing here...');
   const [activeTab, setActiveTab] = useState('editor'); // editor, upload
-  
-  const { mutate: uploadNotes, isLoading: isUploading } = useUploadNotes();
+  const [isUploading, setIsUploading] = useState(false);
+  const [materials, setMaterials] = useState([]);
+  const [isLoadingMaterials, setIsLoadingMaterials] = useState(true);
+  const [materialsError, setMaterialsError] = useState('');
+
+  const loadMaterials = async () => {
+    setIsLoadingMaterials(true);
+    setMaterialsError('');
+    try {
+      const data = await listMaterials();
+      setMaterials(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setMaterialsError(error?.response?.data?.detail || 'Unable to load saved notes.');
+    } finally {
+      setIsLoadingMaterials(false);
+    }
+  };
+
+  useEffect(() => {
+    loadMaterials();
+  }, []);
 
   const handleInsertTemplate = (templateContent) => {
     setContent(prev => prev + '\n\n' + templateContent);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title) {
       alert("Please enter a title");
       return;
     }
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    
-    uploadNotes(formData, {
-      onSuccess: () => alert("Notes saved successfully!")
-    });
+
+    setIsUploading(true);
+    try {
+      const created = await createMaterial({
+        title,
+        content,
+        file: null,
+      });
+
+      setMaterials((prev) => [created, ...prev.filter((item) => item.id !== created.id)]);
+      setTitle('');
+      setContent('# New Study Material\n\nStart typing here...');
+      alert('Notes saved successfully!');
+    } catch (error) {
+      alert(error?.response?.data?.detail || 'Failed to save notes');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleUploadSuccess = (files) => {
@@ -163,6 +193,45 @@ const NotesStudioPage = () => {
                 <HelpCircle className="w-4 h-4 mr-2 text-purple-500" />
                 Generate Practice Questions
               </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-950">
+            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-emerald-500" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">Saved Notes</h3>
+              </div>
+              <Button variant="outline" size="sm" onClick={loadMaterials} disabled={isLoadingMaterials}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${isLoadingMaterials ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
+            <CardContent className="p-3 space-y-2 max-h-72 overflow-y-auto">
+              {isLoadingMaterials ? <p className="text-sm text-gray-500">Loading saved notes...</p> : null}
+              {materialsError ? <p className="text-sm text-red-600 dark:text-red-400">{materialsError}</p> : null}
+              {!isLoadingMaterials && !materialsError && materials.length === 0 ? (
+                <p className="text-sm text-gray-500">No saved notes yet.</p>
+              ) : null}
+
+              {materials.map((material) => (
+                <div key={material.id} className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{material.title}</p>
+                  <p className="text-xs text-gray-500 mt-1">{new Date(material.created_at).toLocaleString()}</p>
+                  {material.file_url ? (
+                    <a
+                      href={material.file_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                    >
+                      Open File <ExternalLink className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <p className="mt-2 text-xs text-gray-500">Text-only note</p>
+                  )}
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>

@@ -9,6 +9,7 @@ urlpatterns = [
 	path("admin/", admin.site.urls),
 	path("auth/", include("accounts.urls")),
 	path("api/v1/auth/", include("accounts.urls")),
+	path("api/materials/", include("materials.urls")),
 	path("api/projects/", include("projects.urls")),
 	path("health/", lambda request: JsonResponse({"status": "ok"})),
 ]

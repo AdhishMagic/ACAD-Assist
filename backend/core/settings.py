@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 	"rest_framework",
 	"rest_framework_simplejwt",
 	"accounts.apps.AccountsConfig",
+	"materials.apps.MaterialsConfig",
 	"projects.apps.ProjectsConfig",
 ]
 

@@ -3,7 +3,9 @@ import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import TeacherDashboard from '../pages/TeacherDashboard';
 import ClassesOverviewPage from '../pages/ClassesOverviewPage';
 import StudentActivityPage from '../pages/StudentActivityPage';
-import NotesStudioPage from '../pages/NotesStudioPage';
+import NotesStudio from '@/features/materials/NotesStudio';
+import SavedNotes from '@/features/materials/SavedNotes';
+import ExploreNotes from '@/features/materials/ExploreNotes';
 import { examRoutes } from '../exams/constants/examRoutes';
 
 export const teacherRoutes = [
@@ -21,7 +23,15 @@ export const teacherRoutes = [
   },
   {
     path: ROUTE_PATHS.TEACHER_NOTES_STUDIO,
-    element: <NotesStudioPage />
+    element: <NotesStudio />
+  },
+  {
+    path: ROUTE_PATHS.TEACHER_SAVED_NOTES,
+    element: <SavedNotes />
+  },
+  {
+    path: ROUTE_PATHS.TEACHER_EXPLORE_NOTES,
+    element: <ExploreNotes />
   },
   ...examRoutes
 ];

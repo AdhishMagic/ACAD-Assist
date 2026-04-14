@@ -36,6 +36,8 @@ export const ROUTE_PATHS = {
   TEACHER_CLASSES: "/teacher/classes",
   TEACHER_ACTIVITY: "/teacher/activity",
   TEACHER_NOTES_STUDIO: "/teacher/notes-studio",
+  TEACHER_SAVED_NOTES: "/teacher/saved-notes",
+  TEACHER_EXPLORE_NOTES: "/teacher/explore-notes",
   TEACHER_MATERIALS_UPLOAD: "/teacher/materials-upload",
   TEACHER_TEMPLATE_BUILDER: "/teacher/template-builder",
   TEACHER_TEMPLATE_PREVIEW: "/teacher/template-preview",
