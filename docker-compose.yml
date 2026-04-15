@@ -1,40 +1,28 @@
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: acad_assist_frontend
-    restart: unless-stopped
-    env_file:
-      - ./.env
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
-    command: npm run dev -- --host 0.0.0.0 --port 5173
-    depends_on:
-      web:
-        condition: service_started
-    networks:
-      - acad_network
-
+  # PostgreSQL Database with pgvector support
   db:
     image: pgvector/pgvector:pg15
     container_name: acad_assist_db
     restart: unless-stopped
     env_file:
       - ./.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-acad_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-acad_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-acad_assist}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-acad_user} -d ${POSTGRES_DB:-acad_assist}"]
       interval: 5s
       timeout: 5s
       retries: 10
     networks:
       - acad_network
 
+  # Django Backend
   web:
     build:
       context: ./backend
@@ -45,6 +33,10 @@ services:
       - ./.env
     environment:
       POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-acad_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-acad_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-acad_assist}
     ports:
       - "8000:8000"
     depends_on:
@@ -52,6 +44,60 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+    networks:
+      - acad_network
+
+  # FastAPI AI Layer
+  ai-layer:
+    build:
+      context: ./ai-layer
+      dockerfile: Dockerfile
+    container_name: acad_assist_ai_layer
+    restart: unless-stopped
+    env_file:
+      - ./ai-layer/.env
+    environment:
+      - DEBUG=True
+      - API_HOST=0.0.0.0
+      - API_PORT=8001
+      - LOG_LEVEL=INFO
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ai-layer/src:/app/src
+      - ./ai-layer/tests:/app/tests
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - acad_network
+    depends_on:
+      - db
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: acad_assist_frontend
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      VITE_API_BASE_URL: http://web:8000
+      VITE_AI_SERVICE_URL: http://ai-layer:8001/api/v1
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    depends_on:
+      - web
+      - ai-layer
     networks:
       - acad_network
 
