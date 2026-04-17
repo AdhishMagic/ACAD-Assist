@@ -57,7 +57,6 @@ export const ROUTE_PATHS = {
   ADMIN_DASHBOARD: "/admin/dashboard",
   ADMIN_ANALYTICS: "/admin/analytics",
   ADMIN_USERS: "/admin/users",
-  ADMIN_ROLES: "/admin/roles",
   ADMIN_ACTIVITY_LOGS: "/admin/activity-logs",
   ADMIN_STORAGE: "/admin/storage",
   ADMIN_AI_USAGE: "/admin/ai-usage",

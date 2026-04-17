@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, GraduationCap, Presentation, BrainCircuit, HardDrive, Activity, Shield } from "lucide-react";
+import { Users, GraduationCap, Presentation, BrainCircuit, HardDrive, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminDashboard } from "../hooks/useAdminData";
 import AdminStatsCard from "../components/AdminStatsCard";
@@ -121,10 +121,6 @@ export const AdminDashboard = () => {
               Access common administration tools and system configurations.
             </p>
             <div className="flex flex-col gap-2">
-              <Link to="/admin/roles" className="text-sm rounded-md px-4 py-2 bg-white dark:bg-zinc-900 border shadow-sm hover:shadow-md transition-shadow text-left font-medium flex items-center">
-                <Shield className="w-4 h-4 mr-2 text-indigo-500" />
-                Manage User Roles
-              </Link>
               <Link to="/admin/users" className="text-sm rounded-md px-4 py-2 bg-white dark:bg-zinc-900 border shadow-sm hover:shadow-md transition-shadow text-left font-medium flex items-center">
                 <Users className="w-4 h-4 mr-2 text-indigo-500" />
                 Manage Users

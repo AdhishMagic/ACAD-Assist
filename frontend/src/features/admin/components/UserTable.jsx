@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { MoreHorizontal, ShieldAlert, ShieldCheck, Key, UserCog, Eye } from "lucide-react";
+import { MoreHorizontal, ShieldAlert, ShieldCheck, Key, UserCog, Eye, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -24,12 +23,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import RoleBadge from "./RoleBadge";
-import { useToggleUserStatus, useUpdateUserRole, useResetUserPassword } from "../hooks/useAdminData";
+import { useDeleteUser, useResetUserPassword, useToggleUserStatus, useUpdateUserRole } from "../hooks/useAdminData";
 
-export const UserTable = ({ users }) => {
+export const UserTable = ({ users, onSelectUser }) => {
   const toggleStatusMutation = useToggleUserStatus();
   const updateRoleMutation = useUpdateUserRole();
   const resetPasswordMutation = useResetUserPassword();
+  const deleteUserMutation = useDeleteUser();
 
   const handleToggleStatus = (userId, currentStatus) => {
     const newStatus = currentStatus === 'Active' ? 'Suspended' : 'Active';
@@ -40,8 +40,33 @@ export const UserTable = ({ users }) => {
     updateRoleMutation.mutate({ userId, newRole });
   };
 
-  const handleResetPassword = (userId) => {
-    resetPasswordMutation.mutate(userId);
+  const handleSetPassword = (userId, userName) => {
+    const newPassword = window.prompt(`Set new password for ${userName} (minimum 8 characters):`);
+    if (newPassword === null) {
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      window.alert("Password must be at least 8 characters long.");
+      return;
+    }
+
+    resetPasswordMutation.mutate(
+      { userId, newPassword },
+      {
+        onSuccess: () => {
+          window.alert(`Password updated for ${userName}.`);
+        },
+      }
+    );
+  };
+
+  const handleDeleteUser = (userId, userName) => {
+    const confirmed = window.confirm(`Delete ${userName}? This action cannot be undone.`);
+    if (!confirmed) {
+      return;
+    }
+    deleteUserMutation.mutate(userId);
   };
 
   const roles = ["Student", "Teacher", "HOD", "Admin"];
@@ -73,7 +98,8 @@ export const UserTable = ({ users }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
-                className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                className="group cursor-pointer border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                onClick={() => onSelectUser?.(user)}
               >
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
@@ -91,10 +117,20 @@ export const UserTable = ({ users }) => {
                 </TableCell>
                 <TableCell className="text-muted-foreground text-sm">{user.joinDate}</TableCell>
                 <TableCell className="text-muted-foreground text-sm">{user.lastLogin}</TableCell>
-                <TableCell className="text-right">
+                <TableCell>
+                  <div className="flex items-center justify-end gap-2" onClick={(event) => event.stopPropagation()}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleSetPassword(user.id, user.name)}
+                      className="gap-2"
+                    >
+                      <Key className="h-4 w-4" />
+                      Set Password
+                    </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" className="h-8 w-8 p-0">
                         <span className="sr-only">Open menu</span>
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
@@ -108,10 +144,10 @@ export const UserTable = ({ users }) => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
                         className="cursor-pointer"
-                        onClick={() => handleResetPassword(user.id)}
+                        onClick={() => handleSetPassword(user.id, user.name)}
                       >
                         <Key className="mr-2 h-4 w-4" />
-                        Reset password
+                        Set password
                       </DropdownMenuItem>
                       <DropdownMenuSub>
                         <DropdownMenuSubTrigger className="cursor-pointer">
@@ -144,8 +180,17 @@ export const UserTable = ({ users }) => {
                           <><ShieldCheck className="mr-2 h-4 w-4" /> Activate account</>
                         )}
                       </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer text-red-600 focus:text-red-600"
+                        onClick={() => handleDeleteUser(user.id, user.name)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete user
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  </div>
                 </TableCell>
               </motion.tr>
             ))

@@ -31,6 +31,17 @@ export const useAdminUsers = () => {
   });
 };
 
+export const useAdminUserActivity = (userId, limit = 500) => {
+  return useQuery({
+    queryKey: ['adminUserActivity', userId, limit],
+    queryFn: async () => {
+      const { data } = await adminAPI.getUserActivity(userId, limit);
+      return data;
+    },
+    enabled: Boolean(userId),
+  });
+};
+
 export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
   
@@ -54,28 +65,34 @@ export const useToggleUserStatus = () => {
 };
 
 export const useResetUserPassword = () => {
-  return useMutation({
-    mutationFn: (userId) => adminAPI.resetUserPassword(userId),
-  });
-};
+  const queryClient = useQueryClient();
 
-export const useAdminRoles = () => {
-  return useQuery({
-    queryKey: ['adminRoles'],
-    queryFn: async () => {
-      const { data } = await adminAPI.getRoles();
-      return data;
+  return useMutation({
+    mutationFn: ({ userId, newPassword }) => adminAPI.resetUserPassword(userId, newPassword),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
     },
   });
 };
 
-export const useUpdateRolePermissions = () => {
+export const useCreateUser = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ roleId, permissions }) => adminAPI.updateRolePermissions(roleId, permissions),
+    mutationFn: (payload) => adminAPI.createUser(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['adminRoles'] });
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+    },
+  });
+};
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId) => adminAPI.deleteUser(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
     },
   });
 };

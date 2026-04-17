@@ -5,7 +5,8 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_SECRET_KEY = "change-me-to-a-strong-64-char-secret-key-for-production-use-2026"
-DEFAULT_ALLOWED_HOSTS = "127.0.0.1,localhost"
+# Add 'web' for Docker, 'localhost' and 127.0.0.1 for local development
+DEFAULT_ALLOWED_HOSTS = "127.0.0.1,localhost,web,acad_assist_web"
 
 
 def load_env_file(env_path: Path) -> None:
@@ -89,7 +90,11 @@ INSTALLED_APPS = [
 	"rest_framework_simplejwt",
 	"accounts.apps.AccountsConfig",
 	"apps.academics.apps.AcademicsConfig",
+	"apps.analytics.apps.AnalyticsConfig",
 	"apps.files.apps.FilesConfig",
+	"apps.notifications.apps.NotificationsConfig",
+	"apps.queries.apps.QueriesConfig",
+	"apps.exams.apps.ExamsConfig",
 	"apps.notes.apps.NotesConfig",
 	"materials.apps.MaterialsConfig",
 	"projects.apps.ProjectsConfig",
@@ -178,20 +183,41 @@ SIMPLE_JWT = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
+# Define allowed origins for CORS - includes local development and Docker environments
 CORS_ALLOWED_ORIGINS = [
-	origin.strip()
-	for origin in os.getenv(
-		"DJANGO_CORS_ALLOWED_ORIGINS",
-		"http://localhost:5173,http://127.0.0.1:5173",
-	).split(",")
-	if origin.strip()
+	"http://localhost:5173",
+	"http://127.0.0.1:5173",
+	"http://localhost:3000",
+	"http://127.0.0.1:3000",
 ]
+
+# Add origins from environment if specified
+cors_env_origins = os.getenv("DJANGO_CORS_ALLOWED_ORIGINS", "").strip()
+if cors_env_origins:
+	CORS_ALLOWED_ORIGINS.extend([
+		origin.strip()
+		for origin in cors_env_origins.split(",")
+		if origin.strip()
+	])
+
+# Add Docker-specific origins
+if Path("/.dockerenv").exists():
+	CORS_ALLOWED_ORIGINS.extend([
+		"http://localhost:5173",
+		"http://web:5173",
+		"http://localhost:3000",
+		"http://web:3000",
+	])
+
+# Remove duplicates
+CORS_ALLOWED_ORIGINS = list(set(CORS_ALLOWED_ORIGINS))
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
 	r"^https?://localhost(:\d+)?$",
 	r"^https?://127\.0\.0\.1(:\d+)?$",
+	r"^https?://web(:\d+)?$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

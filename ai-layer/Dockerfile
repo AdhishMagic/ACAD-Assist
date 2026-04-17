@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf 
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir numpy scipy scikit-learn && python -c "import fitz; print('PyMuPDF imported successfully')"
 
 # Copy application code
 COPY . .
@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 8001
 
 # Run application with port from environment variable
-CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT:-8001}"]
+CMD ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8001"]

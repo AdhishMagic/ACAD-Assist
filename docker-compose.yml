@@ -87,8 +87,11 @@ services:
     env_file:
       - ./.env
     environment:
-      VITE_API_BASE_URL: http://web:8000
-      VITE_AI_SERVICE_URL: http://ai-layer:8001/api/v1
+      # For Docker: Vite proxy will handle routing to backend service
+      # Using localhost here so the browser can access via container port mapping
+      VITE_PROXY_API_TARGET: http://web:8000
+      VITE_API_BASE_URL: http://localhost:8000
+      VITE_AI_SERVICE_URL: http://localhost:8001/api/v1
     ports:
       - "5173:5173"
     volumes:

@@ -40,3 +40,13 @@ async def query(request: QueryRequest) -> QueryResponse:
         confidence=0.85,
         source_documents=[]
     )
+
+
+@router.post("/index")
+async def index() -> dict[str, str]:
+    """Trigger document indexing."""
+    from services.pipeline_service import create_pipeline
+
+    pipeline_service = create_pipeline()
+    pipeline_service.index_documents()
+    return {"status": "indexing_started"}
