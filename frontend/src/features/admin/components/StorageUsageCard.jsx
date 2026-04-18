@@ -22,8 +22,8 @@ const StorageUsageCard = ({ stats, isLoading }) => {
     );
   }
 
-  // Calculate percentage used mock: 1.2 TB of (1.2+3.8)= 5.0 TB -> 24%
-  const usedPercentage = 24;
+  const usedPercentage = Number(stats?.capacity?.usedPercent || 0);
+  const totalCapacity = stats?.capacity?.total || 'N/A';
 
   return (
     <>
@@ -35,7 +35,7 @@ const StorageUsageCard = ({ stats, isLoading }) => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.totalUsed || '0 GB'}</div>
-            <p className="text-xs text-gray-500 mt-1">out of 5.0 TB</p>
+            <p className="text-xs text-gray-500 mt-1">out of {totalCapacity}</p>
             <Progress value={usedPercentage} className="h-2 mt-3" indicatorClassName="bg-blue-600" />
           </CardContent>
         </Card>

@@ -1,9 +1,22 @@
 from django.urls import path
 
-from .views import AdminDashboardView, AdminSystemAnalyticsView
+from .views import (
+    AdminActivityLogsView,
+    AdminAIUsageStatsView,
+    AdminDashboardView,
+    AdminStorageFileDeleteView,
+    AdminStorageFilesView,
+    AdminStorageStatsView,
+    AdminSystemAnalyticsView,
+)
 
 
 urlpatterns = [
     path("dashboard/", AdminDashboardView.as_view(), name="admin-dashboard"),
     path("analytics/", AdminSystemAnalyticsView.as_view(), name="admin-system-analytics"),
+    path("activity-logs/", AdminActivityLogsView.as_view(), name="admin-activity-logs"),
+    path("storage/stats/", AdminStorageStatsView.as_view(), name="admin-storage-stats"),
+    path("storage/files/", AdminStorageFilesView.as_view(), name="admin-storage-files"),
+    path("storage/files/<uuid:file_id>/", AdminStorageFileDeleteView.as_view(), name="admin-storage-file-delete"),
+    path("ai-usage/", AdminAIUsageStatsView.as_view(), name="admin-ai-usage-stats"),
 ]

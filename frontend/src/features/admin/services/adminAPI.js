@@ -1,9 +1,5 @@
 import { apiClient } from '@/shared/lib/http/axios';
 
-const notImplemented = () => {
-  throw new Error('Admin API endpoints not implemented. Please configure backend endpoints.');
-};
-
 export const adminAPI = {
   getDashboardStats: () => apiClient.get('/api/admin/dashboard/'),
   getSystemAnalytics: () => apiClient.get('/api/admin/analytics/'),
@@ -16,9 +12,9 @@ export const adminAPI = {
     new_password: newPassword,
   }),
   deleteUser: (userId) => apiClient.delete(`/api/admin/users/${userId}/`),
-  getActivityLogs: notImplemented,
-  getStorageStats: notImplemented,
-  getFiles: notImplemented,
-  deleteFile: notImplemented,
-  getAiUsageStats: notImplemented,
+  getActivityLogs: (limit = 500) => apiClient.get(`/api/admin/activity-logs/?limit=${limit}`),
+  getStorageStats: () => apiClient.get('/api/admin/storage/stats/'),
+  getFiles: (limit = 500) => apiClient.get(`/api/admin/storage/files/?limit=${limit}`),
+  deleteFile: (fileId) => apiClient.delete(`/api/admin/storage/files/${fileId}/`),
+  getAiUsageStats: () => apiClient.get('/api/admin/ai-usage/'),
 };
