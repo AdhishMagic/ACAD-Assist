@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import { User, Sparkles } from "lucide-react";
 import ChatToolbar from "./ChatToolbar";
 
-export default function ChatMessage({ message, onSaveNote }) {
+export default function ChatMessage({ message, onSaveNote, onLikeFeedback }) {
   const isAI = message.role === "assistant";
 
   return (
@@ -40,7 +40,7 @@ export default function ChatMessage({ message, onSaveNote }) {
             <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
           )}
         </div>
-        {isAI && <ChatToolbar message={message} onSaveNote={onSaveNote} />}
+        {isAI && <ChatToolbar message={message} onSaveNote={onSaveNote} onLikeFeedback={onLikeFeedback} />}
       </div>
     </motion.div>
   );

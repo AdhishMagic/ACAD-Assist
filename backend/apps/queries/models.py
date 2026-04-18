@@ -38,3 +38,28 @@ class Response(AuditModel):
 
 	def __str__(self):
 		return f"Response for {self.query_id}"
+
+
+class Feedback(AuditModel):
+	class Reaction(models.TextChoices):
+		LIKE = "like", "Like"
+		DISLIKE = "dislike", "Dislike"
+
+	query = models.ForeignKey(Query, on_delete=models.CASCADE, related_name="feedback_entries")
+	response = models.ForeignKey(Response, on_delete=models.CASCADE, related_name="feedback_entries", null=True, blank=True)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="query_feedback")
+	reaction = models.CharField(max_length=20, choices=Reaction.choices, db_index=True)
+	comment = models.TextField(blank=True)
+	metadata = models.JSONField(default=dict, blank=True)
+
+	class Meta:
+		ordering = ["-created_at"]
+		verbose_name = "Feedback"
+		verbose_name_plural = "Feedback"
+		indexes = [
+			models.Index(fields=["query"], name="idx_feedback_query"),
+			models.Index(fields=["user"], name="idx_feedback_user"),
+		]
+
+	def __str__(self):
+		return f"Feedback {self.reaction} for {self.query_id}"

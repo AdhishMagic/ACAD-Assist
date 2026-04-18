@@ -21,3 +21,9 @@ class ErrorResponse(BaseModel):
     """Error response model."""
     error: str
     detail: Optional[str] = None
+
+
+class FeedbackResponse(BaseModel):
+    """Feedback acknowledgment response model."""
+    status: str
+    query_id: str

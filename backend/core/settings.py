@@ -226,6 +226,18 @@ CORS_ALLOW_CREDENTIALS = True
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 
+if Path("/.dockerenv").exists():
+	_default_ai_layer_query_url = "http://ai-layer:8001/api/query"
+	_default_ai_layer_feedback_url = "http://ai-layer:8001/api/feedback"
+else:
+	_default_ai_layer_query_url = "http://localhost:8001/api/query"
+	_default_ai_layer_feedback_url = "http://localhost:8001/api/feedback"
+
+AI_LAYER_QUERY_URL = os.getenv("AI_LAYER_QUERY_URL", _default_ai_layer_query_url)
+AI_LAYER_FEEDBACK_URL = os.getenv("AI_LAYER_FEEDBACK_URL", _default_ai_layer_feedback_url)
+AI_LAYER_TIMEOUT_SECONDS = float(os.getenv("AI_LAYER_TIMEOUT_SECONDS", "30"))
+
+
 LOGGING = {
 	"version": 1,
 	"disable_existing_loggers": False,

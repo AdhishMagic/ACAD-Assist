@@ -1,6 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useAIChatHistory, useAISendMessage, useAISaveNote } from "../hooks/useAIChat";
+import {
+  useAIChatHistory,
+  useAIConversation,
+  useAISendMessage,
+  useAISaveNote,
+  useAICreateConversation,
+  useAIRenameConversation,
+  useAIDeleteConversation,
+  useAISendFeedback,
+} from "../hooks/useAIChat";
 import ChatSidebar from "../components/ChatSidebar";
 import ChatMessage from "../components/ChatMessage";
 import ChatInput from "../components/ChatInput";
@@ -13,8 +22,19 @@ export default function AIChatPage() {
   const messagesEndRef = useRef(null);
 
   const { data: history } = useAIChatHistory();
+  const { data: conversation } = useAIConversation(activeChatId);
   const sendMessageMutation = useAISendMessage();
   const saveNoteMutation = useAISaveNote();
+  const createConversationMutation = useAICreateConversation();
+  const renameConversationMutation = useAIRenameConversation();
+  const deleteConversationMutation = useAIDeleteConversation();
+  const sendFeedbackMutation = useAISendFeedback();
+
+  useEffect(() => {
+    if (Array.isArray(conversation?.messages)) {
+      setMessages(conversation.messages);
+    }
+  }, [conversation]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,14 +52,40 @@ export default function AIChatPage() {
     setMessages(prev => [...prev, newUserMsg]);
 
     try {
-      const response = await sendMessageMutation.mutateAsync({ 
-        messages: [...messages, newUserMsg], 
-        file: files?.[0] 
+      const response = await sendMessageMutation.mutateAsync({
+        content,
+        conversationId: activeChatId,
+        files,
+        messages: [...messages, newUserMsg],
       });
+
+      if (response?.conversation_id && !activeChatId) {
+        setActiveChatId(response.conversation_id);
+      }
       
       setMessages(prev => [...prev, response]);
     } catch (error) {
       console.error("Failed to send message", error);
+    }
+  };
+
+  const handleLikeFeedback = async (message, reaction) => {
+    const queryId = message?.query_id || message?.id;
+    if (!queryId) {
+      return;
+    }
+
+    try {
+      await sendFeedbackMutation.mutateAsync({
+        queryId,
+        reaction,
+        metadata: {
+          conversationId: activeChatId,
+          messageId: message.id,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to send feedback", error);
     }
   };
 
@@ -61,17 +107,67 @@ export default function AIChatPage() {
     }
   };
 
-  const handleNewChat = () => {
-    setActiveChatId(null);
+  const handleNewChat = async () => {
     setMessages([]);
+
+    try {
+      const created = await createConversationMutation.mutateAsync("New Conversation");
+      setActiveChatId(created?.id || null);
+    } catch (error) {
+      console.error("Failed to create conversation", error);
+      setActiveChatId(null);
+    }
   };
+
+  const handleDeleteChat = async (chat) => {
+    if (!chat?.id) {
+      return;
+    }
+    const accepted = window.confirm(`Delete conversation \"${chat.title || "New Conversation"}\"?`);
+    if (!accepted) {
+      return;
+    }
+
+    try {
+      await deleteConversationMutation.mutateAsync(chat.id);
+      if (activeChatId === chat.id) {
+        setActiveChatId(null);
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Failed to delete conversation", error);
+    }
+  };
+
+  const handleRenameChat = async (chat) => {
+    if (!chat?.id) {
+      return;
+    }
+    const nextTitle = window.prompt("Rename conversation", chat.title || "New Conversation");
+    if (!nextTitle || !nextTitle.trim()) {
+      return;
+    }
+
+    try {
+      await renameConversationMutation.mutateAsync({
+        conversationId: chat.id,
+        title: nextTitle.trim(),
+      });
+    } catch (error) {
+      console.error("Failed to rename conversation", error);
+    }
+  };
+
+  const normalizedHistory = Array.isArray(history) ? history : history?.conversations || [];
 
   return (
     <div className="flex h-[calc(100vh-theme(spacing.16))] w-full bg-background overflow-hidden relative">
       <ChatSidebar 
-        history={history} 
+        history={normalizedHistory}
         onSelectChat={setActiveChatId} 
         onNewChat={handleNewChat} 
+        onDeleteChat={handleDeleteChat}
+        onRenameChat={handleRenameChat}
       />
       
       <div className="flex-1 flex flex-col min-w-0 relative h-full">
@@ -101,6 +197,7 @@ export default function AIChatPage() {
                   key={msg.id} 
                   message={msg} 
                   onSaveNote={handleSaveNote} 
+                  onLikeFeedback={handleLikeFeedback}
                 />
               ))}
               {sendMessageMutation.isPending && (
