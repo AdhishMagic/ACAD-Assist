@@ -15,13 +15,13 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
-          <ThemeProvider>
-            <BrowserRouter>
+        <BrowserRouter>
+          <ErrorBoundary>
+            <ThemeProvider>
               <App />
-            </BrowserRouter>
-          </ThemeProvider>
-        </ErrorBoundary>
+            </ThemeProvider>
+          </ErrorBoundary>
+        </BrowserRouter>
       </QueryClientProvider>
     </Provider>
   </StrictMode>

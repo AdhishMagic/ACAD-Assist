@@ -5,17 +5,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../../components/ui
 import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { BarChart3 } from 'lucide-react';
 
-const mockStudyData = [
-  { name: 'Mon', hours: 2.5, notes: 3, score: 0 },
-  { name: 'Tue', hours: 3.8, notes: 5, score: 85 },
-  { name: 'Wed', hours: 1.5, notes: 2, score: 0 },
-  { name: 'Thu', hours: 4.2, notes: 7, score: 92 },
-  { name: 'Fri', hours: 2.0, notes: 4, score: 0 },
-  { name: 'Sat', hours: 5.5, notes: 8, score: 88 },
-  { name: 'Sun', hours: 6.0, notes: 10, score: 95 },
-];
+const StudyStatsChart = ({ data = [] }) => {
+  const chartData = Array.isArray(data) ? data : [];
+  const performanceData = chartData.filter((item) => Number(item.score || 0) > 0);
 
-const StudyStatsChart = () => {
   return (
     <Card className="h-full w-full">
       <CardHeader>
@@ -44,7 +37,7 @@ const StudyStatsChart = () => {
           >
             <TabsContent value="hours" className="h-[300px] w-full mt-0">
               <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                <BarChart data={mockStudyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888833" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} />
@@ -59,7 +52,7 @@ const StudyStatsChart = () => {
             
             <TabsContent value="notes" className="h-[300px] w-full mt-0">
               <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                <BarChart data={mockStudyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888833" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} />
@@ -74,7 +67,7 @@ const StudyStatsChart = () => {
 
             <TabsContent value="performance" className="h-[300px] w-full mt-0">
               <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                <LineChart data={mockStudyData.filter(d => d.score > 0)} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <LineChart data={performanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888833" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
                   <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} />

@@ -2,41 +2,6 @@ import { motion } from 'framer-motion';
 import { BookOpen, FileText, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 
-const statsOverview = [
-  {
-    title: 'Courses Enrolled',
-    value: '6',
-    icon: BookOpen,
-    trend: '+2 from last semester',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-100 dark:bg-blue-900/20',
-  },
-  {
-    title: 'Notes Completed',
-    value: '24',
-    icon: FileText,
-    trend: '+5 this week',
-    color: 'text-emerald-500',
-    bgColor: 'bg-emerald-100 dark:bg-emerald-900/20',
-  },
-  {
-    title: 'Tests Completed',
-    value: '12',
-    icon: CheckCircle,
-    trend: '85% average score',
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-100 dark:bg-purple-900/20',
-  },
-  {
-    title: 'Study Hours',
-    value: '18h',
-    icon: Clock,
-    trend: 'This week',
-    color: 'text-amber-500',
-    bgColor: 'bg-amber-100 dark:bg-amber-900/20',
-  },
-];
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -56,7 +21,49 @@ const itemVariants = {
   }
 };
 
-const StudyProgressCard = ({ stats = statsOverview }) => {
+const buildStatsOverview = (stats = {}) => {
+  const hoursValue = Number(stats.studyHours || 0);
+  const displayHours = Number.isInteger(hoursValue) ? `${hoursValue}h` : `${hoursValue.toFixed(1)}h`;
+
+  return [
+    {
+      title: 'Courses Enrolled',
+      value: String(stats.coursesEnrolled ?? 0),
+      icon: BookOpen,
+      trend: stats.coursesTrend || 'Based on your active subjects',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/20',
+    },
+    {
+      title: 'Notes Completed',
+      value: String(stats.notesCompleted ?? 0),
+      icon: FileText,
+      trend: stats.notesTrend || 'No new notes this week',
+      color: 'text-emerald-500',
+      bgColor: 'bg-emerald-100 dark:bg-emerald-900/20',
+    },
+    {
+      title: 'Tests Completed',
+      value: String(stats.testsCompleted ?? 0),
+      icon: CheckCircle,
+      trend: stats.testsTrend || 'No graded tests yet',
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-100 dark:bg-purple-900/20',
+    },
+    {
+      title: 'Study Hours',
+      value: displayHours,
+      icon: Clock,
+      trend: stats.studyHoursTrend || '0h this week',
+      color: 'text-amber-500',
+      bgColor: 'bg-amber-100 dark:bg-amber-900/20',
+    },
+  ];
+};
+
+const StudyProgressCard = ({ stats = {} }) => {
+  const statsOverview = buildStatsOverview(stats);
+
   return (
     <motion.div 
       className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6"
@@ -64,7 +71,7 @@ const StudyProgressCard = ({ stats = statsOverview }) => {
       initial="hidden"
       animate="visible"
     >
-      {stats.map((stat, index) => {
+      {statsOverview.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <motion.div key={index} variants={itemVariants} whileHover={{ y: -5 }}>

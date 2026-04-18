@@ -2,40 +2,19 @@ import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/card';
 import { Progress } from '../../../components/ui/progress';
 import { Lightbulb, Target, BookOpen, AlertCircle } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import StudyStatsChart from '../components/StudyStatsChart';
-
-const subjectsProgress = [
-  { name: 'Computer Networks', progress: 60, color: 'bg-blue-500' },
-  { name: 'Operating Systems', progress: 40, color: 'bg-orange-500' },
-  { name: 'Databases', progress: 75, color: 'bg-emerald-500' },
-  { name: 'Data Structures', progress: 90, color: 'bg-purple-500' },
-];
-
-const insights = [
-  { 
-    title: 'Most Studied Subject', 
-    desc: 'You\'ve spent 12 hours on Databases this week. Great dedication!', 
-    icon: BookOpen, 
-    color: 'text-emerald-500', 
-    bgColor: 'bg-emerald-100 dark:bg-emerald-900/20' 
-  },
-  { 
-    title: 'Needs Attention', 
-    desc: 'Operating Systems test scores are below average. Consider reviewing Process Synchronization.', 
-    icon: AlertCircle, 
-    color: 'text-orange-500', 
-    bgColor: 'bg-orange-100 dark:bg-orange-900/20' 
-  },
-  { 
-    title: 'Recommended Topic', 
-    desc: 'Based on recent activity, revising "Network Layers" would be beneficial.', 
-    icon: Lightbulb, 
-    color: 'text-blue-500', 
-    bgColor: 'bg-blue-100 dark:bg-blue-900/20' 
-  },
-];
+import { selectCurrentUser } from '@/features/auth/store/authSlice';
+import { useStudentOverview } from '../hooks/useStudentDashboard';
 
 const StudyOverviewPage = () => {
+  const user = useSelector(selectCurrentUser);
+  const { data, isLoading, isError } = useStudentOverview(user?.id);
+
+  const chartData = data?.chartData || [];
+  const subjectsProgress = data?.subjectProgress || [];
+  const insights = data?.insights || [];
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -47,6 +26,30 @@ const StudyOverviewPage = () => {
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: { y: 0, opacity: 1 }
+  };
+
+  const getInsightVisuals = (type) => {
+    if (type === 'success') {
+      return {
+        icon: BookOpen,
+        color: 'text-emerald-500',
+        bgColor: 'bg-emerald-100 dark:bg-emerald-900/20',
+      };
+    }
+
+    if (type === 'warning') {
+      return {
+        icon: AlertCircle,
+        color: 'text-orange-500',
+        bgColor: 'bg-orange-100 dark:bg-orange-900/20',
+      };
+    }
+
+    return {
+      icon: Lightbulb,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/20',
+    };
   };
 
   return (
@@ -64,7 +67,9 @@ const StudyOverviewPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart Section */}
         <motion.div variants={itemVariants} className="lg:col-span-2">
-          <StudyStatsChart />
+          <StudyStatsChart data={chartData} />
+          {isLoading && <p className="text-sm text-muted-foreground mt-3">Loading study analytics...</p>}
+          {isError && <p className="text-sm text-red-500 mt-3">Unable to load study analytics right now.</p>}
         </motion.div>
 
         {/* Side Panel: Progress and Insights */}
@@ -88,6 +93,9 @@ const StudyOverviewPage = () => {
                     <Progress value={subject.progress} className={`h-2`} indicatorColor={subject.color} />
                   </div>
                 ))}
+                {subjectsProgress.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No subject progress available yet.</p>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -103,21 +111,25 @@ const StudyOverviewPage = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {insights.map((insight, idx) => {
-                  const Icon = insight.icon;
+                  const visuals = getInsightVisuals(insight.type);
+                  const Icon = visuals.icon;
                   return (
                     <div key={idx} className="flex gap-3 items-start p-3 bg-white dark:bg-black/40 rounded-lg border shadow-sm">
-                      <div className={`p-2 rounded-full mt-0.5 ${insight.bgColor}`}>
-                        <Icon className={`w-4 h-4 ${insight.color}`} />
+                      <div className={`p-2 rounded-full mt-0.5 ${visuals.bgColor}`}>
+                        <Icon className={`w-4 h-4 ${visuals.color}`} />
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold">{insight.title}</h4>
                         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          {insight.desc}
+                          {insight.message}
                         </p>
                       </div>
                     </div>
                   );
                 })}
+                {insights.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No insights available yet. Keep studying to unlock recommendations.</p>
+                )}
               </CardContent>
             </Card>
           </motion.div>

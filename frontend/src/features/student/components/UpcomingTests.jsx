@@ -3,19 +3,13 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui
 import { Button } from '../../../components/ui/button';
 import { Calendar, Timer, BookOpen, ArrowRight } from 'lucide-react';
 
-const mockTests = [
-  { id: 1, name: 'Midterm Practice: OS', subject: 'Operating Systems', date: 'Oct 24, 2026', duration: '60 mins' },
-  { id: 2, name: 'SQL Query Quiz', subject: 'Databases', date: 'Oct 26, 2026', duration: '30 mins' },
-  { id: 3, name: 'Subnetting Assessment', subject: 'Computer Networks', date: 'Nov 02, 2026', duration: '45 mins' },
-];
-
-const UpcomingTests = ({ tests = mockTests }) => {
+const UpcomingTests = ({ tests = [] }) => {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <Calendar className="w-5 h-5 text-orange-500" />
-          Upcoming Tests
+          Upcoming Schedules
         </CardTitle>
         <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
           View Schedule <ArrowRight className="w-4 h-4 ml-1" />
@@ -52,7 +46,7 @@ const UpcomingTests = ({ tests = mockTests }) => {
           ))}
           {tests.length === 0 && (
             <div className="text-center py-6 text-sm text-muted-foreground">
-              No upcoming tests. Take a break!
+              No schedules available.
             </div>
           )}
         </div>

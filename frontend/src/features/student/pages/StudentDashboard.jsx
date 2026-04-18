@@ -1,17 +1,27 @@
 import { motion } from 'framer-motion';
 import { Button } from '../../../components/ui/button';
-import { Sparkles, PlayCircle, BookOpen, FileCode } from 'lucide-react';
+import { Sparkles, PlayCircle, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import StudyProgressCard from '../components/StudyProgressCard';
 import RecentNotes from '../components/RecentNotes';
 import UpcomingTests from '../components/UpcomingTests';
 import AIQuickAssistant from '../components/AIQuickAssistant';
 import ActivityTimeline from '../components/ActivityTimeline';
+import { useStudentDashboard } from '../hooks/useStudentDashboard';
+import { selectCurrentUser } from '@/features/auth/store/authSlice';
+import { getDisplayNameFromUser } from '@/utils/helpers';
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
-  const studentName = 'Alex';
+  const user = useSelector(selectCurrentUser);
+  const { data: dashboardData, isLoading, isError } = useStudentDashboard(user?.id);
+  const studentName = dashboardData?.studentName || getDisplayNameFromUser(user) || 'Student';
+  const stats = dashboardData?.stats || {};
+  const recentNotes = dashboardData?.recentNotes || [];
+  const schedules = dashboardData?.schedules || dashboardData?.upcomingTests || [];
+  const recentActivity = dashboardData?.recentActivity || [];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -57,15 +67,23 @@ const StudentDashboard = () => {
 
       {/* Progress Cards */}
       <motion.div variants={itemVariants}>
-        <StudyProgressCard />
+        <StudyProgressCard stats={stats} />
       </motion.div>
+
+      {isLoading && (
+        <div className="text-sm text-muted-foreground">Loading your dashboard data...</div>
+      )}
+
+      {isError && (
+        <div className="text-sm text-red-500">Unable to load dashboard data right now.</div>
+      )}
 
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <RecentNotes />
-            <UpcomingTests />
+            <RecentNotes notes={recentNotes} />
+            <UpcomingTests tests={schedules} />
           </div>
           <div className="h-[300px] md:h-auto">
             <AIQuickAssistant />
@@ -73,7 +91,7 @@ const StudentDashboard = () => {
         </motion.div>
         
         <motion.div variants={itemVariants} className="lg:col-span-1">
-          <ActivityTimeline />
+          <ActivityTimeline activities={recentActivity} />
         </motion.div>
       </div>
 
