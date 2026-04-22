@@ -7,7 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf 
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir numpy scipy scikit-learn && python -c "import fitz; print('PyMuPDF imported successfully')"
+RUN pip install --no-cache-dir --upgrade pip \
+	&& pip install --no-cache-dir -r requirements.txt \
+	&& python -c "import fitz; print('PyMuPDF imported successfully')"
 
 # Copy application code
 COPY . .
