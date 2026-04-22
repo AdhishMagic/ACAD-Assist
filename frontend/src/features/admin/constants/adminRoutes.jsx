@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { ROUTE_PATHS } from "@/app/routes/routePaths";
+import StudyAnalyticsPage from "@/features/student/pages/StudyAnalyticsPage";
 
 const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 const SystemAnalyticsPage = lazy(() => import("../pages/SystemAnalyticsPage"));
@@ -32,5 +33,9 @@ export const adminRoutes = [
   {
     path: ROUTE_PATHS.ADMIN_AI_USAGE,
     element: <AIUsageAnalyticsPage />,
+  },
+  {
+    path: ROUTE_PATHS.ADMIN_STUDENT_ANALYTICS,
+    element: <StudyAnalyticsPage />,
   },
 ];

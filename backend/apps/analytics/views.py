@@ -495,6 +495,7 @@ class StudentOverviewView(APIView):
         user = request.user
         today = timezone.localdate()
         start_day = today - timedelta(days=6)
+        month_start = today.replace(day=1)
 
         daily_map = {}
         for i in range(7):
@@ -645,11 +646,77 @@ class StudentOverviewView(APIView):
                 }
             )
 
+        total_study_minutes = 0
+        for log in ActivityLog.objects.filter(user=user).only("metadata"):
+            total_study_minutes += _extract_study_minutes(log.metadata)
+
+        ai_usage_rows = (
+            AIUsageLog.objects.filter(user=user, created_at__date__gte=start_day)
+            .values("created_at__date")
+            .annotate(count=Count("id"))
+        )
+        ai_usage_map = {row["created_at__date"]: row["count"] for row in ai_usage_rows}
+
+        if not ai_usage_map:
+            query_rows = (
+                Query.objects.filter(user=user, created_at__date__gte=start_day)
+                .values("created_at__date")
+                .annotate(count=Count("id"))
+            )
+            ai_usage_map = {row["created_at__date"]: row["count"] for row in query_rows}
+
+        ai_usage = []
+        total_ai_questions = 0
+        for i in range(7):
+            day = start_day + timedelta(days=i)
+            questions = int(ai_usage_map.get(day, 0) or 0)
+            total_ai_questions += questions
+            ai_usage.append(
+                {
+                    "date": day.strftime("%a"),
+                    "questions": questions,
+                }
+            )
+
+        notes_completed = Note.objects.filter(created_by=user).count()
+        subjects_studied = len(subject_progress)
+        study_hours = [
+            {
+                "day": item["name"],
+                "hours": item["hours"],
+            }
+            for item in chart_data
+        ]
+        normalized_subject_progress = [
+            {
+                "subject": item["name"],
+                "progress": item["progress"],
+                "color": item["color"],
+                "notesCount": item["notesCount"],
+                "avgScore": item["avgScore"],
+            }
+            for item in subject_progress
+        ]
+
         return Response(
             {
                 "chartData": chart_data,
+                "summary": {
+                    "totalStudyHours": round(total_study_minutes / 60, 1),
+                    "notesCompleted": notes_completed,
+                    "aiQuestionsAsked": total_ai_questions,
+                    "subjectsStudied": subjects_studied,
+                },
+                "studyHours": study_hours,
                 "subjectProgress": subject_progress,
+                "subjectProgressDetailed": normalized_subject_progress,
+                "aiUsage": ai_usage,
                 "insights": insights,
+                "meta": {
+                    "rangeStart": start_day.isoformat(),
+                    "rangeEnd": today.isoformat(),
+                    "monthStart": month_start.isoformat(),
+                },
             },
             status=status.HTTP_200_OK,
         )

@@ -49,6 +49,7 @@ export const ROUTE_PATHS = {
   HOD_MATERIAL_APPROVAL: "/hod/material-approval",
   HOD_STUDENT_ENGAGEMENT: "/hod/student-engagement",
   HOD_PROJECT_APPROVALS: "/hod/project-approvals",
+  HOD_STUDENT_ANALYTICS: "/hod/student-analytics",
 
   ADMIN_DASHBOARD: "/admin/dashboard",
   ADMIN_ANALYTICS: "/admin/analytics",
@@ -56,6 +57,7 @@ export const ROUTE_PATHS = {
   ADMIN_ACTIVITY_LOGS: "/admin/activity-logs",
   ADMIN_STORAGE: "/admin/storage",
   ADMIN_AI_USAGE: "/admin/ai-usage",
+  ADMIN_STUDENT_ANALYTICS: "/admin/student-analytics",
 };
 
 export const buildPath = {

@@ -5,6 +5,7 @@ import TeacherContributionsPage from '../pages/TeacherContributionsPage';
 import CourseMaterialsApprovalPage from '../pages/CourseMaterialsApprovalPage';
 import StudentEngagementPage from '../pages/StudentEngagementPage';
 import ProjectApprovalsPage from '../pages/ProjectApprovalsPage';
+import StudyAnalyticsPage from '@/features/student/pages/StudyAnalyticsPage';
 
 export const hodRoutes = [
   { path: ROUTE_PATHS.HOD_DASHBOARD, element: <HODDashboard /> },
@@ -13,4 +14,5 @@ export const hodRoutes = [
   { path: ROUTE_PATHS.HOD_MATERIAL_APPROVAL, element: <CourseMaterialsApprovalPage /> },
   { path: ROUTE_PATHS.HOD_STUDENT_ENGAGEMENT, element: <StudentEngagementPage /> },
   { path: ROUTE_PATHS.HOD_PROJECT_APPROVALS, element: <ProjectApprovalsPage /> },
+  { path: ROUTE_PATHS.HOD_STUDENT_ANALYTICS, element: <StudyAnalyticsPage /> },
 ];

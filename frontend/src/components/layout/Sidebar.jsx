@@ -70,7 +70,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
       {
         title: 'Insights',
         items: [
-          { label: 'Student Analytics', icon: BarChart3, to: '/student/analytics' },
           { label: 'Saved / Bookmarked', icon: Bookmark, to: '/student/ai/saved-notes' },
         ],
       },
@@ -101,6 +100,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
         { label: 'Student Engagement', icon: Activity, to: '/hod/student-engagement' },
         { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
+        { label: 'Student Analytics', icon: BarChart3, to: '/hod/student-analytics' },
         { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
         { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
         { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
@@ -123,6 +123,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'Activity Logs', icon: Activity, to: '/admin/activity-logs' },
             { label: 'Storage Management', icon: Database, to: '/admin/storage' },
             { label: 'AI Usage Analytics', icon: BrainCircuit, to: '/admin/ai-usage' },
+            { label: 'Student Analytics', icon: BarChart3, to: '/admin/student-analytics' },
           ],
         },
         {
@@ -134,7 +135,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai', end: true },
             { label: 'Saved / Bookmarked', icon: Bookmark, to: '/student/ai/saved-notes' },
             { label: 'AI Generated Notes', icon: FileText, to: '/student/ai/generated' },
-            { label: 'Student Analytics', icon: BarChart3, to: '/student/analytics' },
             { label: 'Project Submission', icon: Upload, to: '/student/project-submission' },
           ],
         },
@@ -161,6 +161,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'Material Approval', icon: CheckSquare, to: '/hod/material-approval' },
             { label: 'Student Engagement', icon: Activity, to: '/hod/student-engagement' },
             { label: 'Project Approvals', icon: FileCheck, to: '/hod/project-approvals' },
+            { label: 'Student Analytics', icon: BarChart3, to: '/hod/student-analytics' },
           ],
         },
       ];

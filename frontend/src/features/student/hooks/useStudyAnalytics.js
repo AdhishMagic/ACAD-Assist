@@ -2,79 +2,31 @@ import { useQuery } from '@tanstack/react-query';
 import { analyticsAPI } from '../services/analyticsAPI';
 
 export const useStudyAnalytics = () => {
-  const summaryQuery = useQuery({
-    queryKey: ['analytics', 'summary'],
+  const analyticsQuery = useQuery({
+    queryKey: ['analytics', 'overview'],
     queryFn: async () => {
-      const response = await analyticsAPI.getSummary();
-      return response.data;
+      const response = await analyticsAPI.getOverview();
+      const payload = response.data || {};
+
+      return {
+        summary: payload.summary || null,
+        studyHours: payload.studyHours || [],
+        subjectProgress: payload.subjectProgressDetailed || [],
+        aiUsage: payload.aiUsage || [],
+        insights: payload.insights || [],
+      };
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const studyHoursQuery = useQuery({
-    queryKey: ['analytics', 'studyHours'],
-    queryFn: async () => {
-      const response = await analyticsAPI.getStudyHours();
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const subjectProgressQuery = useQuery({
-    queryKey: ['analytics', 'subjectProgress'],
-    queryFn: async () => {
-      const response = await analyticsAPI.getSubjectProgress();
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const aiUsageQuery = useQuery({
-    queryKey: ['analytics', 'aiUsage'],
-    queryFn: async () => {
-      const response = await analyticsAPI.getAIUsage();
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const insightsQuery = useQuery({
-    queryKey: ['analytics', 'insights'],
-    queryFn: async () => {
-      const response = await analyticsAPI.getInsights();
-      return response.data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const isLoading = 
-    summaryQuery.isLoading || 
-    studyHoursQuery.isLoading || 
-    subjectProgressQuery.isLoading || 
-    aiUsageQuery.isLoading || 
-    insightsQuery.isLoading;
-
-  const isError = 
-    summaryQuery.isError || 
-    studyHoursQuery.isError || 
-    subjectProgressQuery.isError || 
-    aiUsageQuery.isError || 
-    insightsQuery.isError;
-
   return {
-    summary: summaryQuery.data,
-    studyHours: studyHoursQuery.data,
-    subjectProgress: subjectProgressQuery.data,
-    aiUsage: aiUsageQuery.data,
-    insights: insightsQuery.data,
-    isLoading,
-    isError,
-    refetchAll: () => {
-      summaryQuery.refetch();
-      studyHoursQuery.refetch();
-      subjectProgressQuery.refetch();
-      aiUsageQuery.refetch();
-      insightsQuery.refetch();
-    }
+    summary: analyticsQuery.data?.summary,
+    studyHours: analyticsQuery.data?.studyHours,
+    subjectProgress: analyticsQuery.data?.subjectProgress,
+    aiUsage: analyticsQuery.data?.aiUsage,
+    insights: analyticsQuery.data?.insights,
+    isLoading: analyticsQuery.isLoading,
+    isError: analyticsQuery.isError,
+    refetchAll: analyticsQuery.refetch,
   };
 };

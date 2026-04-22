@@ -14,7 +14,6 @@ const LandingPage = lazy(() => import("@/features/landing/pages/LandingPage"));
 const SettingsPage = lazy(() => import("@/features/settings/pages/SettingsPage"));
 const StudentDashboard = lazy(() => import("@/features/student/pages/StudentDashboard"));
 const StudyOverviewPage = lazy(() => import("@/features/student/pages/StudyOverviewPage"));
-const StudyAnalyticsPage = lazy(() => import("@/features/student/pages/StudyAnalyticsPage"));
 const ProjectSubmissionPage = lazy(() => import("@/features/student/pages/ProjectSubmissionPage"));
 const OnlineTestPage = lazy(() => import("@/features/student/pages/OnlineTestPage"));
 const OnlineTestLegacyRedirect = lazy(() => import("@/features/student/pages/OnlineTestLegacyRedirect"));
@@ -76,7 +75,6 @@ export function AppRoutes() {
             <Route element={<RoleGuard allowedRoles={["student"]} />}>
               <Route path={ROUTE_PATHS.STUDENT_DASHBOARD} element={<StudentDashboard />} />
               <Route path={ROUTE_PATHS.STUDENT_STUDY_OVERVIEW} element={<StudyOverviewPage />} />
-              <Route path={ROUTE_PATHS.STUDENT_ANALYTICS} element={<StudyAnalyticsPage />} />
               <Route path={ROUTE_PATHS.STUDENT_PROJECT_SUBMISSION} element={<ProjectSubmissionPage />} />
               <Route path={ROUTE_PATHS.STUDENT_NOTES} element={<NotesExplorer />} />
               <Route path={ROUTE_PATHS.STUDENT_NOTES_VIEW} element={<NotesViewer />} />
