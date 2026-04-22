@@ -2,10 +2,16 @@ import { apiClient } from '@/shared/lib/http/axios';
 import { notesAPI } from '@/features/notes/services/notesAPI';
 
 export const aiAPI = {
-  chat: async ({ content, conversationId = null, files = [], messages = null, file = null }) => {
+  chat: async ({ content, conversationId = null, files = [], messages = null, file = null, title = null, entryPoint = null }) => {
     const mergedFiles = files?.length ? files : (file ? [file] : []);
     const formData = new FormData();
     formData.append('content', content || '');
+    if (title) {
+      formData.append('title', title);
+    }
+    if (entryPoint) {
+      formData.append('entry_point', entryPoint);
+    }
     if (conversationId) {
       formData.append('conversation_id', String(conversationId));
     }

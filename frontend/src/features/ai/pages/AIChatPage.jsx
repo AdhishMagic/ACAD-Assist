@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   useAIChatHistory,
@@ -20,6 +21,7 @@ export default function AIChatPage() {
   const [activeChatId, setActiveChatId] = useState(null);
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const location = useLocation();
 
   const { data: history } = useAIChatHistory();
   const { data: conversation } = useAIConversation(activeChatId);
@@ -29,6 +31,13 @@ export default function AIChatPage() {
   const renameConversationMutation = useAIRenameConversation();
   const deleteConversationMutation = useAIDeleteConversation();
   const sendFeedbackMutation = useAISendFeedback();
+
+  useEffect(() => {
+    const stateChatId = location.state?.activeChatId;
+    if (stateChatId) {
+      setActiveChatId(stateChatId);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (Array.isArray(conversation?.messages)) {

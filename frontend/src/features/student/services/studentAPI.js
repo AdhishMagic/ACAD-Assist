@@ -12,12 +12,12 @@ export const studentAPI = {
   },
   
   getRecentNotes: async () => {
-    const response = await apiClient.get('/student/recent-notes');
-    return response.data;
+    const response = await apiClient.get('/api/student/dashboard/');
+    return response.data?.recentNotes || [];
   },
 
   getUpcomingTests: async () => {
-    const response = await apiClient.get('/student/upcoming-tests');
-    return response.data;
+    const response = await apiClient.get('/api/student/dashboard/');
+    return response.data?.upcomingTests || [];
   }
 };

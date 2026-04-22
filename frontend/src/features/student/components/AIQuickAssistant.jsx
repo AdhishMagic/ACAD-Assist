@@ -6,6 +6,7 @@ import { Input } from '../../../components/ui/input';
 import { Badge } from '../../../components/ui/badge';
 import { Sparkles, Send, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAISendMessage } from '@/features/ai/hooks/useAIChat';
 
 const suggestedPrompts = [
   "Explain Dijkstra's Algorithm",
@@ -15,13 +16,32 @@ const suggestedPrompts = [
 
 const AIQuickAssistant = () => {
   const [prompt, setPrompt] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const sendMessageMutation = useAISendMessage();
 
-  const handleAsk = (e) => {
+  const handleAsk = async (e) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
-    // In a real app, this would pass the state or URL param to the AI chat page
-    navigate('/ai', { state: { initialPrompt: prompt } });
+    const content = prompt.trim();
+    if (!content || sendMessageMutation.isPending) return;
+
+    setError('');
+
+    try {
+      const response = await sendMessageMutation.mutateAsync({
+        content,
+        title: content,
+        entryPoint: 'student_dashboard_quick_assistant',
+      });
+      setPrompt('');
+      navigate('/student/ai', {
+        state: {
+          activeChatId: response?.conversation_id,
+        },
+      });
+    } catch (err) {
+      setError(err?.response?.data?.detail || err?.message || 'Unable to save this chat right now.');
+    }
   };
 
   return (
@@ -56,18 +76,22 @@ const AIQuickAssistant = () => {
             placeholder="Ask anything..." 
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
+            disabled={sendMessageMutation.isPending}
             className="bg-white/80 dark:bg-black/40 border-indigo-200 dark:border-indigo-800 focus-visible:ring-indigo-500"
           />
-          <Button type="submit" size="icon" className="bg-indigo-600 hover:bg-indigo-700 text-white shrink-0">
+          <Button type="submit" size="icon" disabled={sendMessageMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white shrink-0">
             <Send className="w-4 h-4" />
           </Button>
         </form>
+        {error && (
+          <p className="text-xs text-red-500">{error}</p>
+        )}
       </CardContent>
       <CardFooter>
         <Button 
           variant="outline" 
           className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:text-indigo-400 dark:hover:bg-indigo-900/50"
-          onClick={() => navigate('/ai')}
+          onClick={() => navigate('/student/ai')}
         >
           <MessageSquare className="w-4 h-4 mr-2" />
           Open Full Chat

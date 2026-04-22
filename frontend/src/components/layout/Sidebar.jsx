@@ -130,7 +130,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
           items: [
             { label: 'Student Dashboard', icon: LayoutDashboard, to: '/student/dashboard' },
             { label: 'Study Overview', icon: LayoutDashboard, to: '/student/study-overview' },
-            { label: 'Knowledge Repository', icon: BookOpen, to: '/student/knowledge' },
             { label: 'Notes Explorer', icon: BookOpen, to: '/student/notes' },
             { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai', end: true },
             { label: 'Saved / Bookmarked', icon: Bookmark, to: '/student/ai/saved-notes' },

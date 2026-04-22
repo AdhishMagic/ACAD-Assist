@@ -20,6 +20,15 @@ from apps.files.services import build_upload_metadata, detect_file_type, extract
 SYSTEM_EVENT_CONVERSATION_CREATED = "conversation_created"
 
 
+def _short_text(value, limit=80, fallback="New Conversation"):
+	text = " ".join(str(value or "").split())
+	if not text:
+		return fallback
+	if len(text) <= limit:
+		return text
+	return f"{text[: max(limit - 3, 1)].rstrip()}..."
+
+
 def _parse_messages(raw_messages):
 	if isinstance(raw_messages, list):
 		return raw_messages
@@ -112,12 +121,13 @@ def _build_history_payload(user):
 	for query in queries:
 		query_context = query.context or {}
 		conversation_id = str(query_context.get("conversation_id") or query.id)
-		title = query_context.get("title") or query.prompt[:80] or "New Conversation"
+		title = query_context.get("title") or _short_text(query.prompt)
 		row = latest_by_conversation.get(conversation_id)
 		if not row or query.created_at >= row["updated_at"]:
 			latest_by_conversation[conversation_id] = {
 				"id": conversation_id,
 				"title": title,
+				"preview": _short_text(query.prompt, 96, ""),
 				"updated_at": query.created_at,
 				"message_count": 0,
 			}
@@ -166,7 +176,8 @@ class AIChatView(APIView):
 			return Response({"detail": "Message content is required."}, status=status.HTTP_400_BAD_REQUEST)
 
 		conversation_id = str(conversation_id or uuid.uuid4())
-		conversation_title = content[:80]
+		conversation_title = _short_text(request.data.get("title") or content, 48)
+		entry_point = _short_text(request.data.get("entry_point"), 80, "")
 		context_text = f"Conversation ID: {conversation_id}"
 		if files:
 			context_text += f"\nAttached files: {', '.join([str(name) for name in files if name])}"
@@ -206,6 +217,7 @@ class AIChatView(APIView):
 				context={
 					"conversation_id": conversation_id,
 					"title": conversation_title,
+					"entry_point": entry_point,
 					"files": files,
 					"uploaded_files": uploaded_file_metadata,
 					"source_documents": source_documents,
@@ -239,6 +251,7 @@ class AIChatView(APIView):
 					"query_id": str(query.id),
 					"conversation_id": conversation_id,
 					"confidence": confidence,
+					"entry_point": entry_point,
 					"files": files,
 					"source_documents": source_documents,
 				},

@@ -22,7 +22,12 @@ export default function ChatSidebar({ history, onSelectChat, onNewChat, onDelete
                 className="flex items-center gap-3 flex-1 min-w-0"
               >
                 <MessageSquare className="w-4 h-4 text-primary shrink-0" />
-                <span className="truncate flex-1 font-medium">{chat.title || "New Conversation"}</span>
+                <span className="flex-1 min-w-0">
+                  <span className="block truncate font-medium">{chat.title || "New Conversation"}</span>
+                  {chat.preview && (
+                    <span className="block truncate text-xs text-muted-foreground">{chat.preview}</span>
+                  )}
+                </span>
               </button>
 
               <button

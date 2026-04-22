@@ -14,7 +14,7 @@ from apps.analytics.models import AIUsageLog, ActivityLog
 from apps.exams.models import Exam, Submission
 from apps.files.models import File
 from apps.notes.models import Note
-from apps.queries.models import Response as QueryResponseModel
+from apps.queries.models import Query, Response as QueryResponseModel
 from materials.models import StudyMaterial
 from projects.models import Project
 from db_design.constants import SubmissionStatus
@@ -418,6 +418,31 @@ class StudentDashboardView(APIView):
                         "title": f'Completed "{submission.exam.title}"',
                         "time": _time_ago(submission.created_at),
                         "sort_time": submission.created_at,
+                    }
+                )
+
+            for usage_log in AIUsageLog.objects.filter(user=user).order_by("-created_at")[:3]:
+                fallback_events.append(
+                    {
+                        "id": f"ai-{usage_log.id}",
+                        "type": "ai",
+                        "title": f"Used {usage_log.feature_name or 'AI Assistant'}",
+                        "time": _time_ago(usage_log.created_at),
+                        "sort_time": usage_log.created_at,
+                    }
+                )
+
+            for query in Query.objects.filter(user=user).order_by("-created_at")[:3]:
+                context = query.context if isinstance(query.context, dict) else {}
+                if context.get("system_event"):
+                    continue
+                fallback_events.append(
+                    {
+                        "id": f"query-{query.id}",
+                        "type": "ai",
+                        "title": "Asked AI Assistant",
+                        "time": _time_ago(query.created_at),
+                        "sort_time": query.created_at,
                     }
                 )
 

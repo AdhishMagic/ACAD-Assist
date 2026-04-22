@@ -24,16 +24,6 @@ export const FeaturesData = [
     icon: 'BrainCircuit',
   },
   {
-    title: 'Knowledge Repository',
-    description: 'Store, organize, and search all your academic materials seamlessly in one centralized hub.',
-    highlights: [
-      'Upload PDFs, notes, and references',
-      'Fast search across subjects',
-      'Tag and organize by course/unit',
-    ],
-    icon: 'Database',
-  },
-  {
     title: 'Smart Notes Generator',
     description: 'Automatically generate comprehensive notes and summaries from your uploaded documents and lectures.',
     highlights: [
@@ -79,11 +69,11 @@ export const HowItWorksSteps = [
   {
     step: '01',
     title: 'Upload Materials',
-    description: 'Securely upload your PDFs, lecture recordings, and research papers into your personal knowledge base.',
+    description: 'Securely upload your PDFs, lecture recordings, and research papers for AI-assisted study workflows.',
   },
   {
     step: '02',
-    title: 'AI Processes Knowledge',
+    title: 'AI Processes Content',
     description: 'Our advanced RAG-based AI analyzes and indexes your content, making everything instantly searchable and comprehensible.',
   },
   {
@@ -151,7 +141,7 @@ export const PricingPlans = [
     period: '/month',
     description: 'For project groups and labs collaborating on shared materials.',
     features: [
-      'Shared knowledge repository',
+      'Shared study materials',
       'Real-time collaboration tools',
       'Team roles & permissions',
       'Higher upload and storage limits',

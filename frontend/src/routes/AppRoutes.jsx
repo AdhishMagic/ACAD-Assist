@@ -18,8 +18,6 @@ const StudyAnalyticsPage = lazy(() => import("@/features/student/pages/StudyAnal
 const ProjectSubmissionPage = lazy(() => import("@/features/student/pages/ProjectSubmissionPage"));
 const OnlineTestPage = lazy(() => import("@/features/student/pages/OnlineTestPage"));
 const OnlineTestLegacyRedirect = lazy(() => import("@/features/student/pages/OnlineTestLegacyRedirect"));
-const KnowledgeRepoPage = lazy(() => import("@/pages/knowledge-repo/KnowledgeRepoPage"));
-const DocumentDetailPage = lazy(() => import("@/pages/knowledge-repo/DocumentDetailPage"));
 const GeneratorPage = lazy(() => import("@/pages/qpaper/GeneratorPage"));
 const PaperPreviewPage = lazy(() => import("@/pages/qpaper/PaperPreviewPage"));
 const NotificationsPage = lazy(() => import("@/features/system/pages/NotificationsPage"));
@@ -80,8 +78,6 @@ export function AppRoutes() {
             <Route element={<RoleGuard allowedRoles={["student"]} />}>
               <Route path={ROUTE_PATHS.STUDENT_DASHBOARD} element={<StudentDashboard />} />
               <Route path={ROUTE_PATHS.STUDENT_STUDY_OVERVIEW} element={<StudyOverviewPage />} />
-              <Route path={ROUTE_PATHS.STUDENT_KNOWLEDGE} element={<KnowledgeRepoPage />} />
-              <Route path={ROUTE_PATHS.STUDENT_KNOWLEDGE_DETAIL} element={<DocumentDetailPage />} />
               <Route path={ROUTE_PATHS.STUDENT_QPAPER_GENERATE} element={<GeneratorPage />} />
               <Route path={ROUTE_PATHS.STUDENT_QPAPER_DETAIL} element={<PaperPreviewPage />} />
               <Route path={ROUTE_PATHS.STUDENT_ANALYTICS} element={<StudyAnalyticsPage />} />
