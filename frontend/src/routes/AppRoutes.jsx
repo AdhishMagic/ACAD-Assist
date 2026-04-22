@@ -18,8 +18,6 @@ const StudyAnalyticsPage = lazy(() => import("@/features/student/pages/StudyAnal
 const ProjectSubmissionPage = lazy(() => import("@/features/student/pages/ProjectSubmissionPage"));
 const OnlineTestPage = lazy(() => import("@/features/student/pages/OnlineTestPage"));
 const OnlineTestLegacyRedirect = lazy(() => import("@/features/student/pages/OnlineTestLegacyRedirect"));
-const GeneratorPage = lazy(() => import("@/pages/qpaper/GeneratorPage"));
-const PaperPreviewPage = lazy(() => import("@/pages/qpaper/PaperPreviewPage"));
 const NotificationsPage = lazy(() => import("@/features/system/pages/NotificationsPage"));
 const ProfilePage = lazy(() => import("@/features/system/pages/ProfilePage"));
 const FileUploadManagerPage = lazy(() =>
@@ -78,8 +76,6 @@ export function AppRoutes() {
             <Route element={<RoleGuard allowedRoles={["student"]} />}>
               <Route path={ROUTE_PATHS.STUDENT_DASHBOARD} element={<StudentDashboard />} />
               <Route path={ROUTE_PATHS.STUDENT_STUDY_OVERVIEW} element={<StudyOverviewPage />} />
-              <Route path={ROUTE_PATHS.STUDENT_QPAPER_GENERATE} element={<GeneratorPage />} />
-              <Route path={ROUTE_PATHS.STUDENT_QPAPER_DETAIL} element={<PaperPreviewPage />} />
               <Route path={ROUTE_PATHS.STUDENT_ANALYTICS} element={<StudyAnalyticsPage />} />
               <Route path={ROUTE_PATHS.STUDENT_PROJECT_SUBMISSION} element={<ProjectSubmissionPage />} />
               <Route path={ROUTE_PATHS.STUDENT_NOTES} element={<NotesExplorer />} />

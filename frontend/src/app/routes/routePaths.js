@@ -16,8 +16,6 @@ export const ROUTE_PATHS = {
   STUDENT_BASE: "/student",
   STUDENT_DASHBOARD: "/student/dashboard",
   STUDENT_STUDY_OVERVIEW: "/student/study-overview",
-  STUDENT_QPAPER_GENERATE: "/student/qpaper/generate",
-  STUDENT_QPAPER_DETAIL: "/student/qpaper/:id",
   STUDENT_ANALYTICS: "/student/analytics",
   STUDENT_PROJECT_SUBMISSION: "/student/project-submission",
   STUDENT_NOTES: "/student/notes",
@@ -63,7 +61,6 @@ export const ROUTE_PATHS = {
 export const buildPath = {
   filePreview: (fileId) => `/file-preview/${fileId}`,
   onlineTest: (examId) => `/online-test/${examId}`,
-  studentQpaperDetail: (id) => `/student/qpaper/${id}`,
   studentNotesSubject: (subjectId) => `/student/notes/${subjectId}`,
   studentNoteViewer: (noteId) => `/student/notes/view/${noteId}`,
   studentAiGeneratedNote: (noteId) => `/student/ai/generated/${noteId}`,

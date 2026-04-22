@@ -65,7 +65,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         items: [
           { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai', end: true },
           { label: 'AI Generated Notes', icon: FileText, to: '/student/ai/generated' },
-          { label: 'Question Paper', icon: FileQuestion, to: '/student/qpaper/generate' },
         ],
       },
       {
@@ -91,6 +90,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
         { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
         { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
+        { label: 'Question Paper', icon: FileQuestion, to: '/teacher/question-generator' },
         { label: 'AI Exam Generation', icon: Upload, to: '/teacher/materials-upload' },
         { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
       ],
@@ -134,7 +134,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'AI Study Assistant', icon: BrainCircuit, to: '/student/ai', end: true },
             { label: 'Saved / Bookmarked', icon: Bookmark, to: '/student/ai/saved-notes' },
             { label: 'AI Generated Notes', icon: FileText, to: '/student/ai/generated' },
-            { label: 'Question Paper', icon: FileQuestion, to: '/student/qpaper/generate' },
             { label: 'Student Analytics', icon: BarChart3, to: '/student/analytics' },
             { label: 'Project Submission', icon: Upload, to: '/student/project-submission' },
           ],
@@ -148,6 +147,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
             { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
             { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
+            { label: 'Question Paper', icon: FileQuestion, to: '/teacher/question-generator' },
             { label: 'AI Exam Generation', icon: Upload, to: '/teacher/materials-upload' },
             { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
           ],
