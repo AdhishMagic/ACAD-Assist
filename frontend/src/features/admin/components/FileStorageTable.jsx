@@ -30,7 +30,8 @@ const FileStorageTable = ({ files, isLoading }) => {
   const deleteMutation = useMutation({
     mutationFn: adminAPI.deleteFile,
     onSuccess: () => {
-      queryClient.invalidateQueries(['admin-storage-files']);
+      queryClient.invalidateQueries({ queryKey: ['admin-storage-files'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-storage-stats'] });
     }
   });
 
@@ -38,18 +39,28 @@ const FileStorageTable = ({ files, isLoading }) => {
     deleteMutation.mutate(id);
   };
 
+  const fileTypes = ["All", ...Array.from(new Set((files || []).map(file => file.type).filter(Boolean)))];
+
   const filteredFiles = files?.filter(file => {
-    const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase()) || file.uploadedBy.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === "All" || file.type.toLowerCase() === filterType.toLowerCase();
+    const name = file.name || "";
+    const uploader = file.uploadedBy || "";
+    const type = file.type || "";
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || uploader.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === "All" || type.toLowerCase() === filterType.toLowerCase();
     return matchesSearch && matchesType;
   }) || [];
 
   const getFileIcon = (type) => {
-    const t = type.toLowerCase();
+    const t = (type || "").toLowerCase();
     if (t.includes('pdf')) return <FileText className="w-5 h-5 text-red-500" />;
     if (t.includes('image')) return <ImageIcon className="w-5 h-5 text-blue-500" />;
     if (t.includes('video')) return <Video className="w-5 h-5 text-purple-500" />;
     return <File className="w-5 h-5 text-gray-500" />;
+  };
+
+  const handleDownload = (file) => {
+    if (!file.url) return;
+    window.open(file.url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -68,7 +79,7 @@ const FileStorageTable = ({ files, isLoading }) => {
             />
           </div>
           <div className="flex gap-2">
-            {['All', 'PDF', 'Video', 'Doc', 'CSV'].map(type => (
+            {fileTypes.map(type => (
               <Badge 
                 key={type}
                 variant={filterType === type ? "default" : "outline"}
@@ -131,7 +142,11 @@ const FileStorageTable = ({ files, isLoading }) => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem className="cursor-pointer">
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            disabled={!file.url}
+                            onClick={() => handleDownload(file)}
+                          >
                             <Download className="w-4 h-4 mr-2" /> Download
                           </DropdownMenuItem>
                           <DropdownMenuItem 

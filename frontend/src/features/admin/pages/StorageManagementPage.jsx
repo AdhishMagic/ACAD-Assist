@@ -8,12 +8,12 @@ import FileStorageTable from '../components/FileStorageTable';
 const StorageManagementPage = () => {
   const { data: statsResponse, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-storage-stats'],
-    queryFn: adminAPI.getStorageStats,
+    queryFn: () => adminAPI.getStorageStats(),
   });
 
   const { data: filesResponse, isLoading: filesLoading } = useQuery({
     queryKey: ['admin-storage-files'],
-    queryFn: adminAPI.getFiles,
+    queryFn: () => adminAPI.getFiles(),
   });
 
   const stats = statsResponse?.data;

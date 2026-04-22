@@ -38,7 +38,7 @@ export const SystemAnalyticsPage = () => {
           { title: "Daily Active Users", value: data.metrics.dailyActiveUsers, icon: Users, color: "text-blue-500" },
           { title: "Avg Session Length", value: data.metrics.avgSessionLength, icon: Clock, color: "text-amber-500" },
           { title: "Monthly Uploads", value: data.metrics.totalUploadsMonthly.toLocaleString(), icon: HardDrive, color: "text-green-500" },
-          { title: "Platform Uptime", value: data.metrics.platformUptime, icon: TrendingUp, color: "text-indigo-500" },
+          { title: "Activity Coverage", value: data.metrics.platformUptime, icon: TrendingUp, color: "text-indigo-500" },
         ].map((stat, i) => (
           <motion.div
             key={i}

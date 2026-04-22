@@ -1,5 +1,6 @@
 import secrets
 
+from django.contrib.auth.models import update_last_login
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -64,6 +65,19 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+        update_last_login(None, user)
+        try:
+            from apps.analytics.models import ActivityLog
+
+            ActivityLog.objects.create(
+                user=user,
+                action="login",
+                entity_type="auth",
+                entity_id=user.id,
+                metadata={"status": "success"},
+            )
+        except Exception:
+            pass
         tokens = generate_tokens_for_user(user)
         return Response(
             {
@@ -103,11 +117,12 @@ def _format_date(value):
 
 
 def _display_role(user: User) -> str:
-    if user.is_staff or user.is_superuser:
+    role = (user.role or "").strip().lower()
+    if user.is_staff or user.is_superuser or role == "admin":
         return "Admin"
-    if user.role == UserRole.FACULTY:
+    if role in {str(UserRole.FACULTY).lower(), "faculty", "teacher"}:
         return "Teacher"
-    if user.role == UserRole.HOD:
+    if role == str(UserRole.HOD).lower():
         return "HOD"
     return "Student"
 
@@ -139,7 +154,7 @@ def _normalize_role(role: str) -> tuple[str, bool, bool]:
 
 
 def _ensure_admin(user: User) -> None:
-    if not (user.is_staff or user.is_superuser):
+    if not (user.is_staff or user.is_superuser or (user.role or "").strip().lower() == "admin"):
         raise ValidationError({"detail": "Admin privileges are required for user management."})
 
 

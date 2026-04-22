@@ -1,7 +1,8 @@
 from datetime import timedelta
 from decimal import Decimal
+from pathlib import Path
 
-from django.db.models import Avg, Count, Sum
+from django.db.models import Avg, Count, Max, Min, Q, Sum
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +14,8 @@ from apps.analytics.models import AIUsageLog, ActivityLog
 from apps.exams.models import Exam, Submission
 from apps.files.models import File
 from apps.notes.models import Note
+from materials.models import StudyMaterial
+from projects.models import Project
 from db_design.constants import SubmissionStatus
 
 
@@ -54,9 +57,23 @@ def _time_ago(timestamp):
 
 
 def _ensure_admin(user):
-    if not (user.is_staff or user.is_superuser):
+    if not (user.is_staff or user.is_superuser or (user.role or "").strip().lower() == "admin"):
         return False
     return True
+
+
+def _role_filter(*roles):
+    values = set()
+    for role in roles:
+        if not role:
+            continue
+        role_value = str(role)
+        values.add(role_value)
+        values.add(role_value.lower())
+        if role_value == UserRole.FACULTY:
+            values.add("teacher")
+
+    return Q(role__in=values)
 
 
 def _display_user_name(user):
@@ -71,6 +88,30 @@ def _format_date_short(value):
     if not value:
         return "-"
     return timezone.localtime(value).strftime("%b %d, %Y")
+
+
+def _file_field_size(file_field):
+    if not file_field:
+        return 0
+    try:
+        return int(file_field.size or 0)
+    except (OSError, ValueError):
+        return 0
+
+
+def _file_field_url(file_field, request=None):
+    if not file_field:
+        return None
+    try:
+        url = file_field.url
+    except ValueError:
+        return None
+    return request.build_absolute_uri(url) if request else url
+
+
+def _storage_type(filename, fallback="Other"):
+    suffix = Path(filename or "").suffix.lower().lstrip(".")
+    return (suffix or fallback or "Other").lower()
 
 
 def _infer_module(action, entity_type):
@@ -131,6 +172,96 @@ def _format_hours_label(hours_value):
     if float(hours_value).is_integer():
         return f"{int(hours_value)}h"
     return f"{hours_value:.1f}h"
+
+
+def _metadata_number(metadata, *keys):
+    if not isinstance(metadata, dict):
+        return None
+
+    for key in keys:
+        value = metadata.get(key)
+        if value is None:
+            continue
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            continue
+
+    return None
+
+
+def _format_duration(seconds):
+    total_seconds = max(int(seconds or 0), 0)
+    minutes, remaining_seconds = divmod(total_seconds, 60)
+    return f"{minutes}m {remaining_seconds:02d}s"
+
+
+def _distinct_user_count(*querysets):
+    user_ids = set()
+    for queryset in querysets:
+        user_ids.update(value for value in queryset if value)
+    return len(user_ids)
+
+
+def _storage_file_records(request=None):
+    records = []
+
+    for file_obj in File.objects.select_related("uploaded_by").order_by("-created_at"):
+        records.append(
+            {
+                "id": f"file:{file_obj.id}",
+                "source": "file",
+                "raw_id": file_obj.id,
+                "name": file_obj.original_name or Path(file_obj.storage_path or "").name or str(file_obj.id),
+                "type": (file_obj.file_type or _storage_type(file_obj.original_name)).lower(),
+                "sizeBytes": int(file_obj.size_bytes or 0),
+                "uploadedBy": _display_user_name(file_obj.uploaded_by),
+                "uploadedById": file_obj.uploaded_by_id,
+                "createdAt": file_obj.created_at,
+                "url": _file_field_url(file_obj.file, request),
+            }
+        )
+
+    for material in StudyMaterial.objects.select_related("uploaded_by").exclude(file="").order_by("-created_at"):
+        if not material.file:
+            continue
+        filename = Path(material.file.name or "").name
+        records.append(
+            {
+                "id": f"material:{material.id}",
+                "source": "material",
+                "raw_id": material.id,
+                "name": filename or material.title,
+                "type": (material.file_type or _storage_type(filename)).lower(),
+                "sizeBytes": _file_field_size(material.file),
+                "uploadedBy": _display_user_name(material.uploaded_by),
+                "uploadedById": material.uploaded_by_id,
+                "createdAt": material.created_at,
+                "url": _file_field_url(material.file, request),
+            }
+        )
+
+    for project in Project.objects.select_related("student").exclude(file="").order_by("-created_at"):
+        if not project.file:
+            continue
+        filename = Path(project.file.name or "").name
+        records.append(
+            {
+                "id": f"project:{project.id}",
+                "source": "project",
+                "raw_id": project.id,
+                "name": filename or project.title,
+                "type": _storage_type(filename),
+                "sizeBytes": _file_field_size(project.file),
+                "uploadedBy": _display_user_name(project.student),
+                "uploadedById": project.student_id,
+                "createdAt": project.created_at,
+                "url": _file_field_url(project.file, request),
+            }
+        )
+
+    records.sort(key=lambda item: item["createdAt"], reverse=True)
+    return records
 
 
 class StudentDashboardView(APIView):
@@ -477,13 +608,18 @@ class AdminDashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        if not _ensure_admin(request.user):
+            return Response({"detail": "Admin privileges are required."}, status=status.HTTP_403_FORBIDDEN)
+
         today = timezone.localdate()
 
         total_users = User.objects.count()
-        active_students = User.objects.filter(role=UserRole.STUDENT, is_active=True).count()
-        active_teachers = User.objects.filter(role=UserRole.FACULTY, is_active=True).count()
+        active_students = User.objects.filter(_role_filter(UserRole.STUDENT), is_active=True).count()
+        active_teachers = User.objects.filter(_role_filter(UserRole.FACULTY), is_active=True).count()
 
-        ai_requests_today = Note.objects.filter(created_at__date=today).exclude(ai_model="").count()
+        ai_requests_today = AIUsageLog.objects.filter(created_at__date=today).count()
+        if ai_requests_today == 0:
+            ai_requests_today = Note.objects.filter(created_at__date=today).exclude(ai_model="").count()
 
         storage_bytes = File.objects.aggregate(total=Sum("size_bytes"))["total"] or 0
 
@@ -492,7 +628,7 @@ class AdminDashboardView(APIView):
         for user in User.objects.order_by("-date_joined")[:4]:
             activities.append(
                 {
-                    "id": str(user.id),
+                    "id": f"user-{user.id}",
                     "type": "user_registered",
                     "message": f"New user registered: {user.email}",
                     "time": _time_ago(user.date_joined),
@@ -505,11 +641,22 @@ class AdminDashboardView(APIView):
             note_message = f"AI-generated note created: {note.title}" if note_type == "ai_spike" else f"New note created: {note.title}"
             activities.append(
                 {
-                    "id": str(note.id),
+                    "id": f"note-{note.id}",
                     "type": note_type,
                     "message": note_message,
                     "time": _time_ago(note.created_at),
                     "sort_time": note.created_at,
+                }
+            )
+
+        for usage in AIUsageLog.objects.select_related("user").order_by("-created_at")[:4]:
+            activities.append(
+                {
+                    "id": f"ai-{usage.id}",
+                    "type": "ai_spike",
+                    "message": f"AI request: {usage.feature_name}",
+                    "time": _time_ago(usage.created_at),
+                    "sort_time": usage.created_at,
                 }
             )
 
@@ -540,44 +687,127 @@ class AdminSystemAnalyticsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        if not _ensure_admin(request.user):
+            return Response({"detail": "Admin privileges are required."}, status=status.HTTP_403_FORBIDDEN)
+
         now = timezone.now()
         today = timezone.localdate()
         month_start = today.replace(day=1)
+        week_start = today - timedelta(days=6)
 
-        total_active_users = User.objects.filter(is_active=True).count()
+        daily_active_users = _distinct_user_count(
+            User.objects.filter(last_login__date=today, is_active=True).values_list("id", flat=True),
+            ActivityLog.objects.filter(created_at__date=today).values_list("user_id", flat=True),
+            AIUsageLog.objects.filter(created_at__date=today).values_list("user_id", flat=True),
+            File.objects.filter(created_at__date=today).values_list("uploaded_by_id", flat=True),
+            Note.objects.filter(created_at__date=today).values_list("created_by_id", flat=True),
+        )
         uploads_monthly = File.objects.filter(created_at__date__gte=month_start).count()
 
-        ai_requests_week = Note.objects.filter(
-            created_at__date__gte=today - timedelta(days=6)
-        ).exclude(ai_model="")
-        avg_latency_seconds = 420 if ai_requests_week.exists() else 360
-        avg_session_length = f"{avg_latency_seconds // 60}m {avg_latency_seconds % 60:02d}s"
+        session_durations = []
+        for log in ActivityLog.objects.filter(
+            created_at__date__gte=week_start,
+            action__in=["session_ended", "logout"],
+        ).only("metadata"):
+            seconds = _metadata_number(
+                log.metadata,
+                "session_duration_seconds",
+                "duration_seconds",
+                "sessionDurationSeconds",
+            )
+            if seconds is None:
+                minutes = _metadata_number(log.metadata, "session_minutes", "duration_minutes", "sessionDurationMinutes")
+                seconds = minutes * 60 if minutes is not None else None
+            if seconds is not None:
+                session_durations.append(seconds)
 
-        platform_uptime = "99.9%"
+        if not session_durations:
+            activity_spans = (
+                ActivityLog.objects.filter(created_at__date__gte=week_start)
+                .exclude(user__isnull=True)
+                .values("user_id", "created_at__date")
+                .annotate(first_event=Min("created_at"), last_event=Max("created_at"), event_count=Count("id"))
+            )
+            for span in activity_spans:
+                if span["event_count"] > 1:
+                    session_durations.append((span["last_event"] - span["first_event"]).total_seconds())
+
+        average_session_seconds = sum(session_durations) / len(session_durations) if session_durations else 0
+        avg_session_length = _format_duration(average_session_seconds)
+
+        total_days = (today - month_start).days + 1
+        active_days = set(
+            ActivityLog.objects.filter(created_at__date__gte=month_start).values_list("created_at__date", flat=True)
+        )
+        active_days.update(
+            AIUsageLog.objects.filter(created_at__date__gte=month_start).values_list("created_at__date", flat=True)
+        )
+        active_days.update(
+            File.objects.filter(created_at__date__gte=month_start).values_list("created_at__date", flat=True)
+        )
+        active_days.update(
+            Note.objects.filter(created_at__date__gte=month_start).values_list("created_at__date", flat=True)
+        )
+        platform_uptime = f"{round((len(active_days) / total_days) * 100, 1) if total_days else 0}%"
 
         users_by_day = {
             item["date_joined__date"]: item["count"]
-            for item in User.objects.filter(date_joined__date__gte=today - timedelta(days=6))
+            for item in User.objects.filter(date_joined__date__gte=week_start)
             .values("date_joined__date")
             .annotate(count=Count("id"))
         }
 
         uploads_by_day = {
             item["created_at__date"]: item["count"]
-            for item in File.objects.filter(created_at__date__gte=today - timedelta(days=6))
+            for item in File.objects.filter(created_at__date__gte=week_start)
             .values("created_at__date")
             .annotate(count=Count("id"))
         }
 
         ai_by_day = {
             item["created_at__date"]: item["count"]
-            for item in Note.objects.filter(created_at__date__gte=today - timedelta(days=6))
-            .exclude(ai_model="")
+            for item in AIUsageLog.objects.filter(created_at__date__gte=week_start)
             .values("created_at__date")
             .annotate(count=Count("id"))
         }
+        if not ai_by_day:
+            ai_by_day = {
+                item["created_at__date"]: item["count"]
+                for item in Note.objects.filter(created_at__date__gte=week_start)
+                .exclude(ai_model="")
+                .values("created_at__date")
+                .annotate(count=Count("id"))
+            }
 
-        running_total_users = User.objects.filter(date_joined__date__lt=today - timedelta(days=6)).count()
+        activity_by_day = {
+            item["created_at__date"]: item["count"]
+            for item in ActivityLog.objects.filter(created_at__date__gte=week_start)
+            .exclude(user__isnull=True)
+            .values("created_at__date")
+            .annotate(count=Count("user_id", distinct=True))
+        }
+        login_by_day = {
+            item["last_login__date"]: item["count"]
+            for item in User.objects.filter(last_login__date__gte=week_start, is_active=True)
+            .values("last_login__date")
+            .annotate(count=Count("id", distinct=True))
+        }
+        note_users_by_day = {
+            item["created_at__date"]: item["count"]
+            for item in Note.objects.filter(created_at__date__gte=week_start)
+            .exclude(created_by__isnull=True)
+            .values("created_at__date")
+            .annotate(count=Count("created_by_id", distinct=True))
+        }
+        file_users_by_day = {
+            item["created_at__date"]: item["count"]
+            for item in File.objects.filter(created_at__date__gte=week_start)
+            .exclude(uploaded_by__isnull=True)
+            .values("created_at__date")
+            .annotate(count=Count("uploaded_by_id", distinct=True))
+        }
+
+        running_total_users = User.objects.filter(date_joined__date__lt=week_start).count()
         user_growth = []
         system_usage = []
 
@@ -590,6 +820,12 @@ class AdminSystemAnalyticsView(APIView):
 
             uploads = uploads_by_day.get(day, 0) or 0
             ai_queries = ai_by_day.get(day, 0) or 0
+            active_sessions = max(
+                activity_by_day.get(day, 0) or 0,
+                login_by_day.get(day, 0) or 0,
+                note_users_by_day.get(day, 0) or 0,
+                file_users_by_day.get(day, 0) or 0,
+            )
 
             user_growth.append({"date": day_label, "users": running_total_users})
             system_usage.append(
@@ -597,14 +833,14 @@ class AdminSystemAnalyticsView(APIView):
                     "date": day_label,
                     "aiQueries": ai_queries,
                     "uploads": uploads,
-                    "activeSessions": max(total_active_users // 2, 1) + uploads,
+                    "activeSessions": active_sessions,
                 }
             )
 
         return Response(
             {
                 "metrics": {
-                    "dailyActiveUsers": total_active_users,
+                    "dailyActiveUsers": daily_active_users,
                     "avgSessionLength": avg_session_length,
                     "totalUploadsMonthly": uploads_monthly,
                     "platformUptime": platform_uptime,
@@ -700,26 +936,29 @@ class AdminStorageStatsView(APIView):
         if not _ensure_admin(request.user):
             return Response({"detail": "Admin privileges are required."}, status=status.HTTP_403_FORBIDDEN)
 
-        total_used = File.objects.aggregate(total=Sum("size_bytes"))["total"] or 0
+        records = _storage_file_records(request)
+        total_used = sum(record["sizeBytes"] for record in records)
         active_users = User.objects.filter(is_active=True).count() or 1
         per_user_avg = total_used // active_users
 
-        files_count = File.objects.count() or 1
-        by_type_rows = (
-            File.objects.values("file_type")
-            .annotate(count=Count("id"), total_bytes=Sum("size_bytes"))
-            .order_by("-count")
-        )
+        files_count = len(records) or 1
+        type_totals = {}
+        for record in records:
+            file_type = record["type"] or "other"
+            current = type_totals.setdefault(file_type, {"count": 0, "sizeBytes": 0})
+            current["count"] += 1
+            current["sizeBytes"] += record["sizeBytes"]
 
-        by_type = [
-            {
-                "type": row["file_type"] or "Other",
-                "count": row["count"],
-                "value": round((row["count"] / files_count) * 100, 1),
-                "size": _format_storage_size(row["total_bytes"] or 0),
-            }
-            for row in by_type_rows
-        ]
+        by_type = []
+        for file_type, totals in sorted(type_totals.items(), key=lambda item: item[1]["count"], reverse=True):
+            by_type.append(
+                {
+                    "type": file_type.upper(),
+                    "count": totals["count"],
+                    "value": round((totals["count"] / files_count) * 100, 1),
+                    "size": _format_storage_size(totals["sizeBytes"]),
+                }
+            )
 
         available = max(self.TOTAL_CAPACITY_BYTES - total_used, 0)
 
@@ -729,6 +968,7 @@ class AdminStorageStatsView(APIView):
                 "available": _format_storage_size(available),
                 "perUserAvg": _format_storage_size(per_user_avg),
                 "byType": by_type,
+                "filesCount": len(records),
                 "capacity": {
                     "total": _format_storage_size(self.TOTAL_CAPACITY_BYTES),
                     "usedPercent": round((total_used / self.TOTAL_CAPACITY_BYTES) * 100, 1) if self.TOTAL_CAPACITY_BYTES else 0,
@@ -751,17 +991,19 @@ class AdminStorageFilesView(APIView):
             limit = 500
         limit = max(1, min(limit, 1000))
 
-        files = File.objects.select_related("uploaded_by").order_by("-created_at")[:limit]
         serialized = []
-        for file_obj in files:
+        for record in _storage_file_records(request)[:limit]:
             serialized.append(
                 {
-                    "id": str(file_obj.id),
-                    "name": file_obj.original_name,
-                    "type": file_obj.file_type,
-                    "size": _format_storage_size(file_obj.size_bytes or 0),
-                    "uploadedBy": _display_user_name(file_obj.uploaded_by),
-                    "date": _format_date_short(file_obj.created_at),
+                    "id": record["id"],
+                    "name": record["name"],
+                    "type": record["type"].upper(),
+                    "size": _format_storage_size(record["sizeBytes"]),
+                    "sizeBytes": record["sizeBytes"],
+                    "uploadedBy": record["uploadedBy"],
+                    "date": _format_date_short(record["createdAt"]),
+                    "source": record["source"],
+                    "url": record["url"],
                 }
             )
 
@@ -775,11 +1017,29 @@ class AdminStorageFileDeleteView(APIView):
         if not _ensure_admin(request.user):
             return Response({"detail": "Admin privileges are required."}, status=status.HTTP_403_FORBIDDEN)
 
-        file_obj = File.objects.filter(id=file_id).first()
-        if not file_obj:
-            return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+        source = "file"
+        raw_id = str(file_id)
+        if ":" in raw_id:
+            source, raw_id = raw_id.split(":", 1)
 
-        file_obj.delete()
+        if source == "file":
+            file_obj = File.objects.filter(id=raw_id).first()
+            if not file_obj:
+                return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+            file_obj.delete()
+        elif source == "material":
+            material = StudyMaterial.objects.filter(id=raw_id).first()
+            if not material:
+                return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+            material.delete()
+        elif source == "project":
+            project = Project.objects.filter(id=raw_id).first()
+            if not project:
+                return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+            project.delete()
+        else:
+            return Response({"detail": "Unsupported storage source."}, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

@@ -15,6 +15,6 @@ export const adminAPI = {
   getActivityLogs: (limit = 500) => apiClient.get(`/api/admin/activity-logs/?limit=${limit}`),
   getStorageStats: () => apiClient.get('/api/admin/storage/stats/'),
   getFiles: (limit = 500) => apiClient.get(`/api/admin/storage/files/?limit=${limit}`),
-  deleteFile: (fileId) => apiClient.delete(`/api/admin/storage/files/${fileId}/`),
+  deleteFile: (fileId) => apiClient.delete(`/api/admin/storage/files/${encodeURIComponent(fileId)}/`),
   getAiUsageStats: () => apiClient.get('/api/admin/ai-usage/'),
 };
