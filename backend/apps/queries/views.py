@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from db_design.constants import QueryStatus
+from apps.analytics.models import AIUsageLog
 from apps.queries.models import Feedback, Query, Response as QueryResponseModel
 from apps.queries.services import AILayerError, ai_layer_service
 from apps.files.services import build_upload_metadata, detect_file_type, extract_editable_content
@@ -59,6 +60,49 @@ def _extract_uploaded_docs(request):
 
 	document_context = "\n\n".join(text_chunks)[:20000]
 	return metadata_list, document_context
+
+
+def _safe_positive_int(value, default=0):
+	try:
+		return max(0, int(value or default))
+	except (TypeError, ValueError):
+		return default
+
+
+def _estimated_tokens(text):
+	if not text:
+		return 0
+	return max(1, round(len(str(text).split()) * 1.3))
+
+
+def _extract_token_usage(ai_result, content, context_text, answer):
+	usage = ai_result.get("token_usage") or ai_result.get("usage") or {}
+	if not isinstance(usage, dict):
+		usage = {}
+
+	input_tokens = _safe_positive_int(
+		usage.get("input_tokens")
+		or usage.get("prompt_tokens")
+		or usage.get("inputTokens")
+		or usage.get("promptTokens")
+	)
+	output_tokens = _safe_positive_int(
+		usage.get("output_tokens")
+		or usage.get("completion_tokens")
+		or usage.get("outputTokens")
+		or usage.get("completionTokens")
+	)
+
+	if input_tokens == 0:
+		input_tokens = _estimated_tokens(f"{content}\n{context_text or ''}")
+	if output_tokens == 0:
+		output_tokens = _estimated_tokens(answer)
+
+	return {
+		"input_tokens": input_tokens,
+		"output_tokens": output_tokens,
+		"raw_usage": usage,
+	}
 
 
 def _build_history_payload(user):
@@ -129,14 +173,18 @@ class AIChatView(APIView):
 		if uploaded_document_context:
 			context_text += f"\n\nDocument context:\n{uploaded_document_context}"
 
+		started_at = timezone.now()
 		try:
 			ai_result = ai_layer_service.ask(question=content, context=context_text)
 		except AILayerError as exc:
 			return Response({"detail": str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+		latency_ms = _safe_positive_int((timezone.now() - started_at).total_seconds() * 1000)
 
 		answer = str(ai_result.get("answer") or "").strip() or "I could not generate a response."
 		confidence = ai_result.get("confidence")
 		source_documents = ai_result.get("source_documents") or []
+		model_name = str(ai_result.get("model_name") or ai_result.get("model") or "ai-layer-rag")[:100]
+		token_usage = _extract_token_usage(ai_result, content, context_text, answer)
 
 		with transaction.atomic():
 			# Ensure an existing conversation placeholder adopts the latest title.
@@ -169,9 +217,31 @@ class AIChatView(APIView):
 				created_by=request.user,
 				updated_by=request.user,
 				response_text=answer,
-				latency_ms=0,
-				model_name="ai-layer-rag",
-				token_usage={"confidence": confidence},
+				latency_ms=latency_ms,
+				model_name=model_name,
+				token_usage={
+					"confidence": confidence,
+					"input_tokens": token_usage["input_tokens"],
+					"output_tokens": token_usage["output_tokens"],
+					"raw_usage": token_usage["raw_usage"],
+				},
+			)
+			AIUsageLog.objects.create(
+				user=request.user,
+				created_by=request.user,
+				updated_by=request.user,
+				feature_name="AI Chat",
+				model_name=model_name,
+				input_tokens=token_usage["input_tokens"],
+				output_tokens=token_usage["output_tokens"],
+				latency_ms=latency_ms,
+				metadata={
+					"query_id": str(query.id),
+					"conversation_id": conversation_id,
+					"confidence": confidence,
+					"files": files,
+					"source_documents": source_documents,
+				},
 			)
 
 		return Response(

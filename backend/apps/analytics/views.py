@@ -14,6 +14,7 @@ from apps.analytics.models import AIUsageLog, ActivityLog
 from apps.exams.models import Exam, Submission
 from apps.files.models import File
 from apps.notes.models import Note
+from apps.queries.models import Response as QueryResponseModel
 from materials.models import StudyMaterial
 from projects.models import Project
 from db_design.constants import SubmissionStatus
@@ -33,6 +34,31 @@ def _format_storage_size(size_bytes: int) -> str:
         value /= 1024
 
     return "0 B"
+
+
+def _safe_positive_int(value, default=0):
+    try:
+        return max(0, int(value or default))
+    except (TypeError, ValueError):
+        return default
+
+
+def _estimated_tokens(text):
+    if not text:
+        return 0
+    return max(1, round(len(str(text).split()) * 1.3))
+
+
+def _query_response_token_count(response_obj, token_key, fallback_text):
+    usage = response_obj.token_usage or {}
+    if not isinstance(usage, dict):
+        usage = {}
+    return _safe_positive_int(
+        usage.get(token_key)
+        or usage.get(token_key.replace("_", ""))
+        or usage.get(token_key.replace("_tokens", "Tokens")),
+        _estimated_tokens(fallback_text),
+    )
 
 
 def _time_ago(timestamp):
@@ -1062,6 +1088,13 @@ class AdminAIUsageStatsView(APIView):
 
         if not queries_per_day:
             fallback = (
+                QueryResponseModel.objects.filter(created_at__date__gte=today - timedelta(days=6))
+                .values("created_at__date")
+                .annotate(count=Count("id"))
+            )
+            queries_per_day = {item["created_at__date"]: item["count"] for item in fallback}
+        if not queries_per_day:
+            fallback = (
                 Note.objects.filter(created_at__date__gte=today - timedelta(days=6))
                 .exclude(ai_model="")
                 .values("created_at__date")
@@ -1110,6 +1143,13 @@ class AdminAIUsageStatsView(APIView):
 
         if not top_features:
             fallback_features = (
+                QueryResponseModel.objects.values("model_name")
+                .annotate(value=Count("id"))
+                .order_by("-value")[:5]
+            )
+            top_features = [{"name": row["model_name"] or "AI Chat", "value": row["value"]} for row in fallback_features]
+        if not top_features:
+            fallback_features = (
                 Note.objects.exclude(ai_model="")
                 .values("ai_model")
                 .annotate(value=Count("id"))
@@ -1117,6 +1157,16 @@ class AdminAIUsageStatsView(APIView):
             )
             top_features = [{"name": row["ai_model"] or "Unknown", "value": row["value"]} for row in fallback_features]
 
+        if not active_users:
+            fallback_active_users_rows = (
+                QueryResponseModel.objects.exclude(query__user__isnull=True)
+                .values("query__user_id", "query__user__email", "query__user__first_name", "query__user__last_name")
+                .annotate(queries=Count("id"))
+                .order_by("-queries")[:5]
+            )
+            for row in fallback_active_users_rows:
+                full_name = f"{(row['query__user__first_name'] or '').strip()} {(row['query__user__last_name'] or '').strip()}".strip()
+                active_users.append({"name": full_name or row["query__user__email"], "queries": row["queries"]})
         if not active_users:
             fallback_active_users_rows = (
                 Note.objects.exclude(ai_model="")
@@ -1129,7 +1179,30 @@ class AdminAIUsageStatsView(APIView):
                 active_users.append({"name": full_name or row["created_by__email"], "queries": row["queries"]})
 
         if total_active_ai_users == 0:
+            total_active_ai_users = (
+                QueryResponseModel.objects.exclude(query__user__isnull=True)
+                .values("query__user_id")
+                .distinct()
+                .count()
+            )
+        if total_active_ai_users == 0:
             total_active_ai_users = Note.objects.exclude(ai_model="").values("created_by_id").distinct().count()
+
+        if total_count == 0:
+            response_rows = QueryResponseModel.objects.select_related("query").only(
+                "response_text",
+                "latency_ms",
+                "token_usage",
+                "query__prompt",
+            )
+            total_count = response_rows.count()
+            total_tokens = 0
+            total_latency = 0
+            for response_obj in response_rows:
+                total_tokens += _query_response_token_count(response_obj, "input_tokens", response_obj.query.prompt)
+                total_tokens += _query_response_token_count(response_obj, "output_tokens", response_obj.response_text)
+                total_latency += response_obj.latency_ms or 0
+            avg_latency_ms = int(total_latency / total_count) if total_count else 0
 
         cost_total = usage_qs.aggregate(total=Sum("cost_usd"))["total"] or Decimal("0")
 
