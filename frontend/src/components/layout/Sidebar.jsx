@@ -84,7 +84,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
     const roleItems = {
       teacher: [
         { label: 'Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
-        { label: 'Classes', icon: Users, to: '/teacher/classes' },
+        { label: 'Cohorts', icon: Users, to: '/teacher/classes' },
         { label: 'Activity Monitor', icon: Activity, to: '/teacher/activity' },
         { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
         { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
@@ -142,7 +142,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
           title: 'Teacher Features',
           items: [
             { label: 'Teacher Dashboard', icon: LayoutDashboard, to: '/teacher/dashboard' },
-            { label: 'Classes', icon: Users, to: '/teacher/classes' },
+            { label: 'Cohorts', icon: Users, to: '/teacher/classes' },
             { label: 'Activity Monitor', icon: Activity, to: '/teacher/activity' },
             { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
             { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },

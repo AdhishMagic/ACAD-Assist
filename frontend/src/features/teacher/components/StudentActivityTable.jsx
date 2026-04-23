@@ -45,7 +45,7 @@ const StudentActivityTable = ({ activityData = [] }) => {
                 </SelectTrigger>
                 <SelectContent>
                   {classes.map(c => (
-                    <SelectItem key={c} value={c}>{c === 'All' ? 'All Classes' : c}</SelectItem>
+                    <SelectItem key={c} value={c}>{c === 'All' ? 'All Cohorts' : c}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

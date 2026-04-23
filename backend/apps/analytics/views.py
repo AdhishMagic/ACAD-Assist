@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User, UserRole
+from apps.academics.models import Subject
 from apps.analytics.models import AIUsageLog, ActivityLog
 from apps.exams.models import Exam, Submission
 from apps.files.models import File
@@ -86,6 +87,18 @@ def _ensure_admin(user):
     if not (user.is_staff or user.is_superuser or (user.role or "").strip().lower() == "admin"):
         return False
     return True
+
+
+def _ensure_teacher(user):
+    role = (getattr(user, "role", "") or "").strip().lower()
+    return bool(
+        user
+        and (
+            user.is_staff
+            or user.is_superuser
+            or role in {"faculty", "teacher", "hod", "admin"}
+        )
+    )
 
 
 def _role_filter(*roles):
@@ -227,6 +240,257 @@ def _distinct_user_count(*querysets):
     for queryset in querysets:
         user_ids.update(value for value in queryset if value)
     return len(user_ids)
+
+
+def _teacher_subject_ids(user):
+    subject_ids = set(
+        Note.objects.filter(created_by=user)
+        .exclude(subject_id__isnull=True)
+        .values_list("subject_id", flat=True)
+    )
+    subject_ids.update(
+        Exam.objects.filter(created_by=user)
+        .exclude(subject_id__isnull=True)
+        .values_list("subject_id", flat=True)
+    )
+
+    if not subject_ids:
+        subject_ids.update(
+            Submission.objects.filter(exam__created_by=user)
+            .exclude(exam__subject_id__isnull=True)
+            .values_list("exam__subject_id", flat=True)
+        )
+
+    return subject_ids
+
+
+def _teacher_student_rows(user, subject_ids=None):
+    subject_ids = set(subject_ids or _teacher_subject_ids(user))
+    if not subject_ids:
+        return []
+
+    students = {}
+
+    submission_rows = (
+        Submission.objects.filter(exam__subject_id__in=subject_ids)
+        .exclude(user=user)
+        .select_related("user", "exam", "exam__subject")
+        .order_by("-updated_at", "-created_at")
+    )
+    for submission in submission_rows:
+        student = submission.user
+        if not student:
+            continue
+
+        entry = students.setdefault(
+            student.id,
+            {
+                "id": str(student.id),
+                "name": _display_user_name(student),
+                "class": getattr(submission.exam.subject, "name", None) or "General",
+                "lastLogin": (
+                    timezone.localtime(student.last_login).strftime("%b %d, %Y")
+                    if student.last_login
+                    else "Never"
+                ),
+                "notesViewed": 0,
+                "aiQuestions": 0,
+                "studyMinutes": 0,
+                "lastActivityAt": student.last_login or submission.updated_at or submission.created_at,
+            },
+        )
+        entry["class"] = entry["class"] or getattr(submission.exam.subject, "name", None) or "General"
+        entry["lastActivityAt"] = max(
+            filter(
+                None,
+                [
+                    entry.get("lastActivityAt"),
+                    student.last_login,
+                    submission.updated_at,
+                    submission.created_at,
+                ],
+            ),
+            default=entry.get("lastActivityAt"),
+        )
+
+    logs_qs = ActivityLog.objects.filter(user_id__in=students.keys()).order_by("-created_at")
+    for log in logs_qs:
+        entry = students.get(log.user_id)
+        if not entry:
+            continue
+
+        text = f"{(log.action or '').lower()} {(log.entity_type or '').lower()}".strip()
+        if "note" in text:
+            entry["notesViewed"] += 1
+        if "ai" in text or "query" in text or "assistant" in text:
+            entry["aiQuestions"] += 1
+        entry["studyMinutes"] += _extract_study_minutes(log.metadata)
+        entry["lastActivityAt"] = max(
+            filter(None, [entry.get("lastActivityAt"), log.created_at]),
+            default=entry.get("lastActivityAt"),
+        )
+
+    for query in Query.objects.filter(user_id__in=students.keys()).order_by("-created_at"):
+        entry = students.get(query.user_id)
+        if not entry:
+            continue
+        entry["aiQuestions"] += 1
+        entry["lastActivityAt"] = max(
+            filter(None, [entry.get("lastActivityAt"), query.created_at]),
+            default=entry.get("lastActivityAt"),
+        )
+
+    rows = []
+    for entry in students.values():
+        rows.append(
+            {
+                "id": entry["id"],
+                "name": entry["name"],
+                "class": entry["class"],
+                "lastLogin": entry["lastLogin"],
+                "notesViewed": entry["notesViewed"],
+                "aiQuestions": entry["aiQuestions"],
+                "studyHours": round(entry["studyMinutes"] / 60, 1),
+                "lastActivityAt": entry["lastActivityAt"],
+            }
+        )
+
+    rows.sort(key=lambda item: item.get("lastActivityAt") or timezone.now(), reverse=True)
+    return rows
+
+
+class TeacherDashboardView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not _ensure_teacher(user):
+            return Response({"detail": "Teacher access required."}, status=status.HTTP_403_FORBIDDEN)
+
+        subject_ids = _teacher_subject_ids(user)
+        subject_qs = Subject.objects.filter(id__in=subject_ids).order_by("name", "code")
+        notes_qs = Note.objects.filter(created_by=user).select_related("subject").order_by("-created_at")
+        ai_notes_qs = notes_qs.filter(Q(source__iexact="ai") | ~Q(ai_model=""))
+        student_rows = _teacher_student_rows(user, subject_ids)
+
+        recent_notes = [
+            {
+                "id": str(note.id),
+                "title": note.title,
+                "subject": getattr(note.subject, "name", None) or "General",
+                "date": _format_date_short(note.created_at),
+            }
+            for note in notes_qs[:5]
+        ]
+
+        recent_interactions = []
+        for row in student_rows[:5]:
+            recent_interactions.append(
+                {
+                    "studentName": row["name"],
+                    "action": "engaged in class activity",
+                    "item": (
+                        f'{row["class"]} • {row["notesViewed"]} notes viewed • '
+                        f'{row["aiQuestions"]} AI questions'
+                    ),
+                    "time": _time_ago(row.get("lastActivityAt")),
+                }
+            )
+
+        latest_ai = [
+            {
+                "id": str(note.id),
+                "title": note.title,
+                "type": (note.note_type or "AI").upper(),
+                "date": _format_date_short(note.created_at),
+            }
+            for note in ai_notes_qs[:6]
+        ]
+
+        return Response(
+            {
+                "totalClasses": subject_qs.count(),
+                "uploadedNotes": notes_qs.count(),
+                "activeStudents": len(student_rows),
+                "aiGeneratedMaterials": ai_notes_qs.count(),
+                "recentNotes": recent_notes,
+                "recentInteractions": recent_interactions,
+                "latestAI": latest_ai,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class TeacherClassesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not _ensure_teacher(user):
+            return Response({"detail": "Teacher access required."}, status=status.HTTP_403_FORBIDDEN)
+
+        subject_ids = _teacher_subject_ids(user)
+        subjects = list(Subject.objects.filter(id__in=subject_ids).order_by("name", "code"))
+        classes_data = []
+
+        for subject in subjects:
+            note_qs = Note.objects.filter(created_by=user, subject=subject)
+            exam_qs = Exam.objects.filter(subject=subject).filter(Q(created_by=user) | Q(created_by__isnull=True))
+            student_count = (
+                Submission.objects.filter(exam__subject=subject)
+                .exclude(user=user)
+                .values("user_id")
+                .distinct()
+                .count()
+            )
+
+            timestamps = [
+                note_qs.aggregate(value=Max("updated_at"))["value"],
+                note_qs.aggregate(value=Max("created_at"))["value"],
+                exam_qs.aggregate(value=Max("updated_at"))["value"],
+                exam_qs.aggregate(value=Max("created_at"))["value"],
+                Submission.objects.filter(exam__subject=subject).aggregate(value=Max("updated_at"))["value"],
+            ]
+            last_activity = max(filter(None, timestamps), default=None)
+
+            classes_data.append(
+                {
+                    "id": str(subject.id),
+                    "name": subject.code or subject.name,
+                    "subject": subject.name,
+                    "students": student_count,
+                    "materials": note_qs.count(),
+                    "lastActivity": _format_date_short(last_activity),
+                }
+            )
+
+        return Response(classes_data, status=status.HTTP_200_OK)
+
+
+class TeacherStudentActivityView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if not _ensure_teacher(user):
+            return Response({"detail": "Teacher access required."}, status=status.HTTP_403_FORBIDDEN)
+
+        rows = _teacher_student_rows(user)
+        return Response(
+            [
+                {
+                    "id": row["id"],
+                    "name": row["name"],
+                    "class": row["class"],
+                    "lastLogin": row["lastLogin"],
+                    "notesViewed": row["notesViewed"],
+                    "aiQuestions": row["aiQuestions"],
+                    "studyHours": row["studyHours"],
+                }
+                for row in rows
+            ],
+            status=status.HTTP_200_OK,
+        )
 
 
 def _storage_file_records(request=None):

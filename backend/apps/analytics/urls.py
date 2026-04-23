@@ -8,10 +8,16 @@ from .views import (
     AdminStorageFilesView,
     AdminStorageStatsView,
     AdminSystemAnalyticsView,
+    TeacherClassesView,
+    TeacherDashboardView,
+    TeacherStudentActivityView,
 )
 
 
 urlpatterns = [
+    path("teacher/dashboard/", TeacherDashboardView.as_view(), name="teacher-dashboard"),
+    path("teacher/classes/", TeacherClassesView.as_view(), name="teacher-classes"),
+    path("teacher/activity/", TeacherStudentActivityView.as_view(), name="teacher-student-activity"),
     path("dashboard/", AdminDashboardView.as_view(), name="admin-dashboard"),
     path("analytics/", AdminSystemAnalyticsView.as_view(), name="admin-system-analytics"),
     path("activity-logs/", AdminActivityLogsView.as_view(), name="admin-activity-logs"),

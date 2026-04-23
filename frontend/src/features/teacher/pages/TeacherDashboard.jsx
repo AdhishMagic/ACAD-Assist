@@ -8,14 +8,26 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 const TeacherDashboard = () => {
-  const { dashboardData, isDashboardLoading } = useTeacherDashboard();
+  const { dashboardData, isDashboardLoading, dashboardError } = useTeacherDashboard();
 
-  if (isDashboardLoading || !dashboardData) {
+  if (isDashboardLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
       </div>
     );
+  }
+
+  if (dashboardError) {
+    return (
+      <div className="flex h-64 items-center justify-center text-center text-sm text-gray-500 dark:text-gray-400">
+        Unable to load teacher dashboard data right now.
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return null;
   }
 
   return (

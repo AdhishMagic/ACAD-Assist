@@ -30,14 +30,14 @@ const ClassesTable = ({ classes = [], onViewDetails }) => {
       <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Classes Overview</CardTitle>
-            <CardDescription className="text-gray-500 dark:text-gray-400">View and manage your active classes</CardDescription>
+            <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Cohorts Overview</CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">View and manage your active cohorts</CardDescription>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search classes..."
+                placeholder="Search cohorts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9 w-[200px] lg:w-[250px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800"
@@ -66,7 +66,7 @@ const ClassesTable = ({ classes = [], onViewDetails }) => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                <th className="p-4 pl-6">Class Name</th>
+                <th className="p-4 pl-6">Cohort Name</th>
                 <th className="p-4">Subject</th>
                 <th className="p-4">Students</th>
                 <th className="p-4">Materials</th>
@@ -117,7 +117,7 @@ const ClassesTable = ({ classes = [], onViewDetails }) => {
                 ) : (
                   <tr>
                     <td colSpan={6} className="p-8 text-center text-gray-500 dark:text-gray-400">
-                      No classes found matching the criteria.
+                      No cohorts found matching the criteria.
                     </td>
                   </tr>
                 )}

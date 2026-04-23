@@ -9,7 +9,7 @@ import AddClassDialog from '../components/AddClassDialog';
 import ClassDetailsDialog from '../components/ClassDetailsDialog';
 
 const ClassesOverviewPage = () => {
-  const { classesData, isClassesLoading } = useTeacherClasses();
+  const { classesData, isClassesLoading, classesError } = useTeacherClasses();
   const queryClient = useQueryClient();
 
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -39,10 +39,18 @@ const ClassesOverviewPage = () => {
     setIsDetailsOpen(true);
   };
 
-  if (isClassesLoading || !classesData) {
+  if (isClassesLoading) {
     return (
       <div className="flex h-[calc(100vh-200px)] items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (classesError) {
+    return (
+      <div className="flex h-[calc(100vh-200px)] items-center justify-center text-center text-sm text-gray-500 dark:text-gray-400">
+        Unable to load classes right now.
       </div>
     );
   }
@@ -52,9 +60,9 @@ const ClassesOverviewPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Classes Overview</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Cohorts Overview</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Manage your active classes and tracked subjects.
+            Manage your active cohorts and tracked subjects.
           </p>
         </div>
         <div>
@@ -63,7 +71,7 @@ const ClassesOverviewPage = () => {
             onClick={() => setIsAddOpen(true)}
             className="bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20 transition-all w-full sm:w-auto"
           >
-            <Plus className="mr-2 h-4 w-4" /> Add Class
+            <Plus className="mr-2 h-4 w-4" /> Add Cohort
           </Button>
         </div>
       </div>

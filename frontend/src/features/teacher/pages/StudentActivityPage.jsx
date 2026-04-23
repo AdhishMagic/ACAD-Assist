@@ -4,12 +4,20 @@ import StudentActivityTable from '../components/StudentActivityTable';
 import { motion } from 'framer-motion';
 
 const StudentActivityPage = () => {
-  const { activityData, isActivityLoading } = useStudentActivity();
+  const { activityData, isActivityLoading, activityError } = useStudentActivity();
 
-  if (isActivityLoading || !activityData) {
+  if (isActivityLoading) {
     return (
       <div className="flex h-[calc(100vh-200px)] items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (activityError) {
+    return (
+      <div className="flex h-[calc(100vh-200px)] items-center justify-center text-center text-sm text-gray-500 dark:text-gray-400">
+        Unable to load student activity right now.
       </div>
     );
   }

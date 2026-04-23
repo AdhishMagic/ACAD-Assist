@@ -45,13 +45,13 @@ const AddClassDialog = ({ open, onOpenChange, onSubmit }) => {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Class</DialogTitle>
-          <DialogDescription>Create a new class to track students and materials.</DialogDescription>
+          <DialogTitle>Add Cohort</DialogTitle>
+          <DialogDescription>Create a new cohort to track students and materials.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="className">Class name</Label>
+            <Label htmlFor="className">Cohort name</Label>
             <Input
               id="className"
               value={className}

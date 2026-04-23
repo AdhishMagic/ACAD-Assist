@@ -9,7 +9,7 @@ const ClassDetailsDialog = ({ open, onOpenChange, cls }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{cls.name}</DialogTitle>
-          <DialogDescription>Class details</DialogDescription>
+          <DialogDescription>Cohort details</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 text-sm">

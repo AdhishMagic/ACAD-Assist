@@ -47,7 +47,7 @@ export const DashboardStatsGrid = ({ data }) => {
   if (!data) return null;
 
   const stats = [
-    { title: 'Total Classes', value: data.totalClasses, icon: BookOpen, description: 'Active classes this semester', delay: 0.1 },
+    { title: 'Total Cohorts', value: data.totalClasses, icon: BookOpen, description: 'Active cohorts this semester', delay: 0.1 },
     { title: 'Uploaded Notes', value: data.uploadedNotes, icon: FileText, description: 'Total materials shared', trend: 12, delay: 0.2 },
     { title: 'Active Students', value: data.activeStudents, icon: Users, description: 'Engaged with materials', trend: 5, delay: 0.3 },
     { title: 'AI Generated', value: data.aiGeneratedMaterials, icon: Sparkles, description: 'Quizzes & Summaries created', trend: 24, delay: 0.4 },

@@ -1,10 +1,8 @@
-const notImplemented = () => {
-  throw new Error('Teacher API endpoints not implemented. Please configure backend endpoints.');
-};
+import { apiClient } from '@/shared/lib/http/axios';
 
 export const teacherAPI = {
-  getDashboardData: notImplemented,
-  getClasses: notImplemented,
-  getStudentActivity: notImplemented,
-  uploadNotes: notImplemented,
+  getDashboardData: () => apiClient.get('/api/admin/teacher/dashboard/'),
+  getClasses: () => apiClient.get('/api/admin/teacher/classes/'),
+  getStudentActivity: () => apiClient.get('/api/admin/teacher/activity/'),
+  uploadNotes: (formData) => apiClient.post('/api/materials/', formData),
 };
