@@ -244,6 +244,9 @@ def _distinct_user_count(*querysets):
 
 def _teacher_subject_ids(user):
     subject_ids = set(
+        Subject.objects.filter(created_by=user).values_list("id", flat=True)
+    )
+    subject_ids.update(
         Note.objects.filter(created_by=user)
         .exclude(subject_id__isnull=True)
         .values_list("subject_id", flat=True)

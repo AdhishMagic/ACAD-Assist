@@ -174,13 +174,16 @@ export async function listMaterialsLibrary() {
 }
 
 export async function listBookmarkedMaterials() {
-  return [];
+  const { data } = await apiClient.get("/api/notes/bookmarked/");
+  return (Array.isArray(data) ? data : []).map(normalizeNote);
 }
 
 export async function bookmarkMaterial(id) {
-  return { detail: "Bookmarks are not available for notes." };
+  const { data } = await apiClient.post(`/api/notes/${id}/bookmark/`);
+  return normalizeNote(data);
 }
 
 export async function unbookmarkMaterial(id) {
-  return { detail: "Bookmarks are not available for notes." };
+  const { data } = await apiClient.post(`/api/notes/${id}/bookmark/`);
+  return normalizeNote(data);
 }
