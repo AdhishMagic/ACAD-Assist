@@ -34,7 +34,7 @@ const alertConfig = {
 };
 
 export default function HODDashboard() {
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, isError, error } = useDashboardData();
 
   if (isLoading) {
     return (
@@ -47,9 +47,25 @@ export default function HODDashboard() {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="flex-1 space-y-4 p-8 pt-6 flex items-center justify-center min-h-[400px]">
+        <div className="max-w-md text-center space-y-2">
+          <p className="text-lg font-semibold">Unable to load HOD dashboard</p>
+          <p className="text-sm text-muted-foreground">
+            {error?.message || 'The dashboard could not fetch data from the connected backend.'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const recentTeacherActivity = data?.recentTeacherActivity || [];
+  const recentCourseSubmissions = data?.recentCourseSubmissions || [];
+  const departmentAlerts = data?.departmentAlerts || [];
+
   return (
     <motion.div {...pageTransition} className="flex-1 space-y-6 flex flex-col p-4 sm:p-6 lg:p-8 pt-6 h-full overflow-y-auto">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">HOD Dashboard</h2>
@@ -57,19 +73,20 @@ export default function HODDashboard() {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <DepartmentStatsCard stats={data?.stats} trends={data?.trends} />
 
-      {/* Recent Activity + Recent Submissions */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Recent Teacher Activity */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Recent Teacher Activity</CardTitle>
             <CardDescription>Latest actions by department teachers</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {data?.recentTeacherActivity?.map((activity, index) => (
+            {recentTeacherActivity.length === 0 && (
+              <p className="text-sm text-muted-foreground">No recent teacher activity found in the database.</p>
+            )}
+
+            {recentTeacherActivity.map((activity, index) => (
               <motion.div
                 key={activity.id}
                 initial={{ opacity: 0, x: -10 }}
@@ -90,14 +107,17 @@ export default function HODDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Course Submissions */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Recent Course Submissions</CardTitle>
             <CardDescription>Latest materials submitted for review</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {data?.recentCourseSubmissions?.map((submission, index) => (
+            {recentCourseSubmissions.length === 0 && (
+              <p className="text-sm text-muted-foreground">No course submissions found in the database.</p>
+            )}
+
+            {recentCourseSubmissions.map((submission, index) => (
               <motion.div
                 key={submission.id}
                 initial={{ opacity: 0, x: -10 }}
@@ -107,7 +127,7 @@ export default function HODDashboard() {
               >
                 <div className="flex-1 min-w-0 mr-3">
                   <p className="text-sm font-medium truncate">{submission.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{submission.teacher} • {submission.date}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{`${submission.teacher} • ${submission.date}`}</p>
                 </div>
                 <Badge variant="outline" className={statusColors[submission.status] || ''}>
                   {submission.status}
@@ -118,16 +138,20 @@ export default function HODDashboard() {
         </Card>
       </div>
 
-      {/* Department Alerts */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Department Alerts</CardTitle>
           <CardDescription>Important notifications and updates</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {data?.departmentAlerts?.map((alert, index) => {
+          {departmentAlerts.length === 0 && (
+            <p className="text-sm text-muted-foreground">No department alerts at the moment.</p>
+          )}
+
+          {departmentAlerts.map((alert, index) => {
             const config = alertConfig[alert.severity] || alertConfig.info;
             const AlertIcon = config.icon;
+
             return (
               <motion.div
                 key={alert.id}
