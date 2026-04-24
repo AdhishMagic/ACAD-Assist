@@ -10,7 +10,7 @@ const pageTransition = {
 };
 
 export default function DepartmentPerformancePage() {
-  const { data, isLoading } = usePerformanceData();
+  const { data, isLoading, isError, error } = usePerformanceData();
 
   if (isLoading) {
     return (
@@ -18,6 +18,19 @@ export default function DepartmentPerformancePage() {
         <div className="animate-pulse flex flex-col items-center gap-4">
           <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
           <p className="text-muted-foreground">Loading performance data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex-1 space-y-4 p-8 pt-6 flex items-center justify-center min-h-[400px]">
+        <div className="max-w-md text-center space-y-2">
+          <p className="text-lg font-semibold">Unable to load department performance</p>
+          <p className="text-sm text-muted-foreground">
+            {error?.message || 'The page could not fetch performance data from the connected backend.'}
+          </p>
         </div>
       </div>
     );

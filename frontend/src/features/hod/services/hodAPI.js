@@ -41,6 +41,13 @@ const formatRelativeTime = (value) => {
   return formatShortDate(date);
 };
 
+const monthLabel = (value) => {
+  const date = toDate(value);
+  return date
+    ? date.toLocaleDateString(undefined, { month: 'short', year: '2-digit' })
+    : 'Unknown';
+};
+
 const capitalize = (value) => {
   const normalized = String(value || '').trim().toLowerCase();
   return normalized ? normalized.charAt(0).toUpperCase() + normalized.slice(1) : 'Pending';
@@ -52,6 +59,34 @@ const getTeacherName = (item) => (
   || item?.uploaded_by_email
   || item?.created_by_email
   || 'Unknown Teacher'
+);
+
+const getOwnerKey = (item) => {
+  const teacherName = getTeacherName(item);
+  return teacherName && teacherName !== 'Unknown Teacher'
+    ? teacherName.toLowerCase()
+    : null;
+};
+
+const getCourseName = (item) => {
+  const subjectName = (item?.subject_name || item?.subject_code || '').trim();
+  if (subjectName) return subjectName;
+
+  const rawType = String(item?.note_type || item?.type || item?.file_type || '').trim().toLowerCase();
+  if (rawType === 'video') return 'Video Resources';
+  if (rawType) return capitalize(rawType);
+
+  return 'General';
+};
+
+const rankByActivity = (items, limit = 6) => (
+  [...items]
+    .sort((left, right) => {
+      const leftTotal = (left.notes || 0) + (left.videos || 0) + (left.assignments || 0);
+      const rightTotal = (right.notes || 0) + (right.videos || 0) + (right.assignments || 0);
+      return rightTotal - leftTotal;
+    })
+    .slice(0, limit)
 );
 
 const isWithinDays = (value, days) => {
@@ -265,7 +300,150 @@ export const hodAPI = {
       },
     };
   },
-  getPerformance: notImplemented,
+  getPerformance: async () => {
+    const [notesResult, myMaterialsResult, libraryMaterialsResult, projectsResult] = await Promise.allSettled([
+      apiClient.get('/api/notes/'),
+      apiClient.get('/api/materials/'),
+      apiClient.get('/api/materials/library/'),
+      projectsApi.all(),
+    ]);
+
+    const notes = notesResult.status === 'fulfilled' ? normalizeArray(notesResult.value.data) : [];
+    const ownMaterials = myMaterialsResult.status === 'fulfilled' ? normalizeArray(myMaterialsResult.value.data) : [];
+    const libraryMaterials = libraryMaterialsResult.status === 'fulfilled'
+      ? normalizeArray(libraryMaterialsResult.value.data)
+      : [];
+    const projects = projectsResult.status === 'fulfilled' ? normalizeArray(projectsResult.value.data) : [];
+
+    const materials = [...ownMaterials, ...libraryMaterials].filter((item, index, collection) => (
+      collection.findIndex((entry) => entry.id === item.id) === index
+    ));
+
+    const courseBuckets = new Map();
+    const ensureCourseBucket = (name) => {
+      if (!courseBuckets.has(name)) {
+        courseBuckets.set(name, {
+          name,
+          notes: 0,
+          videos: 0,
+          assignments: 0,
+          publishedCount: 0,
+          contributors: new Set(),
+        });
+      }
+
+      return courseBuckets.get(name);
+    };
+
+    notes.forEach((note) => {
+      const bucket = ensureCourseBucket(getCourseName(note));
+      bucket.notes += 1;
+      if (note.is_published) {
+        bucket.publishedCount += 1;
+      }
+
+      const ownerKey = getOwnerKey(note);
+      if (ownerKey) {
+        bucket.contributors.add(ownerKey);
+      }
+    });
+
+    materials.forEach((material) => {
+      const bucket = ensureCourseBucket('General Resources');
+      bucket.videos += 1;
+      if (String(material.status || '').toLowerCase() === 'published') {
+        bucket.publishedCount += 1;
+      }
+
+      const ownerKey = getOwnerKey(material);
+      if (ownerKey) {
+        bucket.contributors.add(ownerKey);
+      }
+    });
+
+    projects.forEach((project) => {
+      const bucket = ensureCourseBucket('Student Projects');
+      bucket.assignments += 1;
+      if (String(project.status || '').toLowerCase() === 'approved') {
+        bucket.publishedCount += 1;
+      }
+
+      const studentName = String(project.student_name || '').trim().toLowerCase();
+      if (studentName) {
+        bucket.contributors.add(studentName);
+      }
+    });
+
+    const courseItems = rankByActivity(
+      Array.from(courseBuckets.values()).map((bucket) => ({
+        name: bucket.name,
+        notes: bucket.notes,
+        videos: bucket.videos,
+        assignments: bucket.assignments,
+        activeCourses: bucket.notes + bucket.videos + bucket.assignments,
+        completions: bucket.publishedCount,
+        enrollments: bucket.contributors.size,
+      }))
+    );
+
+    const aiUsageMap = new Map();
+    const ensureMonthBucket = (label) => {
+      if (!aiUsageMap.has(label)) {
+        aiUsageMap.set(label, {
+          name: label,
+          generated: 0,
+          reviewed: 0,
+          published: 0,
+        });
+      }
+
+      return aiUsageMap.get(label);
+    };
+
+    notes
+      .filter((note) => {
+        const source = String(note.source || '').trim().toLowerCase();
+        const aiModel = String(note.ai_model || '').trim();
+        return source === 'ai' || Boolean(aiModel);
+      })
+      .forEach((note) => {
+        const createdLabel = monthLabel(note.created_at);
+        ensureMonthBucket(createdLabel).generated += 1;
+
+        const reviewedLabel = monthLabel(note.updated_at || note.created_at);
+        ensureMonthBucket(reviewedLabel).reviewed += 1;
+
+        if (note.is_published) {
+          ensureMonthBucket(reviewedLabel).published += 1;
+        }
+      });
+
+    const aiContentUsage = [...aiUsageMap.values()]
+      .sort((left, right) => {
+        const leftDate = toDate(`01 ${left.name}`);
+        const rightDate = toDate(`01 ${right.name}`);
+        return (leftDate?.getTime() || 0) - (rightDate?.getTime() || 0);
+      })
+      .slice(-6);
+
+    return {
+      data: {
+        courseActivity: courseItems.map(({ name, activeCourses, completions, enrollments }) => ({
+          name,
+          activeCourses,
+          completions,
+          enrollments,
+        })),
+        materialsPerCourse: courseItems.map(({ name, notes, videos, assignments }) => ({
+          name,
+          notes,
+          videos,
+          assignments,
+        })),
+        aiContentUsage,
+      },
+    };
+  },
   getTeacherContributions: notImplemented,
   getMaterialApprovals: async () => {
     try {
