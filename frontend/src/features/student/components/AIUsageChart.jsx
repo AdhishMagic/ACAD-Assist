@@ -11,14 +11,14 @@ const AIUsageChart = ({ data }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <Card>
+      <Card className="min-w-0">
         <CardHeader>
           <CardTitle>AI Assistant Usage</CardTitle>
           <CardDescription>Questions asked per day over the previous week</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        <CardContent className="min-w-0">
+          <div className="w-full min-w-0">
+            <ResponsiveContainer width="100%" height={250} minWidth={0}>
               <LineChart
                 data={data}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
