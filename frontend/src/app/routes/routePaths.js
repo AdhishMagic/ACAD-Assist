@@ -10,8 +10,6 @@ export const ROUTE_PATHS = {
   FILE_MANAGER: "/file-manager",
   FILE_PREVIEW: "/file-preview/:fileId",
   ACTIVITY_FEED: "/activity-feed",
-  ONLINE_TEST: "/online-test/:examId",
-  STUDENT_ONLINE_TEST_LEGACY: "/student/online-test/:examId",
 
   STUDENT_BASE: "/student",
   STUDENT_DASHBOARD: "/student/dashboard",
@@ -41,8 +39,6 @@ export const ROUTE_PATHS = {
   TEACHER_QUESTION_GENERATOR: "/teacher/question-generator",
   TEACHER_EXAM_PREVIEW: "/teacher/question-paper/exam-preview",
   TEACHER_EXAM_EXPORT: "/teacher/question-paper/exam-export",
-  TEACHER_ONLINE_TESTS: "/teacher/online-tests",
-  TEACHER_ONLINE_TEST_RESULTS: "/teacher/online-test-results/:examId",
 
   HOD_DASHBOARD: "/hod/dashboard",
   HOD_PERFORMANCE: "/hod/performance",
@@ -63,9 +59,7 @@ export const ROUTE_PATHS = {
 
 export const buildPath = {
   filePreview: (fileId) => `/file-preview/${fileId}`,
-  onlineTest: (examId) => `/online-test/${examId}`,
   studentNotesSubject: (subjectId) => `/student/notes/${subjectId}`,
   studentNoteViewer: (noteId) => `/student/notes/view/${noteId}`,
   studentAiGeneratedNote: (noteId) => `/student/ai/generated/${noteId}`,
-  teacherOnlineTestResults: (examId) => `/teacher/online-test-results/${examId}`,
 };

@@ -15,8 +15,6 @@ const SettingsPage = lazy(() => import("@/features/settings/pages/SettingsPage")
 const StudentDashboard = lazy(() => import("@/features/student/pages/StudentDashboard"));
 const StudyOverviewPage = lazy(() => import("@/features/student/pages/StudyOverviewPage"));
 const ProjectSubmissionPage = lazy(() => import("@/features/student/pages/ProjectSubmissionPage"));
-const OnlineTestPage = lazy(() => import("@/features/student/pages/OnlineTestPage"));
-const OnlineTestLegacyRedirect = lazy(() => import("@/features/student/pages/OnlineTestLegacyRedirect"));
 const NotificationsPage = lazy(() => import("@/features/system/pages/NotificationsPage"));
 const ProfilePage = lazy(() => import("@/features/system/pages/ProfilePage"));
 const FileUploadManagerPage = lazy(() =>
@@ -65,8 +63,6 @@ export function AppRoutes() {
             <Route path={ROUTE_PATHS.FILE_MANAGER} element={<FileUploadManagerPage />} />
             <Route path={ROUTE_PATHS.FILE_PREVIEW} element={<FilePreviewPage />} />
             <Route path={ROUTE_PATHS.ACTIVITY_FEED} element={<ActivityFeedPage />} />
-            <Route path={ROUTE_PATHS.ONLINE_TEST} element={<OnlineTestPage />} />
-            <Route path={ROUTE_PATHS.STUDENT_ONLINE_TEST_LEGACY} element={<OnlineTestLegacyRedirect />} />
 
             <Route element={<RoleGuard allowedRoles={["system"]} />}>
               <Route path={ROUTE_PATHS.SYSTEM_DASHBOARD} element={<SystemDashboardPage />} />

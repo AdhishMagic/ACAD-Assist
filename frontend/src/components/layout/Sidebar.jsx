@@ -18,9 +18,9 @@ import {
   X,
   Users,
   Activity,
-  CheckSquare,
   TrendingUp,
   FileCheck,
+  CheckSquare,
   Database
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
@@ -91,7 +91,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
         { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
         { label: 'Question Paper Generator', icon: FileQuestion, to: ROUTE_PATHS.TEACHER_QUESTION_PAPER },
-        { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
       ],
       hod: [
         { label: 'Dashboard', icon: LayoutDashboard, to: '/hod/dashboard' },
@@ -148,7 +147,6 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
             { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
             { label: 'Question Paper Generator', icon: FileQuestion, to: ROUTE_PATHS.TEACHER_QUESTION_PAPER },
-            { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
           ],
         },
         {

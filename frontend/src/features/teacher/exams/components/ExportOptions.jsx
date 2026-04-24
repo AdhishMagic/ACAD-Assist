@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileDown, Globe, FileText, CheckCircle2 } from 'lucide-react';
+import { FileDown, FileText, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const ExportOptions = ({ onExport, onOpen, isExporting, exportSuccess }) => {
@@ -23,20 +23,11 @@ export const ExportOptions = ({ onExport, onOpen, isExporting, exportSuccess }) 
       color: 'text-blue-500',
       bgColor: 'bg-blue-50 dark:bg-blue-950/20',
       borderColor: 'border-blue-200 dark:border-blue-900/50'
-    },
-    {
-      id: 'online',
-      title: 'Publish Online Test',
-      description: 'Ready for students to take digitally',
-      icon: Globe,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-50 dark:bg-purple-950/20',
-      borderColor: 'border-purple-200 dark:border-purple-900/50'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {options.map((option, index) => {
         const Icon = option.icon;
         const isSuccess = exportSuccess === option.id;
@@ -81,7 +72,7 @@ export const ExportOptions = ({ onExport, onOpen, isExporting, exportSuccess }) 
                   {isExporting
                     ? 'Exporting...'
                     : isSuccess
-                      ? (option.id === 'online' ? 'Copy Link / Open' : 'Open File')
+                      ? 'Open File'
                       : option.title}
                 </Button>
               </CardContent>

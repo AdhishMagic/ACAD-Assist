@@ -6,8 +6,6 @@ import TemplatePreviewPage from '../pages/TemplatePreviewPage';
 import QuestionGeneratorPage from '../pages/QuestionGeneratorPage';
 import ExamPreviewPage from '../pages/ExamPreviewPage';
 import ExamExportPage from '../pages/ExamExportPage';
-import OnlineTestsPage from '../pages/OnlineTestsPage';
-import OnlineTestResultsPage from '../pages/OnlineTestResultsPage';
 
 export const examRoutes = [
   {
@@ -37,13 +35,5 @@ export const examRoutes = [
   {
     path: ROUTE_PATHS.TEACHER_EXAM_EXPORT,
     element: <ExamExportPage />
-  },
-  {
-    path: ROUTE_PATHS.TEACHER_ONLINE_TESTS,
-    element: <OnlineTestsPage />
-  },
-  {
-    path: ROUTE_PATHS.TEACHER_ONLINE_TEST_RESULTS,
-    element: <OnlineTestResultsPage />
   }
 ];

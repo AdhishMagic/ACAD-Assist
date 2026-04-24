@@ -6,7 +6,7 @@ import { ExportOptions } from '../components/ExportOptions';
 import { useExportExam } from '../hooks/useExamGenerator';
 import { ArrowLeft, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { ROUTE_PATHS, buildPath } from '@/app/routes/routePaths';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 
 const ExamExportPage = () => {
   const navigate = useNavigate();
@@ -52,20 +52,6 @@ const ExamExportPage = () => {
       if (result.success) {
         setExportSuccess(format);
 
-        if (format === 'online' && result.publishedUrl) {
-          setExportArtifacts((prev) => ({
-            ...prev,
-            online: { publishedUrl: result.publishedUrl },
-          }));
-
-          try {
-            await navigator.clipboard.writeText(result.publishedUrl);
-          } catch {
-            // ignore clipboard errors
-          }
-          return;
-        }
-
         if (result.blob && result.filename) {
           const objectUrl = triggerDownload({ blob: result.blob, filename: result.filename });
           setExportArtifacts((prev) => {
@@ -97,16 +83,6 @@ const ExamExportPage = () => {
     const artifact = exportArtifacts?.[format];
     if (!artifact) return;
 
-    if (format === 'online' && artifact.publishedUrl) {
-      try {
-        await navigator.clipboard.writeText(artifact.publishedUrl);
-      } catch {
-        // ignore
-      }
-      window.open(artifact.publishedUrl, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
     if (artifact.objectUrl) {
       window.open(artifact.objectUrl, '_blank', 'noopener,noreferrer');
     }
@@ -116,15 +92,12 @@ const ExamExportPage = () => {
     <div className="container mx-auto max-w-5xl py-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Export & Publish</h1>
-          <p className="text-muted-foreground">Download your generated exam paper or publish it directly online.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Export Exam</h1>
+          <p className="text-muted-foreground">Download your generated exam paper in the format you need.</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={() => navigate(-1)} className="gap-2">
             <ArrowLeft className="w-4 h-4" /> Back to Preview
-          </Button>
-          <Button variant="outline" onClick={() => navigate(buildPath.teacherOnlineTestResults(examId))}>
-            View Results
           </Button>
           <Button variant="secondary" onClick={() => navigate(ROUTE_PATHS.TEACHER_DASHBOARD)} className="gap-2">
             <Home className="w-4 h-4" /> Go to Dashboard
@@ -141,7 +114,7 @@ const ExamExportPage = () => {
           <CardHeader className="bg-muted/20 border-b">
             <CardTitle>Choose Export Format</CardTitle>
             <CardDescription>
-              Select how you want to distribute this exam to your students.
+              Select the file format you want to export.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6 md:p-8">

@@ -47,16 +47,6 @@ const slugify = (value) => {
     .slice(0, 60);
 };
 
-const getPublishUrl = (examId) => {
-  try {
-    const origin = window?.location?.origin;
-    if (origin) return `${origin}/online-test/${examId}`;
-  } catch {
-    // ignore
-  }
-  return `/online-test/${examId}`;
-};
-
 const formatQuestionLine = (question, index) => {
   const marks = safeParseInt(question?.marks, 0);
   const marksLabel = marks === 1 ? 'Mark' : 'Marks';
@@ -706,31 +696,12 @@ export const examAPI = {
   },
 
   exportExam: async ({ examId, format }) => {
-    // const { data } = await axios.get(`${BASE_URL}/exam-export/${examId}?format=${format}`, {
-    //   responseType: format === 'online' ? 'json' : 'blob'
-    // });
-    // return data;
-
     // Mock implementation (client-side export)
     return new Promise((resolve, reject) => {
       (async () => {
         try {
           const exam = loadGeneratedExam(examId) || buildExamFromTemplateDraft({ examId, config: { useTemplate: true } });
           const titleSlug = slugify(exam?.title);
-
-          if (format === 'online') {
-            try {
-              await apiClient.post(`/api/exam/${examId}/publish/`);
-            } catch {
-              // keep client-side publish UX available if backend publish is not ready for this exam id
-            }
-            resolve({
-              success: true,
-              message: 'Online test published',
-              publishedUrl: getPublishUrl(examId),
-            });
-            return;
-          }
 
           if (format === 'pdf') {
             const blob = await exportExamToPdfBlob(exam);
@@ -756,7 +727,7 @@ export const examAPI = {
             return;
           }
 
-          resolve({ success: false, message: `Unknown export format: ${format}` });
+          reject(new Error(`Unsupported export format: ${format}`));
         } catch (e) {
           reject(e);
         }

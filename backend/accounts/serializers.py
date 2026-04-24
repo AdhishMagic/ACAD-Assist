@@ -5,10 +5,18 @@ from .services import authenticate_user, register_user
 
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ("id", "email", "role", "first_name", "last_name", "date_joined")
         read_only_fields = fields
+
+    def get_role(self, obj: User) -> str:
+        if obj.is_staff or obj.is_superuser:
+            return "admin"
+
+        return (obj.role or "").strip().lower()
 
 
 class RegisterSerializer(serializers.Serializer):
