@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { PanelLeft } from 'lucide-react';
 import { useNotes } from '../hooks/useNotes';
 import { useNoteSubjects } from '../hooks/useNotes';
 import SubjectSidebar from '../components/SubjectSidebar';
@@ -14,6 +16,7 @@ const NotesExplorer = () => {
   const [activeFilters, setActiveFilters] = useState({ subject: '', tags: [] });
   const [sortBy, setSortBy] = useState('newest');
   const [selectedNote, setSelectedNote] = useState(null);
+  const [isSubjectsOpen, setIsSubjectsOpen] = useState(false);
 
   const { data, isLoading } = useNotes({ search: searchTerm, sort: sortBy, filters: activeFilters });
   const { data: subjectData } = useNoteSubjects();
@@ -25,16 +28,27 @@ const NotesExplorer = () => {
   const tags = [...new Set(notes.flatMap((note) => (Array.isArray(note.tags) ? note.tags : [])))].sort((a, b) => a.localeCompare(b));
 
   return (
-    <div className="flex h-full w-full overflow-hidden bg-background">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-background md:flex-row">
       {/* Left Sidebar */}
-      <SubjectSidebar />
+      <SubjectSidebar isOpen={isSubjectsOpen} onClose={() => setIsSubjectsOpen(false)} />
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto w-full relative">
-        <div className="p-4 md:p-8 max-w-7xl mx-auto w-full h-full flex flex-col">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2 text-foreground">All Notes</h1>
-            <p className="text-muted-foreground">Browse and explore study materials across all subjects.</p>
+        <div className="page-shell flex h-full w-full flex-col py-4 sm:py-6 lg:py-8">
+          <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="responsive-title mb-2 text-foreground">All Notes</h1>
+              <p className="text-sm text-muted-foreground sm:text-base">Browse and explore study materials across all subjects.</p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="inline-flex w-full items-center gap-2 md:hidden"
+              onClick={() => setIsSubjectsOpen(true)}
+            >
+              <PanelLeft className="h-4 w-4" />
+              Browse Subjects
+            </Button>
           </div>
 
           <NotesToolbar 
@@ -60,7 +74,7 @@ const NotesExplorer = () => {
             />
           </div>
 
-          <div className="flex-1 pb-10">
+          <div className="flex-1 pb-8 sm:pb-10">
             {/* NoteGrid needs an onNoteClick prop added in standard usage. For now, assuming NoteCard utilizes a passed in prop if present. */}
             <NotesGrid 
               notes={notes} 

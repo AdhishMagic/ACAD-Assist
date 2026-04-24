@@ -65,17 +65,17 @@ export default function HODDashboard() {
   const departmentAlerts = data?.departmentAlerts || [];
 
   return (
-    <motion.div {...pageTransition} className="flex-1 space-y-6 flex flex-col p-4 sm:p-6 lg:p-8 pt-6 h-full overflow-y-auto">
+    <motion.div {...pageTransition} className="flex h-full flex-1 flex-col space-y-5 overflow-y-auto sm:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">HOD Dashboard</h2>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">HOD Dashboard</h2>
           <p className="text-muted-foreground mt-1">Department overview and recent activity</p>
         </div>
       </div>
 
       <DepartmentStatsCard stats={data?.stats} trends={data?.trends} />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Recent Teacher Activity</CardTitle>

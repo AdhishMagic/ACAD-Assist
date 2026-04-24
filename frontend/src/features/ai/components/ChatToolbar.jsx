@@ -44,11 +44,11 @@ export default function ChatToolbar({ message, onSaveNote, onLikeFeedback }) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 pt-3 opacity-80 hover:opacity-100 transition-opacity">
+    <div className="flex flex-wrap items-center gap-2 pt-1 text-[var(--text-secondary)]">
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
-        className="h-8 px-2 sm:px-3 text-xs rounded-full bg-background/50 hover:bg-accent"
+        className="h-8 rounded-lg px-2 text-xs hover:bg-[var(--bg-card-muted)] hover:text-[var(--text-primary)] sm:px-3"
         onClick={handleCopy}
         aria-label="Copy assistant response"
       >
@@ -56,9 +56,9 @@ export default function ChatToolbar({ message, onSaveNote, onLikeFeedback }) {
         <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
       </Button>
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
-        className="h-8 px-2 sm:px-3 text-xs rounded-full bg-background/50 hover:bg-accent"
+        className="h-8 rounded-lg px-2 text-xs hover:bg-[var(--bg-card-muted)] hover:text-[var(--text-primary)] sm:px-3"
         onClick={() => onSaveNote(message)}
         aria-label="Save response as note"
       >
@@ -66,15 +66,15 @@ export default function ChatToolbar({ message, onSaveNote, onLikeFeedback }) {
         <span className="hidden sm:inline">Save as Note</span>
       </Button>
       <Button
-        variant={liked ? "default" : "ghost"}
+        variant="ghost"
         size="sm"
-        className={`h-8 w-8 p-0 rounded-full ${liked ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+        className={`h-8 w-8 rounded-lg p-0 ${liked ? "bg-[var(--bg-card-muted)] text-[var(--text-primary)] hover:bg-[var(--bg-card-muted)]" : "hover:bg-[var(--bg-card-muted)] hover:text-[var(--text-primary)]"}`}
         onClick={handleLike}
         disabled={liked || isSendingFeedback}
         aria-label="Like response"
         title={liked ? 'Feedback sent' : 'Send like feedback to RAG'}
       >
-        <ThumbsUp className={`w-3.5 h-3.5 ${liked ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
+        <ThumbsUp className={`w-3.5 h-3.5 ${liked ? "text-[var(--accent-solid)]" : "text-[var(--text-secondary)]"}`} />
       </Button>
     </div>
   );

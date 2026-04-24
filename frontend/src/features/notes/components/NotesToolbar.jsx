@@ -12,8 +12,8 @@ const NotesToolbar = ({
   onSortChange 
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-xl border border-border/50 shadow-sm mb-6">
-      <div className="relative w-full sm:w-96">
+    <div className="mb-6 flex flex-col gap-4 rounded-xl border border-border/50 bg-card p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative w-full lg:max-w-md">
         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground">
           <Search className="h-4 w-4" />
         </div>
@@ -26,27 +26,27 @@ const NotesToolbar = ({
         />
       </div>
 
-      <div className="flex items-center space-x-3 w-full sm:w-auto self-end sm:self-auto">
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
         <Button 
           variant={isFilterActive ? "secondary" : "outline"} 
           size="sm"
-          className={`gap-2 h-9 ${isFilterActive ? 'bg-primary/10 text-primary border-primary/20' : ''}`}
+          className={`h-9 gap-2 sm:w-auto ${isFilterActive ? 'border-primary/20 bg-primary/10 text-primary' : ''}`}
           onClick={onFilterClick}
         >
           <SlidersHorizontal className="h-4 w-4" />
-          <span className="hidden sm:inline">Filters</span>
+          <span>Filters</span>
           {isFilterActive && <span className="flex h-2 w-2 rounded-full bg-primary ml-1"></span>}
         </Button>
 
-        <div className="flex items-center border border-border/50 rounded-md overflow-hidden h-9">
-          <div className="px-3 bg-muted/50 border-r border-border/50 flex items-center h-full">
+        <div className="flex h-9 w-full items-center overflow-hidden rounded-md border border-border/50 sm:w-auto">
+          <div className="flex h-full items-center border-r border-border/50 bg-muted/50 px-3">
             <ArrowUpDown className="h-4 w-4 text-muted-foreground mr-2" />
             <span className="text-sm text-muted-foreground font-medium">Sort</span>
           </div>
           <select 
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
-            className="h-full bg-card px-3 text-sm focus:outline-none focus:ring-0 min-w-[120px] cursor-pointer hover:bg-muted/30 transition-colors"
+            className="h-full min-w-0 flex-1 cursor-pointer bg-card px-3 text-sm transition-colors hover:bg-muted/30 focus:outline-none focus:ring-0 sm:min-w-[140px]"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>

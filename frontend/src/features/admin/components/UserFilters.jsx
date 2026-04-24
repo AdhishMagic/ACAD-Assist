@@ -18,7 +18,7 @@ export const UserFilters = ({
   setStatusFilter 
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+    <div className="mb-6 flex flex-col gap-4 lg:flex-row">
       <div className="relative flex-grow">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -29,9 +29,9 @@ export const UserFilters = ({
         />
       </div>
       
-      <div className="flex gap-2 w-full sm:w-auto">
+      <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
         <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-full sm:w-[140px]">
             <SelectValue placeholder="All Roles" />
           </SelectTrigger>
           <SelectContent>
@@ -44,7 +44,7 @@ export const UserFilters = ({
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-full sm:w-[140px]">
             <SelectValue placeholder="All Status" />
           </SelectTrigger>
           <SelectContent>

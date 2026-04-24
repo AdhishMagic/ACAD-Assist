@@ -21,7 +21,7 @@ const NotePreviewPanel = ({ note, onClose }) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: '100%', opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="w-80 lg:w-96 flex-shrink-0 border-l border-border bg-card shadow-xl absolute right-0 top-0 bottom-0 z-20 md:relative flex flex-col h-full"
+          className="absolute inset-y-0 right-0 z-20 flex h-full w-full max-w-full flex-shrink-0 flex-col border-l border-border bg-card shadow-xl sm:w-[26rem] md:relative md:w-80 lg:w-96"
         >
           <div className="flex items-center justify-between p-4 border-b border-border/50">
             <h2 className="font-semibold text-lg">Note Preview</h2>
@@ -30,7 +30,7 @@ const NotePreviewPanel = ({ note, onClose }) => {
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
             {/* Header info */}
             <div className="space-y-4">
               {note.previewImage && (
@@ -40,8 +40,8 @@ const NotePreviewPanel = ({ note, onClose }) => {
               )}
               
               <div>
-                <div className="flex items-start justify-between gap-4 mb-2">
-                  <h3 className="text-xl font-bold leading-tight">{note.title}</h3>
+                <div className="mb-2 flex items-start justify-between gap-4">
+                  <h3 className="text-lg font-bold leading-tight sm:text-xl">{note.title}</h3>
                   <BookmarkButton noteId={note.id} isBookmarked={note.isBookmarked} />
                 </div>
                 <Badge variant="secondary" className="bg-primary/10 text-primary">
@@ -90,7 +90,7 @@ const NotePreviewPanel = ({ note, onClose }) => {
           </div>
 
           {/* Action Footer */}
-          <div className="p-4 border-t border-border/50 bg-muted/10 flex flex-col gap-3">
+          <div className="flex flex-col gap-3 border-t border-border/50 bg-muted/10 p-4">
             <Button 
               className="w-full gap-2" 
               onClick={() => navigate(buildPath.studentNoteViewer(note.id))}

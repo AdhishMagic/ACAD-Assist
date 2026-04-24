@@ -114,7 +114,7 @@ const StudyOverviewPage = () => {
                   const visuals = getInsightVisuals(insight.type);
                   const Icon = visuals.icon;
                   return (
-                    <div key={idx} className="flex gap-3 items-start p-3 bg-white dark:bg-black/40 rounded-lg border shadow-sm">
+                    <div key={idx} className="flex items-start gap-3 rounded-lg border bg-white p-3 shadow-sm dark:border-border dark:bg-card dark:shadow-black/20">
                       <div className={`p-2 rounded-full mt-0.5 ${visuals.bgColor}`}>
                         <Icon className={`w-4 h-4 ${visuals.color}`} />
                       </div>

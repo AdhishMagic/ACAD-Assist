@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Paperclip, Send, X } from "lucide-react";
+import { ArrowUp, Paperclip, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -40,15 +40,17 @@ export default function ChatInput({ onSendMessage, isLoading }) {
   };
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto">
-      {/* File Preview */}
+    <div className="w-full">
       {files.length > 0 && (
-        <div className="flex gap-2 p-2 overflow-x-auto mb-2 bg-card border rounded-lg shadow-sm">
+        <div className="mb-3 flex gap-2 overflow-x-auto">
           {files.map((file, i) => (
-            <div key={i} className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-md text-xs border shrink-0">
-              <Paperclip className="w-3 h-3 text-primary" />
-              <span className="truncate max-w-[120px] font-medium">{file.name}</span>
-              <button onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive ml-1">
+            <div
+              key={i}
+              className="flex shrink-0 items-center gap-2 rounded-full border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-1.5 text-xs text-[var(--text-secondary)]"
+            >
+              <Paperclip className="h-3 w-3 text-[var(--text-tertiary)]" />
+              <span className="max-w-[140px] truncate">{file.name}</span>
+              <button onClick={() => removeFile(i)} className="ml-1 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
                 <X className="w-3 h-3" />
               </button>
             </div>
@@ -56,50 +58,51 @@ export default function ChatInput({ onSendMessage, isLoading }) {
         </div>
       )}
 
-      {/* Input Area */}
       <div 
         {...getRootProps()} 
-        className={`flex items-end gap-2 p-3 border rounded-2xl bg-card shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 overflow-hidden ${isDragActive ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : ''}`}
+        className={`rounded-2xl border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-2.5 shadow-[0_12px_32px_rgba(37,99,235,0.08)] transition-all ${
+          isDragActive ? "border-[var(--accent-solid)] bg-[var(--bg-card-hover)]" : ""
+        }`}
       >
         <input {...getInputProps()} />
-        
-        <div className="mb-1">
+
+        <div className="flex items-center gap-3">
           <Button 
             type="button" 
             variant="ghost" 
             size="icon" 
-            className="shrink-0 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full h-10 w-10 transition-colors"
+            className="h-10 w-10 shrink-0 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-card-muted)] hover:text-[var(--text-primary)]"
             onClick={open}
           >
-            <Paperclip className="w-5 h-5" />
+            <Paperclip className="h-4.5 w-4.5" />
           </Button>
-        </div>
 
-        <Textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={isDragActive ? "Drop files here..." : "Ask a question about your studies..."}
-          className="min-h-[44px] max-h-[200px] border-0 focus-visible:ring-0 resize-none bg-transparent p-3 shadow-none overflow-y-auto text-base"
-          rows={1}
-        />
+          <Textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={isDragActive ? "Drop files here..." : "Ask anything about your studies..."}
+            className="min-h-[44px] max-h-[200px] flex-1 resize-none rounded-xl border border-transparent bg-[var(--bg-card-muted)] px-4 py-2.5 text-[15px] leading-6 text-[var(--text-primary)] shadow-none focus-visible:border-[var(--accent-solid)]/20 focus-visible:ring-0"
+            rows={1}
+          />
 
-        <div className="mb-1">
           <Button 
             onClick={handleSend} 
             disabled={(!input.trim() && files.length === 0) || isLoading}
             size="icon"
-            className={`shrink-0 rounded-full h-10 w-10 transition-all ${
-              (!input.trim() && files.length === 0) ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground hover:scale-105 shadow-md'
+            className={`h-9 w-9 shrink-0 rounded-full transition-all ${
+              (!input.trim() && files.length === 0)
+                ? "bg-[var(--bg-card-muted)] text-[var(--text-tertiary)]"
+                : "bg-[var(--accent-solid)] text-[var(--accent-contrast)] shadow-[0_6px_18px_rgba(37,99,235,0.28)] hover:scale-[1.02] hover:opacity-95"
             }`}
           >
-            <Send className="w-4 h-4 ml-0.5" />
+            <ArrowUp className="h-4 w-4" />
           </Button>
         </div>
       </div>
       
-      <div className="text-center mt-3">
-        <p className="text-[11px] text-muted-foreground">AI can make mistakes. Verify important information.</p>
+      <div className="mt-2.5 text-center">
+        <p className="text-[11px] tracking-[0.01em] text-[var(--text-tertiary)]">AI can make mistakes. Verify important information.</p>
       </div>
     </div>
   );

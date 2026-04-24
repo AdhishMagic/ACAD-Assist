@@ -85,8 +85,8 @@ export const UserManagementPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <h2 className="text-3xl font-bold tracking-tight">User Management</h2>
+      <div className="dashboard-stack flex-1">
+        <h2 className="responsive-title">User Management</h2>
         <div className="flex h-[400px] items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
@@ -103,17 +103,17 @@ export const UserManagementPage = () => {
   }
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2 mb-6">
+    <div className="dashboard-stack flex-1">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">User Management</h2>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <h2 className="responsive-title">User Management</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage all platform users, roles, and account statuses.
           </p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <PlusCircle className="h-4 w-4 mr-2" />
               Add User
             </Button>

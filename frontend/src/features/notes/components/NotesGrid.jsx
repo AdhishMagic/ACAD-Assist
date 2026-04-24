@@ -21,7 +21,7 @@ const itemVariants = {
 const NotesGrid = ({ notes = [], isLoading = false, onNoteClick, emptyStateTitle = '📭 No published notes available', emptyStateMessage = '' }) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div key={i} className="h-72 rounded-xl bg-muted/50 animate-pulse border border-border/50"></div>
         ))}
@@ -31,7 +31,7 @@ const NotesGrid = ({ notes = [], isLoading = false, onNoteClick, emptyStateTitle
 
   if (!notes || notes.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center h-full min-h-[400px]">
+      <div className="flex h-full min-h-[320px] flex-col items-center justify-center p-6 text-center sm:min-h-[400px] sm:p-12">
         <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
           <FileQuestion className="h-10 w-10 text-primary" />
         </div>
@@ -46,7 +46,7 @@ const NotesGrid = ({ notes = [], isLoading = false, onNoteClick, emptyStateTitle
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
     >
       {notes.map((note) => (
         <motion.div key={note.id} variants={itemVariants}>

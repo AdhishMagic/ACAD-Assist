@@ -31,30 +31,26 @@ const TeacherDashboard = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 pb-12 animate-in fade-in duration-500 sm:space-y-8">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Teacher Dashboard</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <h1 className="responsive-title text-gray-900 dark:text-white">Teacher Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 sm:text-base">
             Welcome back! Here's an overview of your teaching activities.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex w-full gap-3 sm:w-auto">
           <Link to="/teacher/notes-studio">
-            <Button className="bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20 transition-all">
+            <Button className="w-full bg-primary text-white shadow-md shadow-primary/20 transition-all hover:bg-primary/90 sm:w-auto">
               <Sparkles className="mr-2 h-4 w-4" /> Create Materials
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Stats Summary */}
       <DashboardStatsGrid data={dashboardData} />
 
-      {/* Recent Activity Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Uploads */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
           <Card className="h-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
@@ -67,12 +63,12 @@ const TeacherDashboard = () => {
             <CardContent className="p-0">
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
                 {dashboardData.recentNotes.map((note) => (
-                  <div key={note.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex justify-between items-center group">
-                    <div>
+                  <div key={note.id} className="group flex flex-col gap-3 p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
                       <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors">{note.title}</h4>
                       <p className="text-sm text-gray-500 dark:text-gray-400">{note.subject}</p>
                     </div>
-                    <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">{note.date}</span>
+                    <span className="w-fit text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">{note.date}</span>
                   </div>
                 ))}
                 {dashboardData.recentNotes.length === 0 && (
@@ -83,7 +79,6 @@ const TeacherDashboard = () => {
           </Card>
         </motion.div>
 
-        {/* Recent Student Interactions */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
           <Card className="h-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
@@ -96,14 +91,14 @@ const TeacherDashboard = () => {
             <CardContent className="p-0">
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
                 {dashboardData.recentInteractions.map((interaction, idx) => (
-                  <div key={idx} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex justify-between items-center">
-                    <div>
+                  <div key={idx} className="flex flex-col gap-2 p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
                       <p className="font-medium text-gray-900 dark:text-white">
                         <span className="font-bold">{interaction.studentName}</span> {interaction.action.toLowerCase()}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[200px] sm:max-w-[250px]">{interaction.item}</p>
+                      <p className="truncate text-sm text-gray-500 dark:text-gray-400 sm:max-w-[250px]">{interaction.item}</p>
                     </div>
-                    <span className="text-xs font-semibold text-gray-400 whitespace-nowrap ml-2">{interaction.time}</span>
+                    <span className="text-xs font-semibold text-gray-400 whitespace-nowrap sm:ml-2">{interaction.time}</span>
                   </div>
                 ))}
                 {dashboardData.recentInteractions.length === 0 && (
@@ -115,7 +110,6 @@ const TeacherDashboard = () => {
         </motion.div>
       </div>
 
-      {/* AI Material Generations */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }}>
         <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-900/20 border-indigo-100 dark:border-indigo-800/30 overflow-hidden relative">
           <div className="absolute right-0 top-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>

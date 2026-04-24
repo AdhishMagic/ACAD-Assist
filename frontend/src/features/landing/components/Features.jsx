@@ -5,16 +5,16 @@ import * as Icons from 'lucide-react';
 
 const Features = () => {
   return (
-    <div id="features" className="scroll-mt-24 py-24 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Supercharge Your Studies</h2>
-          <p className="text-lg text-muted-foreground">
+    <section id="features" className="scroll-mt-24 bg-muted/30 py-16 sm:py-20 lg:py-24">
+      <div className="section-shell">
+        <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16">
+          <h2 className="mb-4 text-2xl font-bold sm:text-3xl md:text-4xl">Supercharge Your Studies</h2>
+          <p className="text-base text-muted-foreground sm:text-lg">
             Everything you need to digest information faster, retain knowledge longer, and collaborate effectively.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {FeaturesData.map((feature, index) => {
             const Icon = Icons[feature.icon] || Icons.Code;
             return (
@@ -25,7 +25,7 @@ const Features = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-card p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all"
+                className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:shadow-md sm:p-6 lg:p-8"
               >
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary">
                   <Icon className="w-6 h-6" />
@@ -50,7 +50,7 @@ const Features = () => {
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

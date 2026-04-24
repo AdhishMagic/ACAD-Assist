@@ -78,14 +78,14 @@ const SearchBar = () => {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-md hidden md:block group">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Search className="h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+    <div ref={containerRef} className="group relative hidden w-full min-w-0 max-w-xs lg:block xl:max-w-md">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <Search className="h-4 w-4 text-slate-400 transition-colors group-focus-within:text-blue-500 dark:text-gray-400" />
       </div>
       <input
         ref={inputRef}
         type="text"
-        className="block w-full pl-10 pr-12 py-2 bg-slate-100/50 border border-slate-200 rounded-lg leading-5 dark:bg-[#0f172a]/50 dark:border-slate-800 dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:bg-white dark:focus:bg-[#0f172a] focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-200"
+        className="block w-full rounded-lg border border-slate-200 bg-slate-100/50 py-2 pl-10 pr-12 leading-5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-border dark:bg-secondary dark:text-gray-50 dark:placeholder:text-gray-400 dark:focus:bg-secondary sm:text-sm"
         placeholder="Search courses, notes, users or tests..."
         value={query}
         onFocus={openSearch}
@@ -95,34 +95,34 @@ const SearchBar = () => {
         }}
         onKeyDown={handleKeyDown}
       />
-      <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-        <kbd className="hidden sm:inline-block border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded px-1.5 py-0.5 text-[10px] font-medium tracking-widest font-sans">
-          ⌘K
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
+        <kbd className="hidden rounded border border-slate-300 bg-slate-50 px-1.5 py-0.5 font-sans text-[10px] font-medium tracking-widest text-slate-500 dark:border-border dark:bg-card dark:text-gray-400 sm:inline-block">
+          Cmd K
         </kbd>
       </div>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+0.5rem)] left-0 right-0 rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-900 overflow-hidden z-50">
-          <div className="px-3 py-2 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+        <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[70] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg dark:border-border dark:bg-card dark:shadow-black/40">
+          <div className="border-b border-slate-200 px-3 py-2 text-xs text-slate-500 dark:border-border dark:text-gray-300">
             {trimmedQuery ? 'Global search results' : 'Start typing to search across your workspace'}
           </div>
 
           <div className="max-h-[22rem] overflow-y-auto">
             {isLoading && trimmedQuery && (
-              <div className="px-3 py-4 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-2 px-3 py-4 text-sm text-slate-600 dark:text-gray-200">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Searching...
               </div>
             )}
 
             {!isLoading && !trimmedQuery && (
-              <div className="px-3 py-4 text-sm text-slate-600 dark:text-slate-300">
+              <div className="px-3 py-4 text-sm text-slate-600 dark:text-gray-200">
                 Try keywords like React, Midterm, or Jane.
               </div>
             )}
 
             {!isLoading && trimmedQuery && results.length === 0 && (
-              <div className="px-3 py-5 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-2 px-3 py-5 text-sm text-slate-600 dark:text-gray-200">
                 <SearchX className="h-4 w-4" />
                 No results found.
               </div>
@@ -140,20 +140,20 @@ const SearchBar = () => {
                         type="button"
                         onMouseEnter={() => setActiveIndex(index)}
                         onClick={() => onSelectResult(result)}
-                        className={`w-full text-left px-3 py-2.5 flex items-start gap-3 transition-colors ${
+                        className={`flex w-full items-start gap-3 px-3 py-2.5 text-left transition-colors ${
                           isActive
-                            ? 'bg-blue-50 dark:bg-blue-900/20'
-                            : 'hover:bg-slate-100 dark:hover:bg-slate-800/80'
+                            ? 'bg-blue-50 dark:bg-blue-500/15'
+                            : 'hover:bg-slate-100 dark:hover:bg-surface-hover'
                         }`}
                       >
-                        <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                        <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-slate-600 dark:bg-secondary dark:text-gray-200">
                           <TypeIcon className="h-4 w-4" />
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{result.title}</span>
-                          <span className="block text-xs text-slate-500 dark:text-slate-400 truncate">{result.description}</span>
+                          <span className="block truncate text-sm font-medium text-slate-800 dark:text-gray-50">{result.title}</span>
+                          <span className="block truncate text-xs text-slate-500 dark:text-gray-300">{result.description}</span>
                         </span>
-                        <span className="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500 mt-0.5">{result.type}</span>
+                        <span className="mt-0.5 text-[11px] uppercase tracking-wide text-slate-400 dark:text-gray-400">{result.type}</span>
                       </button>
                     </li>
                   );

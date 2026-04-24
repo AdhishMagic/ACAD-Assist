@@ -60,9 +60,9 @@ const AIQuickAssistant = () => {
         <div className="flex flex-wrap gap-2">
           {suggestedPrompts.map((suggestion, index) => (
             <motion.div key={index} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Badge 
-                variant="secondary" 
-                className="cursor-pointer bg-white/60 hover:bg-white dark:bg-black/40 dark:hover:bg-black/60 border-indigo-200 dark:border-indigo-800"
+              <Badge
+                variant="secondary"
+                className="cursor-pointer border-indigo-200 bg-white/60 hover:bg-white dark:border-indigo-800 dark:bg-card dark:text-gray-100 dark:hover:bg-surface-hover"
                 onClick={() => setPrompt(suggestion)}
               >
                 {suggestion}
@@ -77,7 +77,7 @@ const AIQuickAssistant = () => {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={sendMessageMutation.isPending}
-            className="bg-white/80 dark:bg-black/40 border-indigo-200 dark:border-indigo-800 focus-visible:ring-indigo-500"
+            className="border-indigo-200 bg-white/80 focus-visible:ring-indigo-500 dark:border-indigo-800 dark:bg-secondary dark:text-gray-50 dark:placeholder:text-gray-400"
           />
           <Button type="submit" size="icon" disabled={sendMessageMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 text-white shrink-0">
             <Send className="w-4 h-4" />
@@ -90,7 +90,7 @@ const AIQuickAssistant = () => {
       <CardFooter>
         <Button 
           variant="outline" 
-          className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:text-indigo-400 dark:hover:bg-indigo-900/50"
+          className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:text-indigo-300 dark:hover:bg-indigo-950/40"
           onClick={() => navigate('/student/ai')}
         >
           <MessageSquare className="w-4 h-4 mr-2" />

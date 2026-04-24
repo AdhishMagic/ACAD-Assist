@@ -38,15 +38,14 @@ const StudentDashboard = () => {
 
   return (
     <motion.div 
-      className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto space-y-6"
+      className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      {/* Welcome Header */}
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+      <motion.div variants={itemVariants} className="mb-5 flex flex-col justify-between gap-4 md:mb-6 md:flex-row md:items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome back, {studentName}!</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Welcome back, {studentName}!</h1>
           <p className="text-muted-foreground mt-1">Ready to crush your goals today? You're doing great!</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -65,7 +64,6 @@ const StudentDashboard = () => {
         </div>
       </motion.div>
 
-      {/* Progress Cards */}
       <motion.div variants={itemVariants}>
         <StudyProgressCard stats={stats} />
       </motion.div>
@@ -78,10 +76,9 @@ const StudentDashboard = () => {
         <div className="text-sm text-red-500">Unable to load dashboard data right now.</div>
       )}
 
-      {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-6">
+        <motion.div variants={itemVariants} className="space-y-5 lg:col-span-2 lg:space-y-6">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
             <RecentNotes notes={recentNotes} />
             <UpcomingTests tests={schedules} />
           </div>

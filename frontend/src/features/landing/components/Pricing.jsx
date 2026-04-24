@@ -8,15 +8,15 @@ import { Link } from 'react-router-dom';
 const Pricing = () => {
   return (
     <section id="pricing" className="scroll-mt-24 py-24 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple pricing that scales with you</h2>
-          <p className="text-lg text-muted-foreground">
+      <div className="section-shell">
+        <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16">
+          <h2 className="mb-4 text-2xl font-bold sm:text-3xl md:text-4xl">Simple pricing that scales with you</h2>
+          <p className="text-base text-muted-foreground sm:text-lg">
             Start free, upgrade when you need more storage, faster processing, and collaboration features.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        <div className="grid grid-cols-1 items-stretch gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
           {PricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -25,7 +25,7 @@ const Pricing = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={
-                "relative bg-card border rounded-2xl p-8 shadow-sm flex flex-col " +
+                "relative flex flex-col rounded-2xl border bg-card p-5 shadow-sm sm:p-6 lg:p-8 " +
                 (plan.popular ? 'border-primary/50 shadow-md' : 'border-border')
               }
             >
@@ -76,7 +76,7 @@ const Pricing = () => {
           ))}
         </div>
 
-        <div className="text-center mt-10 text-sm text-muted-foreground">
+        <div className="mt-10 text-center text-sm text-muted-foreground">
           Need institution-wide access? Contact us for department and campus plans.
         </div>
       </div>

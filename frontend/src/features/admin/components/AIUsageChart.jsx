@@ -10,7 +10,7 @@ const COLORS = ['#4f46e5', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b'];
 export const AIUsageChart = ({ stats, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
         <Card className="col-span-1 lg:col-span-2 shadow-sm animate-pulse">
           <CardHeader><div className="h-5 w-48 bg-gray-200 dark:bg-gray-700 rounded" /></CardHeader>
           <CardContent><div className="h-[300px] bg-gray-100 dark:bg-gray-800 rounded-md" /></CardContent>
@@ -30,7 +30,7 @@ export const AIUsageChart = ({ stats, isLoading }) => {
   const { queriesPerDay, topFeatures, activeUsers } = stats || {};
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
       {/* Queries Per Day - Full Width */}
       <Card className="col-span-1 lg:col-span-2 shadow-sm border-gray-200 dark:border-gray-800">
         <CardHeader>
@@ -38,12 +38,12 @@ export const AIUsageChart = ({ stats, isLoading }) => {
             AI Queries Over Time (Last 7 Days)
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="h-[300px] w-full">
+        <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+          <div className="h-[240px] w-full sm:h-[300px]">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
               <AreaChart
                 data={queriesPerDay}
-                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                margin={{ top: 10, right: 8, left: -20, bottom: 0 }}
               >
                 <defs>
                   <linearGradient id="colorQueries" x1="0" y1="0" x2="0" y2="1">
@@ -51,8 +51,8 @@ export const AIUsageChart = ({ stats, isLoading }) => {
                     <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <XAxis dataKey="date" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} width={28} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
@@ -72,22 +72,22 @@ export const AIUsageChart = ({ stats, isLoading }) => {
             Top Used AI Features
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="h-[250px] w-full">
+        <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+          <div className="h-[260px] w-full sm:h-[250px]">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
               <BarChart
                 data={topFeatures}
                 layout="vertical"
-                margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                margin={{ top: 5, right: 8, left: 12, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
-                <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis dataKey="name" type="category" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <XAxis type="number" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis dataKey="name" type="category" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} width={72} />
                 <Tooltip
                   cursor={{ fill: 'transparent' }}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={16}>
                   {topFeatures?.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
@@ -105,21 +105,21 @@ export const AIUsageChart = ({ stats, isLoading }) => {
             Most Active AI Users
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="h-[250px] w-full">
+        <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+          <div className="h-[240px] w-full sm:h-[250px]">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
               <BarChart
                 data={activeUsers}
-                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                margin={{ top: 20, right: 8, left: -20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <XAxis dataKey="name" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} width={28} />
                 <Tooltip
                   cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
-                <Bar dataKey="queries" fill="#06b6d4" radius={[4, 4, 0, 0]} barSize={30} />
+                <Bar dataKey="queries" fill="#06b6d4" radius={[4, 4, 0, 0]} barSize={22} />
               </BarChart>
             </ResponsiveContainer>
           </div>

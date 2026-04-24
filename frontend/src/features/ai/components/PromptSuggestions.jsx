@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Lightbulb } from "lucide-react";
 
 export default function PromptSuggestions({ onSelect }) {
   const suggestions = [
@@ -10,16 +9,15 @@ export default function PromptSuggestions({ onSelect }) {
   ];
 
   return (
-    <div className="flex flex-wrap gap-2 mt-6">
+    <div className="mt-6 flex flex-wrap justify-center gap-2">
       {suggestions.map((prompt, index) => (
         <Button
           key={index}
-          variant="outline"
+          variant="ghost"
           size="sm"
-          className="rounded-full text-xs font-medium bg-card/60 backdrop-blur-sm border-border hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all shadow-sm"
+          className="rounded-lg border border-[var(--border-soft)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] shadow-[0_4px_14px_rgba(37,99,235,0.04)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)]"
           onClick={() => onSelect(prompt)}
         >
-          <Lightbulb className="w-3.5 h-3.5 mr-2 text-amber-500" />
           {prompt}
         </Button>
       ))}

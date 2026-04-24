@@ -22,25 +22,25 @@ const StudentActivityTable = ({ activityData = [] }) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 shadow-sm animate-in fade-in duration-500">
       <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Student Activity Monitor</CardTitle>
             <CardDescription className="text-gray-500 dark:text-gray-400">Track engagement and study patters across all your classes</CardDescription>
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex w-full flex-col gap-3 sm:flex-row xl:w-auto">
             <div className="relative w-full sm:w-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search students..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 w-full sm:w-[200px] lg:w-[250px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800"
+                className="w-full bg-gray-50 pl-9 dark:bg-gray-950 sm:w-56 lg:w-64 border-gray-200 dark:border-gray-800"
               />
             </div>
             
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
               <Select value={classFilter} onValueChange={setClassFilter}>
-                <SelectTrigger className="w-[140px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                <SelectTrigger className="w-full bg-gray-50 dark:bg-gray-950 sm:w-[140px] border-gray-200 dark:border-gray-800">
                   <SelectValue placeholder="Filter by class" />
                 </SelectTrigger>
                 <SelectContent>
@@ -51,7 +51,7 @@ const StudentActivityTable = ({ activityData = [] }) => {
               </Select>
 
               <Select value={dateRangeFilter} onValueChange={setDateRangeFilter}>
-                <SelectTrigger className="w-[140px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                <SelectTrigger className="w-full bg-gray-50 dark:bg-gray-950 sm:w-[140px] border-gray-200 dark:border-gray-800">
                   <SelectValue placeholder="Date range" />
                 </SelectTrigger>
                 <SelectContent>

@@ -81,7 +81,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="section-shell h-16 flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
             A
@@ -107,11 +107,11 @@ const Navbar = () => {
           ))}
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button variant="ghost" asChild className="hidden sm:inline-flex">
             <Link to="/login">Login</Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="px-3 sm:px-4">
             <Link to="/register">Get Started</Link>
           </Button>
 
@@ -144,7 +144,7 @@ const Navbar = () => {
           transition={{ duration: 0.2 }}
           className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md"
         >
-          <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
+          <div className="section-shell py-4 flex flex-col gap-2">
             {NavLinks.map((link) => (
               <a
                 key={link.label}

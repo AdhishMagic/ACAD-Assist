@@ -28,25 +28,25 @@ const ClassesTable = ({ classes = [], onViewDetails }) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 shadow-sm">
       <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">Cohorts Overview</CardTitle>
             <CardDescription className="text-gray-500 dark:text-gray-400">View and manage your active cohorts</CardDescription>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
+          <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
+            <div className="relative w-full sm:w-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search cohorts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 w-[200px] lg:w-[250px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800"
+                className="w-full bg-gray-50 pl-9 dark:bg-gray-950 sm:w-56 lg:w-64 border-gray-200 dark:border-gray-800"
               />
             </div>
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-gray-400" />
               <Select value={subjectFilter} onValueChange={setSubjectFilter}>
-                <SelectTrigger className="h-10 w-[190px] bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                <SelectTrigger className="h-10 w-full bg-gray-50 dark:bg-gray-950 sm:w-48 border-gray-200 dark:border-gray-800">
                   <SelectValue placeholder="Filter by subject" />
                 </SelectTrigger>
                 <SelectContent>

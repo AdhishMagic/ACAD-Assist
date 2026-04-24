@@ -2,14 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const SidebarItem = ({ icon: Icon, label, to, isCollapsed, isActive = false }) => {
+const SidebarItem = ({ icon: Icon, label, to, isCollapsed, isActive = false, onClick }) => {
   return (
     <Link
       to={to}
+      onClick={onClick}
       className={`flex items-center gap-3 px-3 py-2.5 my-1 rounded-lg transition-all duration-200 ease-in-out group relative overflow-hidden ${
         isActive
-          ? 'bg-blue-50/90 text-blue-700 visited:text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:visited:text-blue-300 shadow-sm'
-          : 'text-gray-600 visited:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:visited:text-gray-400 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200'
+          ? 'bg-blue-50/90 text-blue-700 visited:text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 dark:visited:text-blue-400 shadow-sm'
+          : 'text-gray-600 visited:text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:visited:text-gray-300 dark:hover:bg-surface-hover hover:text-gray-900 dark:hover:text-white'
       }`}
       aria-current={isActive ? 'page' : undefined}
     >
@@ -22,8 +23,8 @@ const SidebarItem = ({ icon: Icon, label, to, isCollapsed, isActive = false }) =
       <Icon
         className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ease-in-out group-hover:scale-105 ${
           isActive
-            ? 'text-blue-600 dark:text-blue-300'
-            : 'text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-300'
+            ? 'text-blue-600 dark:text-blue-400'
+            : 'text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
         }`}
       />
       <motion.span
@@ -42,7 +43,7 @@ const SidebarItem = ({ icon: Icon, label, to, isCollapsed, isActive = false }) =
       
       {/* Tooltip for collapsed state */}
       {isCollapsed && (
-        <div className="absolute left-full ml-2 w-max px-2.5 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-md">
+        <div className="pointer-events-none absolute left-full z-50 ml-2 hidden w-max rounded-md bg-gray-900 px-2.5 py-1.5 text-xs text-white opacity-0 shadow-md transition-all duration-200 group-hover:visible group-hover:opacity-100 dark:bg-card lg:block">
           {label}
         </div>
       )}

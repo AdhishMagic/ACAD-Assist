@@ -1,31 +1,40 @@
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 
-export default function ChatSidebar({ history, onSelectChat, onNewChat, onDeleteChat, onRenameChat }) {
+export default function ChatSidebar({ history, activeChatId, onSelectChat, onNewChat, onDeleteChat, onRenameChat }) {
   return (
-    <div className="w-64 border-r bg-card flex flex-col h-full hidden md:flex">
-      <div className="p-4 border-b">
-        <Button onClick={onNewChat} className="w-full flex items-center gap-2 font-medium">
+    <aside className="chat-theme-sidebar hidden h-full w-64 flex-col px-3 py-4 md:flex">
+      <div className="pb-4">
+        <Button
+          onClick={onNewChat}
+          className="h-11 w-full justify-start rounded-xl bg-[var(--accent-solid)] px-4 text-sm font-medium text-[var(--accent-contrast)] hover:opacity-95"
+        >
           <Plus className="w-4 h-4" /> New Chat
         </Button>
       </div>
-      <div className="flex-1 overflow-y-auto p-3 space-y-1">
+
+      <div className="flex-1 space-y-1 overflow-y-auto">
         {history?.length > 0 ? (
           history.map((chat) => (
             <div
               key={chat.id}
-              className="w-full flex items-center gap-2 p-3 rounded-lg hover:bg-accent text-sm text-left group transition-all"
+              className={`group flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${
+                activeChatId === chat.id
+                  ? "chat-theme-accent-surface text-[var(--text-primary)]"
+                  : "text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+              }`}
             >
               <button
                 type="button"
                 onClick={() => onSelectChat(chat.id)}
-                className="flex items-center gap-3 flex-1 min-w-0"
+                className="min-w-0 flex-1"
               >
-                <MessageSquare className="w-4 h-4 text-primary shrink-0" />
-                <span className="flex-1 min-w-0">
+                <span className="block min-w-0">
                   <span className="block truncate font-medium">{chat.title || "New Conversation"}</span>
                   {chat.preview && (
-                    <span className="block truncate text-xs text-muted-foreground">{chat.preview}</span>
+                    <span className={`mt-1 block truncate text-xs ${activeChatId === chat.id ? "text-[var(--text-secondary)]" : "text-[var(--text-tertiary)]"}`}>
+                      {chat.preview}
+                    </span>
                   )}
                 </span>
               </button>
@@ -33,7 +42,7 @@ export default function ChatSidebar({ history, onSelectChat, onNewChat, onDelete
               <button
                 type="button"
                 title="Rename conversation"
-                className="text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-foreground transition-opacity shrink-0"
+                className="shrink-0 text-[var(--text-tertiary)] opacity-0 transition-opacity hover:text-[var(--text-primary)] group-hover:opacity-100"
                 onClick={() => onRenameChat?.(chat)}
               >
                 <Pencil className="w-4 h-4" />
@@ -42,7 +51,7 @@ export default function ChatSidebar({ history, onSelectChat, onNewChat, onDelete
               <button
                 type="button"
                 title="Delete conversation"
-                className="text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive transition-opacity shrink-0"
+                className="shrink-0 text-[var(--text-tertiary)] opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
                 onClick={() => onDeleteChat?.(chat)}
               >
                 <Trash2 className="w-4 h-4" />
@@ -50,9 +59,9 @@ export default function ChatSidebar({ history, onSelectChat, onNewChat, onDelete
             </div>
           ))
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-8">No history yet</p>
+          <p className="py-8 text-center text-sm text-[var(--text-tertiary)]">No history yet</p>
         )}
       </div>
-    </div>
+    </aside>
   );
 }

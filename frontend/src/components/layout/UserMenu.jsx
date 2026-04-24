@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { getDisplayNameFromUser, getInitials, toTitleCase } from '@/utils/helper
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
@@ -22,20 +23,31 @@ const UserMenu = () => {
   const initials = getInitials(displayName || user?.email);
   const roleLabel = toTitleCase(activeRole || user?.role || 'student');
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!containerRef.current?.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative min-w-0">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 focus:outline-none"
+        className="flex min-w-0 items-center gap-2 rounded-full focus:outline-none"
       >
         <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
           {initials}
         </div>
-        <div className="hidden md:flex flex-col items-start">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{displayName}</span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">{roleLabel}</span>
+        <div className="hidden min-w-0 flex-col items-start xl:flex xl:max-w-[10rem]">
+          <span className="truncate text-sm font-medium text-gray-700 dark:text-gray-100">{displayName}</span>
+          <span className="truncate text-xs text-gray-500 dark:text-gray-300">{roleLabel}</span>
         </div>
-        <ChevronDown className="h-4 w-4 text-gray-500 hidden md:block" />
+        <ChevronDown className="hidden h-4 w-4 text-gray-500 dark:text-gray-300 xl:block" />
       </button>
 
       <AnimatePresence>
@@ -45,20 +57,20 @@ const UserMenu = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-50"
+            className="absolute right-0 z-[70] mt-2 w-48 divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:divide-border dark:bg-card dark:shadow-black/40"
           >
             <div className="py-1">
-              <Link to="/profile" className="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <User className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
+              <Link to="/profile" className="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-surface-hover">
+                <User className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-200" />
                 Profile
               </Link>
-              <Link to="/settings" className="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <Settings className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
+              <Link to="/settings" className="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-surface-hover">
+                <Settings className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-200" />
                 Settings
               </Link>
             </div>
             <div className="py-1">
-              <button onClick={handleLogout} className="group flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <button onClick={handleLogout} className="group flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-surface-hover">
                 <LogOut className="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500" />
                 Sign out
               </button>

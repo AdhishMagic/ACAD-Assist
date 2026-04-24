@@ -29,58 +29,58 @@ const AIUsageAnalyticsPage = () => {
   const activeAiUsers = Number(summary.activeAiUsers || 0);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8">
+    <div className="dashboard-stack mx-auto w-full max-w-7xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <BrainCircuit className="w-6 h-6 text-purple-600" />
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+          <BrainCircuit className="h-6 w-6 text-purple-600" />
           AI Usage Analytics
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">
+        <p className="mt-1 max-w-3xl text-sm text-gray-500 dark:text-gray-400 sm:text-base">
           Monitor your platform's AI interaction, query volumes, and popular features.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Card className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white border-none shadow-md">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
+          <CardContent className="p-4 sm:p-5 lg:p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-purple-100 text-sm font-medium">Total Tokens Used</p>
-                <h3 className="text-3xl font-bold mt-2">{isLoading ? '...' : totalTokens}</h3>
+                <h3 className="mt-2 text-2xl font-bold sm:text-3xl break-words">{isLoading ? '...' : totalTokens}</h3>
                 <p className="text-xs text-purple-200 mt-1">Across all AI interactions</p>
               </div>
-              <div className="p-3 bg-white/20 rounded-lg">
-                <Bolt className="h-6 w-6 text-white" />
+              <div className="rounded-lg bg-white/20 p-2.5 sm:p-3">
+                <Bolt className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
             </div>
           </CardContent>
         </Card>
         
         <Card className="bg-gradient-to-br from-blue-500 to-cyan-600 text-white border-none shadow-md">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
+          <CardContent className="p-4 sm:p-5 lg:p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-blue-100 text-sm font-medium">Average Gen Time</p>
-                <h3 className="text-3xl font-bold mt-2">{isLoading ? '...' : avgGenTime}</h3>
+                <h3 className="mt-2 text-2xl font-bold sm:text-3xl break-words">{isLoading ? '...' : avgGenTime}</h3>
                 <p className="text-xs text-blue-200 mt-1">Average latency per request</p>
               </div>
-              <div className="p-3 bg-white/20 rounded-lg">
-                <BrainCircuit className="h-6 w-6 text-white" />
+              <div className="rounded-lg bg-white/20 p-2.5 sm:p-3">
+                <BrainCircuit className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-none shadow-md">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
+          <CardContent className="p-4 sm:p-5 lg:p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-emerald-100 text-sm font-medium">Active AI Users</p>
-                <h3 className="text-3xl font-bold mt-2">{isLoading ? '...' : activeAiUsers}</h3>
+                <h3 className="mt-2 text-2xl font-bold sm:text-3xl break-words">{isLoading ? '...' : activeAiUsers}</h3>
                 <p className="text-xs text-emerald-200 mt-1">Users with recorded AI activity</p>
               </div>
-              <div className="p-3 bg-white/20 rounded-lg">
-                <Users className="h-6 w-6 text-white" />
+              <div className="rounded-lg bg-white/20 p-2.5 sm:p-3">
+                <Users className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
             </div>
           </CardContent>

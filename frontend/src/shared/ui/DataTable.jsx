@@ -7,7 +7,7 @@ export function DataTable({ columns, rows, renderRow, emptyTitle, emptyDescripti
   }
 
   return (
-    <div className="rounded-lg border overflow-hidden">
+    <div className="overflow-hidden rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>

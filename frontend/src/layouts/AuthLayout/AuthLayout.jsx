@@ -64,9 +64,9 @@ const AuthLayout = () => {
       </div>
 
       {/* Right Pane - Auth Forms Outlet */}
-      <div className="flex items-center justify-center p-8 sm:p-12 lg:p-16 bg-white dark:bg-zinc-950 relative">
+      <div className="relative flex items-center justify-center bg-white px-4 py-8 dark:bg-zinc-950 sm:px-8 sm:py-12 lg:p-16">
         {/* Mobile Logo (hidden on desktop) */}
-        <div className="absolute top-8 left-8 lg:hidden">
+        <div className="absolute left-4 top-4 sm:left-8 sm:top-8 lg:hidden">
             <Link to="/" className="inline-flex items-center gap-2">
               <div className="bg-primary/10 p-2 rounded-xl dark:bg-white/10">
                 <GraduationCap className="w-5 h-5 text-primary" />
@@ -75,7 +75,7 @@ const AuthLayout = () => {
             </Link>
         </div>
 
-        <div className="w-full max-w-[420px] pt-12 lg:pt-0">
+        <div className="w-full max-w-[420px] pt-14 sm:pt-16 lg:pt-0">
           <Outlet />
         </div>
       </div>

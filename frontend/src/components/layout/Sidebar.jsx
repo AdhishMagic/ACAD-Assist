@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
+import {
   LayoutDashboard,
-  BookOpen, 
-  BrainCircuit, 
+  BookOpen,
+  BrainCircuit,
   FileText,
   FileQuestion,
   BarChart3,
   Bookmark,
   Upload,
-  Settings, 
+  Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -21,7 +21,7 @@ import {
   TrendingUp,
   FileCheck,
   CheckSquare,
-  Database
+  Database,
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 import { logout, selectCurrentUser } from '../../features/auth/store/authSlice';
@@ -33,6 +33,9 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => (
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : false
+  ));
   const user = useSelector(selectCurrentUser);
   const activeRole = useSelector((state) => state.auth.activeRole);
   const { pathname } = useLocation();
@@ -40,6 +43,22 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
   const displayName = getDisplayNameFromUser(user) || 'User';
   const initials = getInitials(displayName || user?.email);
   const roleLabel = toTitleCase(userRole || 'student');
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileOpen) {
+      setIsHovered(false);
+    }
+  }, [isMobileOpen]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -179,10 +198,9 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
   }, [userRole]);
 
   const visibleNavSections = navSections.filter((section) => section.items.length > 0);
-
   const navItems = visibleNavSections.flatMap((section) => section.items);
   const currentPath = normalizePath(pathname);
-  const isExpanded = isMobileOpen || !isCollapsed || isHovered;
+  const isExpanded = isDesktop ? (!isCollapsed || isHovered) : isMobileOpen;
 
   const matchesItem = (item) => {
     const targetPath = normalizePath(item.to);
@@ -199,52 +217,48 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
 
   return (
     <>
-      {/* Mobile backdrop */}
       {isMobileOpen && (
-        <div 
-          className="fixed inset-0 z-30 bg-gray-900/50 backdrop-blur-sm md:hidden"
+        <div
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden"
           onClick={closeMobileSidebar}
+          aria-hidden="true"
         />
       )}
 
-      {/* Sidebar container */}
       <motion.aside
         initial={false}
-        animate={{ 
-          width: isExpanded ? 264 : 72,
-          x: 0
-        }}
+        animate={{ width: isExpanded ? 264 : 72 }}
         transition={{ duration: 0.26, ease: 'easeInOut' }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className={`fixed md:sticky top-0 left-0 z-40 h-screen flex flex-col bg-slate-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-transform duration-300 ease-in-out md:translate-x-0 ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        onMouseEnter={() => isDesktop && setIsHovered(true)}
+        onMouseLeave={() => isDesktop && setIsHovered(false)}
+        className={`fixed left-0 top-0 z-50 flex h-screen w-[min(264px,85vw)] max-w-[85vw] flex-col border-r border-gray-200 bg-slate-50 shadow-sm transition-transform duration-300 ease-in-out dark:border-border dark:bg-background dark:shadow-xl dark:shadow-black/30 lg:z-30 lg:w-auto lg:max-w-none ${
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
-          <div className="w-full flex items-center justify-center md:justify-start">
+        <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-gray-200 px-4 dark:border-border">
+          <div className="flex w-full items-center justify-start">
             <button
               type="button"
-              className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold shadow-sm"
+              className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-sm font-semibold text-white shadow-sm"
               aria-label="ACAD Assist"
             >
               A
             </button>
           </div>
-          
-          <button 
-            className="md:hidden p-2 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md"
+
+          <button
+            className="rounded-md p-2 text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white lg:hidden"
             onClick={closeMobileSidebar}
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-hide">
+        <nav className="scrollbar-hide flex-1 overflow-y-auto px-3 py-4">
           {visibleNavSections.map((section) => (
             <div key={section.title} className="mb-5">
               {isExpanded && (
-                <p className="px-3 mb-1.5 text-[11px] font-semibold tracking-[0.08em] uppercase text-gray-400 dark:text-gray-500">
+                <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400 dark:text-gray-400">
                   {section.title}
                 </p>
               )}
@@ -254,6 +268,11 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
                   icon={item.icon}
                   label={item.label}
                   to={item.to}
+                  onClick={() => {
+                    if (!isDesktop) {
+                      closeMobileSidebar();
+                    }
+                  }}
                   isActive={normalizePath(item.to) === activePath}
                   isCollapsed={!isExpanded}
                 />
@@ -262,15 +281,15 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
           ))}
         </nav>
 
-        <div className="p-3 border-t border-gray-200 dark:border-gray-800 space-y-3">
-          <div className="flex items-center gap-2.5 min-h-10">
-            <div className="h-9 w-9 rounded-full bg-blue-500/90 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
+        <div className="space-y-3 border-t border-gray-200 p-3 dark:border-border">
+          <div className="flex min-h-10 items-center gap-2.5">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-500/90 text-sm font-semibold text-white">
               {initials}
             </div>
             {isExpanded && (
               <div className="min-w-0">
-                <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{displayName}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{roleLabel}</p>
+                <p className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">{displayName}</p>
+                <p className="truncate text-xs text-gray-500 dark:text-gray-300">{roleLabel}</p>
               </div>
             )}
           </div>
@@ -279,7 +298,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             <button
               onClick={toggleCollapse}
               title={isCollapsed ? 'Pin sidebar open' : 'Collapse sidebar'}
-              className="p-2 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="hidden rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white lg:inline-flex"
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </button>
@@ -287,7 +306,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             <button
               onClick={() => navigate('/settings')}
               title="Settings"
-              className="p-2 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white"
             >
               <Settings className="h-4 w-4" />
             </button>
@@ -295,7 +314,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             <button
               onClick={handleLogout}
               title="Sign out"
-              className="p-2 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+              className="rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-red-600 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-red-400"
             >
               <LogOut className="h-4 w-4" />
             </button>

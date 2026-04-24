@@ -52,9 +52,7 @@ function getStoredTheme() {
 export function hydrateTheme() {
   const theme = getStoredTheme();
   const resolvedTheme = resolveTheme(theme);
-  console.log("⚡ Hydrating theme:", { theme, resolvedTheme });
   applyThemeToDom(resolvedTheme);
-  console.log("✅ Theme hydrated before render");
   return theme;
 }
 
@@ -64,21 +62,17 @@ export function ThemeProvider({ children }) {
 
   const setTheme = useCallback((nextTheme) => {
     const normalized = normalizeTheme(nextTheme);
-    console.log("🎨 Theme changing:", { nextTheme, normalized });
     setThemeState(normalized);
 
     if (typeof window !== "undefined") {
       window.localStorage.setItem(THEME_STORAGE_KEY, normalized);
-      console.log("💾 Saved to localStorage:", normalized);
     }
   }, []);
 
   useEffect(() => {
     const nextResolvedTheme = resolveTheme(theme);
-    console.log("🎨 Resolved theme:", { theme, nextResolvedTheme });
     setResolvedTheme(nextResolvedTheme);
     applyThemeToDom(nextResolvedTheme);
-    console.log("✅ Theme applied to DOM:", nextResolvedTheme);
   }, [theme]);
 
   useEffect(() => {

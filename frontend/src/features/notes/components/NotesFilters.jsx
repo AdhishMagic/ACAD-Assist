@@ -13,8 +13,8 @@ const NotesFilters = ({ isOpen, activeFilters, onFilterChange, onClear, subjects
           transition={{ duration: 0.2 }}
           className="overflow-hidden mb-6"
         >
-          <div className="p-5 bg-card border border-border/50 rounded-xl shadow-sm space-y-6">
-            <div className="flex items-center justify-between border-b border-border/50 pb-3">
+          <div className="space-y-6 rounded-xl border border-border/50 bg-card p-4 shadow-sm sm:p-5">
+            <div className="flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
                 Advanced Filters
               </h3>
@@ -26,7 +26,7 @@ const NotesFilters = ({ isOpen, activeFilters, onFilterChange, onClear, subjects
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
               {/* Subject Filter */}
               <div className="space-y-3">
                 <h4 className="font-medium text-sm">By Subject</h4>

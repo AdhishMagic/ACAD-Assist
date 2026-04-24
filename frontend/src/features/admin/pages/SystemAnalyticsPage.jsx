@@ -10,8 +10,8 @@ export const SystemAnalyticsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <h2 className="text-3xl font-bold tracking-tight">System Analytics</h2>
+      <div className="dashboard-stack flex-1">
+        <h2 className="responsive-title">System Analytics</h2>
         <div className="flex h-[400px] items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
@@ -28,12 +28,12 @@ export const SystemAnalyticsPage = () => {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
+    <div className="dashboard-stack flex-1">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">System Analytics</h2>
+        <h2 className="responsive-title">System Analytics</h2>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { title: "Daily Active Users", value: data.metrics.dailyActiveUsers, icon: Users, color: "text-blue-500" },
           { title: "Avg Session Length", value: data.metrics.avgSessionLength, icon: Clock, color: "text-amber-500" },
@@ -59,7 +59,7 @@ export const SystemAnalyticsPage = () => {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

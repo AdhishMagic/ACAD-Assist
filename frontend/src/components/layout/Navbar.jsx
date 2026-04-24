@@ -6,23 +6,25 @@ import UserMenu from './UserMenu';
 
 const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
   const handleThemeToggle = () => {
-    console.log("🌙 Toggle theme button in Navbar clicked, isDark:", isDark);
     toggleTheme();
   };
 
   return (
-    <header className="h-16 flex-shrink-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 z-20">
-      <div className="flex items-center flex-1">
+    <header className="z-20 flex min-h-16 flex-shrink-0 items-center justify-between gap-2 border-b border-gray-200 bg-white px-3 py-2 dark:border-border dark:bg-background sm:px-4 lg:px-6">
+      <div className="flex min-w-0 flex-1 items-center">
         <button
           onClick={toggleSidebar}
-          className="mr-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 md:hidden"
+          className="mr-2 rounded-md p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-blue-500 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white lg:hidden"
         >
           <span className="sr-only">Open sidebar</span>
           <Menu className="h-6 w-6" />
         </button>
-        
-        <div className="flex items-center mr-4 sm:mr-8">
-          <Link to="/dashboard" className="text-lg sm:text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 whitespace-nowrap">
+
+        <div className="mr-2 flex min-w-0 items-center sm:mr-4 lg:mr-6">
+          <Link
+            to="/dashboard"
+            className="max-w-[7.5rem] truncate whitespace-nowrap bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-sm font-semibold text-transparent dark:from-blue-400 dark:to-indigo-400 sm:max-w-none sm:text-base lg:text-xl"
+          >
             ACAD Assist
           </Link>
         </div>
@@ -30,31 +32,34 @@ const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
         <SearchBar />
       </div>
 
-      <div className="ml-4 flex items-center space-x-3 sm:space-x-4">
-        <button 
+      <div className="ml-2 flex shrink-0 items-center gap-1 sm:ml-3 sm:gap-2">
+        <button
           onClick={handleThemeToggle}
-          className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+          className="rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white"
         >
           {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </button>
 
-        <Link to="/notifications" className="relative p-1.5 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors">
+        <Link
+          to="/notifications"
+          className="relative rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white"
+        >
           <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-900"></span>
+          <span className="absolute right-1 top-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-background"></span>
         </Link>
 
-        <button 
+        <button
           onClick={toggleRightPanel}
-          className="hidden lg:flex items-center justify-center p-1.5 rounded-full text-indigo-500 hover:bg-indigo-50 dark:hover:bg-gray-800 transition-colors relative group"
+          className="relative hidden items-center justify-center rounded-full p-1.5 text-indigo-500 transition-colors hover:bg-indigo-50 dark:text-brand-purple dark:hover:bg-surface-hover xl:flex"
         >
           <Sparkles className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+          <span className="absolute -right-1 -top-1 flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-indigo-500"></span>
           </span>
         </button>
 
-        <div className="h-6 border-l border-gray-200 dark:border-gray-700 mx-2"></div>
+        <div className="mx-1 hidden h-6 border-l border-gray-200 dark:border-border md:block"></div>
 
         <UserMenu />
       </div>

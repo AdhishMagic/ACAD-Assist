@@ -1,16 +1,13 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Folder, FolderOpen, LayoutGrid } from 'lucide-react';
 import { ROUTE_PATHS, buildPath } from '@/app/routes/routePaths';
 import { useNoteSubjects } from '../hooks/useNotes';
 
-const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end }) => {
-  const location = useLocation();
-  const isActive = end ? location.pathname === to : location.pathname.startsWith(to);
-
+const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end, onNavigate }) => {
   return (
-    <NavLink to={to} end={end}>
+    <NavLink to={to} end={end} onClick={onNavigate}>
       {({ isActive: navIsActive }) => {
         const CurrentIcon = navIsActive ? (ActiveIcon || Icon) : Icon;
         return (
@@ -41,18 +38,22 @@ const SidebarLink = ({ to, icon: Icon, activeIcon: ActiveIcon, label, count, end
   );
 };
 
-const SubjectSidebar = () => {
+const SubjectSidebar = ({ isOpen = false, onClose }) => {
   const { data: subjects } = useNoteSubjects();
   const subjectList = Array.isArray(subjects) ? subjects : [];
 
   return (
-    <motion.aside 
-      initial={{ x: -20, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="w-64 flex-shrink-0 border-r border-border h-full bg-card/50 backdrop-blur-sm hidden md:flex flex-col"
-    >
-      <div className="p-6 pb-2">
+    <>
+      {isOpen ? <button type="button" className="fixed inset-0 z-20 bg-black/40 md:hidden" onClick={onClose} aria-label="Close subjects" /> : null}
+      <motion.aside 
+        initial={false}
+        animate={{ x: isOpen ? 0 : -320, opacity: 1 }}
+        transition={{ duration: 0.25 }}
+        className={`fixed inset-y-0 left-0 z-30 w-[85vw] max-w-72 border-r border-border bg-card/95 backdrop-blur-sm md:static md:z-auto md:w-64 md:max-w-none md:translate-x-0 ${
+          isOpen ? 'block' : 'hidden'
+        } md:flex md:flex-col`}
+      >
+      <div className="p-4 sm:p-6 pb-2">
         <h2 className="font-semibold text-lg tracking-tight">Library</h2>
       </div>
       
@@ -62,6 +63,7 @@ const SubjectSidebar = () => {
           icon={LayoutGrid} 
           label="All Notes" 
           end 
+          onNavigate={onClose}
         />
         
         <div className="pt-6 pb-2">
@@ -78,10 +80,12 @@ const SubjectSidebar = () => {
             activeIcon={FolderOpen}
             label={subject.name}
             count={subject.count}
+            onNavigate={onClose}
           />
         ))}
       </div>
-    </motion.aside>
+      </motion.aside>
+    </>
   );
 };
 

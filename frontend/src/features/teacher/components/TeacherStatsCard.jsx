@@ -11,13 +11,13 @@ const TeacherStatsCard = ({ title, value, icon: Icon, description, trend, delay 
       transition={{ duration: 0.3, delay }}
     >
       <Card className="hover:shadow-lg transition-all duration-300 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 group">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-start">
+        <CardContent className="p-4 sm:p-5 lg:p-6">
+          <div className="flex items-start justify-between gap-3">
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 {title}
               </p>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
                 {value}
               </h3>
             </div>
@@ -54,7 +54,7 @@ export const DashboardStatsGrid = ({ data }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
       {stats.map((stat, idx) => (
         <TeacherStatsCard key={idx} {...stat} />
       ))}
