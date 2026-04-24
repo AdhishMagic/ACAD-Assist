@@ -11,6 +11,21 @@ from apps.files.services import build_upload_metadata, compute_checksum, detect_
 from .models import Note
 
 
+def get_note_approval_status(note):
+	metadata = getattr(note, "metadata", {}) or {}
+	approval_status = str(metadata.get("approval_status") or "").strip().lower()
+
+	if getattr(note, "is_published", False) or approval_status == "approved":
+		return "published"
+	if approval_status == "pending":
+		return "pending"
+	if approval_status == "rejected":
+		return "rejected"
+	if approval_status in {"revision_requested", "revision requested"}:
+		return "revision_requested"
+	return "draft"
+
+
 class NoteSerializer(serializers.ModelSerializer):
 	file_id = serializers.UUIDField(source="file.id", read_only=True)
 	file_url = serializers.SerializerMethodField()
@@ -75,7 +90,7 @@ class NoteSerializer(serializers.ModelSerializer):
 		return full_name or getattr(obj.created_by, "email", None)
 
 	def get_status(self, obj):
-		return "published" if obj.is_published else "draft"
+		return get_note_approval_status(obj)
 
 	def get_subject_name(self, obj):
 		return getattr(obj.subject, "name", None)
@@ -91,6 +106,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
 
 class NoteWriteSerializer(serializers.ModelSerializer):
+	file_id = serializers.UUIDField(required=False, write_only=True)
 	subject = serializers.CharField(required=False, allow_blank=True, write_only=True)
 	file = serializers.FileField(required=False, allow_null=True, write_only=True)
 	subject_input = serializers.CharField(required=False, allow_blank=True, write_only=True)
@@ -105,6 +121,7 @@ class NoteWriteSerializer(serializers.ModelSerializer):
 		fields = (
 			"title",
 			"content",
+			"file_id",
 			"subject",
 			"subject_input",
 			"tags",
@@ -183,11 +200,14 @@ class NoteWriteSerializer(serializers.ModelSerializer):
 		return normalized
 
 	def validate(self, attrs):
+		file_id = attrs.pop("file_id", None)
 		subject_value = attrs.pop("subject", None)
 		subject_input = attrs.pop("subject_input", None)
 		if not subject_value and subject_input is not None:
 			subject_value = subject_input
 		attrs["subject"] = self._resolve_subject(subject_value)
+		if file_id and not attrs.get("file") and not attrs.get("uploaded_file"):
+			attrs["file"] = File.objects.filter(id=file_id).first()
 
 		content = (attrs.get("content") or "").strip()
 		uploaded_file = attrs.get("file") or attrs.get("uploaded_file")
@@ -209,9 +229,14 @@ class NoteWriteSerializer(serializers.ModelSerializer):
 		return attrs
 
 	def create(self, validated_data):
+		requested_publish = bool(validated_data.pop("is_published", False))
 		uploaded_file = validated_data.pop("file", None) or validated_data.pop("uploaded_file", None)
 		validated_data["is_published"] = False
 		validated_data["created_by"] = self.context["request"].user
+		validated_data["metadata"] = {
+			**(validated_data.get("metadata") or {}),
+			"approval_status": "pending" if requested_publish else "draft",
+		}
 		if uploaded_file:
 			validated_data["file"] = self._create_file_record(uploaded_file)
 		if not validated_data.get("note_type"):
@@ -221,11 +246,17 @@ class NoteWriteSerializer(serializers.ModelSerializer):
 		return super().create(validated_data)
 
 	def update(self, instance, validated_data):
+		requested_publish = validated_data.pop("is_published", None)
 		uploaded_file = validated_data.pop("file", None) or validated_data.pop("uploaded_file", None)
 		if uploaded_file:
 			validated_data["file"] = self._create_file_record(uploaded_file)
 		if "note_type" in validated_data:
 			validated_data["note_type"] = validated_data["note_type"] or instance.note_type or "Lecture"
+		if requested_publish is not None:
+			metadata = dict(instance.metadata or {})
+			metadata["approval_status"] = "pending" if requested_publish else "draft"
+			validated_data["metadata"] = metadata
+			validated_data["is_published"] = False
 		return super().update(instance, validated_data)
 
 

@@ -399,7 +399,7 @@ export default function NotesStudio() {
       const published = await publishMaterial(noteId);
       setLatestMaterial(published);
       setMaterials((prev) => [published, ...prev.filter((item) => item.id !== published.id)]);
-      showToast("success", "Material published. It is now visible in Explore Notes.");
+      showToast("success", "Material submitted for HOD approval. It will appear in Explore Notes after approval.");
     } catch (error) {
       showToast("error", error?.response?.data?.detail || "Failed to publish material.");
     } finally {
@@ -759,6 +759,7 @@ export default function NotesStudio() {
   const latestIsPdf = latestFileType === "pdf";
   const latestIsDoc = latestFileType === "doc" || latestFileType === "docx";
   const isCurrentlyPublished = latestMaterial?.status === "published";
+  const isCurrentlyPendingApproval = latestMaterial?.status === "pending";
   const examSections = Array.isArray(examState.examData.sections) ? examState.examData.sections : [];
   const isExamPublished = examState.examData.status === "published";
   const studioItems = [
@@ -872,12 +873,12 @@ export default function NotesStudio() {
               </Button>
               <Button
                 onClick={handlePublishMaterial}
-                disabled={isPublishing || isCurrentlyPublished}
+                disabled={isPublishing || isCurrentlyPublished || isCurrentlyPendingApproval}
                 size="sm"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 <Send className="w-4 h-4 mr-2" />
-                {isPublishing ? "Publishing..." : isCurrentlyPublished ? "Published" : "Publish"}
+                {isPublishing ? "Submitting..." : isCurrentlyPublished ? "Published" : isCurrentlyPendingApproval ? "Pending Approval" : "Submit for Approval"}
               </Button>
               <Button
                 onClick={handleSaveMaterial}
@@ -952,10 +953,14 @@ export default function NotesStudio() {
             Edit mode is active. Saving will update this note.
             <span
               className={`ml-2 px-2 py-0.5 rounded text-xs font-medium ${
-                isCurrentlyPublished ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                isCurrentlyPublished
+                  ? "bg-emerald-100 text-emerald-700"
+                  : isCurrentlyPendingApproval
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-amber-100 text-amber-700"
               }`}
             >
-              {isCurrentlyPublished ? "Published" : "Draft"}
+              {isCurrentlyPublished ? "Published" : isCurrentlyPendingApproval ? "Pending Approval" : "Draft"}
             </span>
           </div>
         ) : (
@@ -1231,10 +1236,22 @@ export default function NotesStudio() {
                             <div className="flex items-center gap-0.5 flex-shrink-0">
                               <span
                                 className={`text-xs px-1.5 py-0.5 rounded font-semibold ${
-                                  item.status === "published" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                                  item.status === "published"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : item.status === "pending"
+                                      ? "bg-blue-100 text-blue-700"
+                                      : item.status === "rejected"
+                                        ? "bg-rose-100 text-rose-700"
+                                        : "bg-amber-100 text-amber-700"
                                 }`}
                               >
-                                {item.status === "published" ? "Pub" : "Draft"}
+                                {item.status === "published"
+                                  ? "Pub"
+                                  : item.status === "pending"
+                                    ? "Pending"
+                                    : item.status === "rejected"
+                                      ? "Rejected"
+                                      : "Draft"}
                               </span>
                               <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${badge.classes}`}>{badge.label}</span>
                             </div>

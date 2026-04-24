@@ -115,7 +115,7 @@ export default function NotesStudioPage() {
       const published = await publishMaterial(latestSavedMaterial.id);
       setLatestSavedMaterial(published);
       setMaterials((prev) => prev.map((item) => (item.id === published.id ? published : item)));
-      showStatus('success', 'Document published successfully.');
+      showStatus('success', 'Document submitted for HOD approval.');
     } catch (error) {
       showStatus('error', error?.response?.data?.detail || 'Failed to publish document.');
     } finally {
@@ -192,9 +192,9 @@ export default function NotesStudioPage() {
           <Button variant="outline" className="text-gray-600 dark:text-gray-300" onClick={() => { setTitle(''); setContent(EMPTY_EDITOR); }}>
             Cancel
           </Button>
-          {latestSavedMaterial && latestSavedMaterial.status !== 'published' ? (
+          {latestSavedMaterial && !['published', 'pending'].includes(latestSavedMaterial.status) ? (
             <Button onClick={handlePublish} disabled={isPublishing} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              {isPublishing ? 'Publishing...' : 'Publish'}
+              {isPublishing ? 'Submitting...' : 'Submit for Approval'}
             </Button>
           ) : null}
           <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20">
@@ -311,8 +311,22 @@ export default function NotesStudioPage() {
                     <p className="text-xs text-gray-500 mt-1">{createdAt}</p>
                     <div className="mt-2 flex items-center gap-2">
                       <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${badge.classes}`}>{badge.label}</span>
-                      <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${material.status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                        {material.status === 'published' ? 'Pub' : 'Draft'}
+                      <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${
+                        material.status === 'published'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : material.status === 'pending'
+                            ? 'bg-blue-100 text-blue-700'
+                            : material.status === 'rejected'
+                              ? 'bg-rose-100 text-rose-700'
+                              : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {material.status === 'published'
+                          ? 'Pub'
+                          : material.status === 'pending'
+                            ? 'Pending'
+                            : material.status === 'rejected'
+                              ? 'Rejected'
+                              : 'Draft'}
                       </span>
                     </div>
                     {material.file_url ? (

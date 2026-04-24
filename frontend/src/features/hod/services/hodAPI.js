@@ -79,6 +79,41 @@ const getCourseName = (item) => {
   return 'General';
 };
 
+const getTimeWindowDays = (value) => {
+  switch (String(value || 'all').toLowerCase()) {
+    case '7d':
+      return 7;
+    case '30d':
+      return 30;
+    case '90d':
+      return 90;
+    default:
+      return null;
+  }
+};
+
+const normalizeMaterialApprovalStatus = (value) => {
+  const normalized = String(value || '').trim().toLowerCase();
+
+  if (normalized === 'published' || normalized === 'approved') {
+    return 'Approved';
+  }
+
+  if (normalized === 'rejected') {
+    return 'Rejected';
+  }
+
+  if (normalized === 'revision_requested' || normalized === 'revision requested') {
+    return 'Revision Requested';
+  }
+
+  if (normalized === 'draft') {
+    return 'Draft';
+  }
+
+  return 'Pending';
+};
+
 const rankByActivity = (items, limit = 6) => (
   [...items]
     .sort((left, right) => {
@@ -444,21 +479,160 @@ export const hodAPI = {
       },
     };
   },
-  getTeacherContributions: notImplemented,
+  getTeacherContributions: async (filters = {}) => {
+    const [notesResult, myMaterialsResult, libraryMaterialsResult] = await Promise.allSettled([
+      apiClient.get('/api/notes/'),
+      apiClient.get('/api/materials/'),
+      apiClient.get('/api/materials/library/'),
+    ]);
+
+    const notes = notesResult.status === 'fulfilled' ? normalizeArray(notesResult.value.data) : [];
+    const ownMaterials = myMaterialsResult.status === 'fulfilled' ? normalizeArray(myMaterialsResult.value.data) : [];
+    const libraryMaterials = libraryMaterialsResult.status === 'fulfilled'
+      ? normalizeArray(libraryMaterialsResult.value.data)
+      : [];
+
+    const materials = [...ownMaterials, ...libraryMaterials].filter((item, index, collection) => (
+      collection.findIndex((entry) => entry.id === item.id) === index
+    ));
+
+    const allCourses = new Set();
+    notes.forEach((note) => {
+      const courseName = getCourseName(note);
+      if (courseName) {
+        allCourses.add(courseName);
+      }
+    });
+
+    const selectedCourse = String(filters?.course || 'all').trim();
+    const selectedCourseKey = selectedCourse.toLowerCase();
+    const windowDays = getTimeWindowDays(filters?.date);
+
+    const teacherMap = new Map();
+    const ensureTeacher = (name) => {
+      const safeName = String(name || '').trim() || 'Unknown Teacher';
+      const key = safeName.toLowerCase();
+
+      if (!teacherMap.has(key)) {
+        teacherMap.set(key, {
+          id: key.replace(/[^a-z0-9]+/g, '-'),
+          name: safeName,
+          courseSet: new Set(),
+          notesUploaded: 0,
+          aiMaterialsGenerated: 0,
+          lastActivityDate: null,
+        });
+      }
+
+      return teacherMap.get(key);
+    };
+
+    notes.forEach((note) => {
+      const activityDate = note.updated_at || note.created_at;
+      if (windowDays && !isWithinDays(activityDate, windowDays)) {
+        return;
+      }
+
+      const courseName = getCourseName(note);
+      if (selectedCourseKey !== 'all' && courseName.toLowerCase() !== selectedCourseKey) {
+        return;
+      }
+
+      const teacher = ensureTeacher(getTeacherName(note));
+      teacher.notesUploaded += 1;
+      teacher.courseSet.add(courseName);
+
+      const timestamp = toDate(activityDate);
+      if (timestamp && (!teacher.lastActivityDate || timestamp > teacher.lastActivityDate)) {
+        teacher.lastActivityDate = timestamp;
+      }
+    });
+
+    materials.forEach((material) => {
+      const activityDate = material.updated_at || material.created_at;
+      if (windowDays && !isWithinDays(activityDate, windowDays)) {
+        return;
+      }
+
+      const materialCourse = 'General Resources';
+      if (selectedCourseKey !== 'all' && materialCourse.toLowerCase() !== selectedCourseKey) {
+        return;
+      }
+
+      const teacher = ensureTeacher(getTeacherName(material));
+      teacher.aiMaterialsGenerated += 1;
+      teacher.courseSet.add(materialCourse);
+
+      const timestamp = toDate(activityDate);
+      if (timestamp && (!teacher.lastActivityDate || timestamp > teacher.lastActivityDate)) {
+        teacher.lastActivityDate = timestamp;
+      }
+    });
+
+    const teachers = [...teacherMap.values()]
+      .map((teacher) => {
+        const courseList = [...teacher.courseSet].sort((left, right) => left.localeCompare(right));
+        return {
+          id: teacher.id,
+          name: teacher.name,
+          course: courseList[0] || 'General',
+          coursesHandled: courseList.length,
+          notesUploaded: teacher.notesUploaded,
+          aiMaterialsGenerated: teacher.aiMaterialsGenerated,
+          lastActivity: teacher.lastActivityDate ? formatRelativeTime(teacher.lastActivityDate) : 'No recent activity',
+          sortDate: teacher.lastActivityDate?.getTime() || 0,
+        };
+      })
+      .filter((teacher) => teacher.notesUploaded > 0 || teacher.aiMaterialsGenerated > 0)
+      .sort((left, right) => {
+        const contributionDelta = (right.notesUploaded + right.aiMaterialsGenerated)
+          - (left.notesUploaded + left.aiMaterialsGenerated);
+        if (contributionDelta !== 0) {
+          return contributionDelta;
+        }
+
+        return right.sortDate - left.sortDate;
+      })
+      .map(({ sortDate, ...teacher }) => teacher);
+
+    const courses = [...new Set([...allCourses, 'General Resources'])].sort((left, right) => (
+      left.localeCompare(right)
+    ));
+
+    return {
+      data: {
+        teachers,
+        courses,
+      },
+    };
+  },
   getMaterialApprovals: async () => {
     try {
-      const response = await apiClient.get('/api/materials/library/');
-      const materials = normalizeArray(response.data);
+      const response = await apiClient.get('/api/notes/my/', {
+        params: {
+          scope: 'review',
+          approval_status: 'all',
+        },
+      });
 
-      const approvals = materials.map((material) => ({
-        id: material.id,
-        title: material.title,
-        teacher: material.author_name || material.uploaded_by_email || 'Unknown',
-        course: 'Study Material',
-        date: material.created_at ? new Date(material.created_at).toLocaleDateString() : 'N/A',
-        status: capitalize(material.status),
-        ...material,
-      }));
+      const approvals = normalizeArray(response.data)
+        .map((note) => ({
+          ...note,
+          id: note.id,
+          title: note.title,
+          teacher: getTeacherName(note),
+          course: getCourseName(note),
+          date: formatShortDate(note.created_at),
+          status: normalizeMaterialApprovalStatus(note.status),
+          materialType: note.note_type || note.type || 'Lecture',
+          description: note.content || '',
+          previewText: note.content || '',
+          attachments: note.file_url ? [{
+            name: note.file_name || note.title || 'Attachment',
+            url: note.file_url,
+            type: note.file_type || 'txt',
+          }] : [],
+        }));
 
       return {
         data: {
@@ -488,9 +662,9 @@ export const hodAPI = {
       }
     };
   },
-  approveMaterial: notImplemented,
-  rejectMaterial: notImplemented,
-  requestMaterialRevision: notImplemented,
+  approveMaterial: (id) => apiClient.patch(`/api/notes/${id}/publish/`, { action: 'approve' }),
+  rejectMaterial: (id) => apiClient.patch(`/api/notes/${id}/publish/`, { action: 'reject' }),
+  requestMaterialRevision: (id) => apiClient.patch(`/api/notes/${id}/publish/`, { action: 'revision' }),
   approveProject: (id) => projectsApi.approve(id),
   rejectProject: (id) => projectsApi.reject(id),
   getAnalytics: notImplemented,

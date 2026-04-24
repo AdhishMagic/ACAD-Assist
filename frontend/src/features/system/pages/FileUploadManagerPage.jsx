@@ -149,7 +149,7 @@ export function FileUploadManagerPage() {
     onSuccess: async (data) => {
       setEditorOpen(false);
       setEditorState({ noteId: null, fileId: null, title: '', content: '', isPublished: false });
-      setStatusMessage(data?.is_published ? 'Note published successfully.' : 'Draft saved successfully.');
+      setStatusMessage(data?.status === 'pending' ? 'Note submitted for approval successfully.' : 'Draft saved successfully.');
       setStatusType('success');
       await queryClient.invalidateQueries({ queryKey: ['saved-notes'] });
     },
@@ -226,7 +226,7 @@ export function FileUploadManagerPage() {
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">Upload Files</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          PDFs and attachments are stored directly. DOCX and TXT files are parsed into editable note content, then saved as drafts or published notes.
+          PDFs and attachments are stored directly. DOCX and TXT files are parsed into editable note content, then saved as drafts or submitted for approval.
         </p>
       </div>
 
@@ -364,7 +364,7 @@ export function FileUploadManagerPage() {
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-base font-semibold text-foreground">{note.title}</h3>
                           <Badge variant={note.is_published ? 'default' : 'secondary'} className="rounded-full">
-                            {note.is_published ? 'Published' : 'Draft'}
+                            {note.status === 'pending' ? 'Pending Approval' : note.is_published ? 'Published' : 'Draft'}
                           </Badge>
                           <Badge variant="outline" className="rounded-full">
                             {String(note.file_type || '').toUpperCase() || 'FILE'}
@@ -408,7 +408,7 @@ export function FileUploadManagerPage() {
           <DialogHeader>
             <DialogTitle>{editorState.noteId ? 'Edit Note' : 'Review Extracted Content'}</DialogTitle>
             <DialogDescription>
-              Save the extracted document as a draft or publish it as a public note.
+              Save the extracted document as a draft or submit it for HOD approval.
             </DialogDescription>
           </DialogHeader>
 
@@ -441,7 +441,7 @@ export function FileUploadManagerPage() {
             </Button>
             <Button onClick={() => submitNote(true)} disabled={saveNoteMutation.isPending}>
               {saveNoteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Publish
+              Submit for Approval
               <ArrowRight className="h-4 w-4" />
             </Button>
           </DialogFooter>

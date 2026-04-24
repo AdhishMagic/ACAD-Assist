@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -9,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Note
-from .serializers import NoteSerializer, NoteWriteSerializer
+from .serializers import NoteSerializer, NoteWriteSerializer, get_note_approval_status
 
 
 def _is_admin_or_hod(user):
@@ -44,6 +45,16 @@ def _normalize_tags(query_params):
 			if tag:
 				normalized.append(tag)
 	return normalized
+
+
+def _set_approval_status(note, approval_status, *, published=False, reviewer=None):
+	metadata = dict(note.metadata or {})
+	metadata["approval_status"] = approval_status
+	metadata["approval_updated_at"] = timezone.now().isoformat()
+	if reviewer is not None:
+		metadata["approval_updated_by"] = getattr(reviewer, "email", None) or str(getattr(reviewer, "id", ""))
+	note.metadata = metadata
+	note.is_published = published
 
 
 class NotesListCreateView(ListCreateAPIView):
@@ -102,7 +113,24 @@ class MyNotesListView(ListAPIView):
 	serializer_class = NoteSerializer
 
 	def get_queryset(self):
-		queryset = Note.objects.filter(created_by=self.request.user).select_related("file", "created_by", "subject")
+		queryset = Note.objects.select_related("file", "created_by", "subject")
+		scope = (self.request.query_params.get("scope") or "").strip().lower()
+		approval_status = (self.request.query_params.get("approval_status") or "").strip().lower()
+		if _is_admin_or_hod(self.request.user) and scope == "review":
+			if approval_status and approval_status != "all":
+				if approval_status == "published":
+					queryset = queryset.filter(is_published=True)
+				elif approval_status == "draft":
+					queryset = queryset.filter(is_published=False).exclude(metadata__approval_status__in=["pending", "rejected", "revision_requested", "approved"])
+				else:
+					queryset = queryset.filter(metadata__approval_status=approval_status)
+			else:
+				queryset = queryset.filter(
+					Q(is_published=True)
+					| Q(metadata__approval_status__in=["pending", "rejected", "revision_requested", "approved"])
+				)
+		else:
+			queryset = queryset.filter(created_by=self.request.user)
 		search = (self.request.query_params.get("search") or self.request.query_params.get("q") or "").strip()
 		if search:
 			queryset = queryset.filter(
@@ -179,8 +207,23 @@ class NotePublishView(APIView):
 		if note.created_by_id != request.user.id and not _is_admin_or_hod(request.user):
 			return Response({"detail": "You do not have permission to publish this note."}, status=status.HTTP_403_FORBIDDEN)
 
-		note.is_published = True
-		note.save(update_fields=["is_published", "updated_at"])
+		action = str(request.data.get("action") or request.query_params.get("action") or "").strip().lower()
+		is_reviewer = _is_admin_or_hod(request.user)
+
+		if is_reviewer:
+			if action == "reject":
+				_set_approval_status(note, "rejected", published=False, reviewer=request.user)
+			elif action in {"revision", "request_revision", "request-revision", "revision_requested"}:
+				_set_approval_status(note, "revision_requested", published=False, reviewer=request.user)
+			else:
+				_set_approval_status(note, "approved", published=True, reviewer=request.user)
+		else:
+			current_status = get_note_approval_status(note)
+			if current_status == "published" and note.created_by_id == request.user.id and not _is_admin_or_hod(request.user):
+				return Response({"detail": "This note is already approved and published."}, status=status.HTTP_400_BAD_REQUEST)
+			_set_approval_status(note, "pending", published=False, reviewer=request.user)
+
+		note.save(update_fields=["metadata", "is_published", "updated_at"])
 		return Response(NoteSerializer(note, context={"request": request}).data, status=status.HTTP_200_OK)
 
 
