@@ -26,6 +26,7 @@ import {
 import SidebarItem from './SidebarItem';
 import { logout, selectCurrentUser } from '../../features/auth/store/authSlice';
 import { hasTeacherAccess, normalizeRole } from '@/features/auth/utils/role';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { getDisplayNameFromUser, getInitials, toTitleCase } from '@/utils/helpers';
 
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar }) => {
@@ -89,8 +90,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
         { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
         { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
-        { label: 'Question Paper', icon: FileQuestion, to: '/teacher/question-generator' },
-        { label: 'AI Exam Generation', icon: Upload, to: '/teacher/materials-upload' },
+        { label: 'Question Paper Generator', icon: FileQuestion, to: ROUTE_PATHS.TEACHER_QUESTION_PAPER },
         { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
       ],
       hod: [
@@ -104,7 +104,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
         { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
         { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
         { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
-        { label: 'AI Features', icon: BrainCircuit, to: '/teacher/materials-upload' },
+        { label: 'Question Paper Generator', icon: FileQuestion, to: ROUTE_PATHS.TEACHER_QUESTION_PAPER },
       ],
     };
 
@@ -147,8 +147,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobileSidebar
             { label: 'Notes Studio', icon: FileText, to: '/teacher/notes-studio' },
             { label: 'Saved Notes', icon: Bookmark, to: '/teacher/saved-notes' },
             { label: 'Notes Explorer', icon: BookOpen, to: '/teacher/explore-notes' },
-            { label: 'Question Paper', icon: FileQuestion, to: '/teacher/question-generator' },
-            { label: 'AI Exam Generation', icon: Upload, to: '/teacher/materials-upload' },
+            { label: 'Question Paper Generator', icon: FileQuestion, to: ROUTE_PATHS.TEACHER_QUESTION_PAPER },
             { label: 'Online Tests', icon: CheckSquare, to: '/teacher/online-tests' },
           ],
         },

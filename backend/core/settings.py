@@ -41,14 +41,6 @@ def resolve_postgres_host() -> str:
 
 
 def build_database_config() -> dict:
-	if not Path("/.dockerenv").exists():
-		return {
-			"default": {
-				"ENGINE": "django.db.backends.sqlite3",
-				"NAME": BASE_DIR / "db.sqlite3",
-			}
-		}
-
 	return {
 		"default": {
 			"ENGINE": "django.db.backends.postgresql",

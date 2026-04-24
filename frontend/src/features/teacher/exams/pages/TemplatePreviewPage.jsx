@@ -6,6 +6,7 @@ import { TemplatePreview } from '../components/TemplatePreview';
 import { motion } from 'framer-motion';
 import { ArrowLeft, BrainCircuit } from 'lucide-react';
 import { loadTemplateDraft } from '../utils/templateStorage';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 
 const TemplatePreviewPage = () => {
   const navigate = useNavigate();
@@ -27,10 +28,10 @@ const TemplatePreviewPage = () => {
           <p className="text-muted-foreground">Review your exam structure before generating questions.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={() => navigate('/teacher/template-builder')} className="gap-2">
+          <Button variant="outline" onClick={() => navigate(ROUTE_PATHS.TEACHER_TEMPLATE_BUILDER)} className="gap-2">
             <ArrowLeft className="w-4 h-4" /> Edit Template
           </Button>
-          <Button onClick={() => navigate('/teacher/question-generator')} className="gap-2 shadow-md bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
+          <Button onClick={() => navigate(ROUTE_PATHS.TEACHER_QUESTION_PAPER)} className="gap-2 shadow-md bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
             <BrainCircuit className="w-4 h-4" /> Continue to Generation
           </Button>
         </div>

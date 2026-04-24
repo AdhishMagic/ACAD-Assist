@@ -9,6 +9,7 @@ import { useSaveTemplate } from '../hooks/useExamGenerator';
 import { motion } from 'framer-motion';
 import { Save, ArrowRight, Settings, Code } from 'lucide-react';
 import { loadTemplateDraft, saveTemplateDraft } from '../utils/templateStorage';
+import { ROUTE_PATHS } from '@/app/routes/routePaths';
 
 const initialTemplate = {
   examTitle: "Mid-Term Examination",
@@ -46,7 +47,7 @@ const JSONTemplateBuilderPage = () => {
     try {
       await saveMutation.mutateAsync(template);
       saveTemplateDraft(template);
-      navigate('/teacher/template-preview');
+      navigate(ROUTE_PATHS.TEACHER_TEMPLATE_PREVIEW);
     } catch (error) {
       console.error('Failed to save template', error);
     }
@@ -64,7 +65,7 @@ const JSONTemplateBuilderPage = () => {
           <p className="text-muted-foreground">Define the structure, sections, and marking scheme for your exam.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={() => navigate('/teacher/materials-upload')}>
+          <Button variant="outline" onClick={() => navigate(ROUTE_PATHS.TEACHER_QUESTION_PAPER)}>
             Back
           </Button>
           <Button onClick={handleSave} disabled={saveMutation.isPending} className="gap-2 shadow-md">

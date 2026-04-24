@@ -1,5 +1,5 @@
-// examRoutes.js
 import { ROUTE_PATHS } from '@/app/routes/routePaths';
+import { Navigate } from 'react-router-dom';
 import MaterialsUploadPage from '../pages/MaterialsUploadPage';
 import JSONTemplateBuilderPage from '../pages/JSONTemplateBuilderPage';
 import TemplatePreviewPage from '../pages/TemplatePreviewPage';
@@ -11,8 +11,12 @@ import OnlineTestResultsPage from '../pages/OnlineTestResultsPage';
 
 export const examRoutes = [
   {
-    path: ROUTE_PATHS.TEACHER_MATERIALS_UPLOAD,
+    path: ROUTE_PATHS.TEACHER_QUESTION_PAPER,
     element: <MaterialsUploadPage />
+  },
+  {
+    path: ROUTE_PATHS.TEACHER_MATERIALS_UPLOAD,
+    element: <Navigate to={ROUTE_PATHS.TEACHER_QUESTION_PAPER} replace />
   },
   {
     path: ROUTE_PATHS.TEACHER_TEMPLATE_BUILDER,

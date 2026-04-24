@@ -15,10 +15,36 @@ export const useSaveTemplate = () => {
   });
 };
 
+export const useExamTemplates = () => {
+  return useQuery({
+    queryKey: ['examTemplates'],
+    queryFn: () => examAPI.getTemplates(),
+  });
+};
+
+export const useExamDrafts = (params = {}) => {
+  return useQuery({
+    queryKey: ['examDrafts', params],
+    queryFn: () => examAPI.getExamDrafts(params),
+  });
+};
+
 // Hook for generating the exam paper
 export const useGenerateExam = () => {
   return useMutation({
     mutationFn: (config) => examAPI.generateExam(config),
+  });
+};
+
+export const useUpdateExam = () => {
+  return useMutation({
+    mutationFn: (params) => examAPI.updateExam(params),
+  });
+};
+
+export const usePolishExamWithAI = () => {
+  return useMutation({
+    mutationFn: (params) => examAPI.polishExamWithAI(params),
   });
 };
 

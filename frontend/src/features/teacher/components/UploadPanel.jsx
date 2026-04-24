@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Upload, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { apiClient } from '@/shared/lib/http/axios';
 
 const UploadPanel = ({ onUploadSuccess }) => {
@@ -79,6 +79,7 @@ const UploadPanel = ({ onUploadSuccess }) => {
       <div className="mt-4 space-y-1 text-sm">
         <p>Status: {uploading ? 'Uploading' : uploadedFile ? 'Done' : 'Idle'}</p>
         {uploadedFile ? <p>File: {uploadedFile.name || uploadedFile.original_name || 'Unknown'}</p> : null}
+        {uploadedFile?.title_suggestion ? <p>Template: {uploadedFile.title_suggestion}</p> : null}
         {uploadError ? <p className="text-red-600">Error: {uploadError}</p> : null}
       </div>
     </div>

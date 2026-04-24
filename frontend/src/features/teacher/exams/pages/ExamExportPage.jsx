@@ -6,6 +6,7 @@ import { ExportOptions } from '../components/ExportOptions';
 import { useExportExam } from '../hooks/useExamGenerator';
 import { ArrowLeft, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ROUTE_PATHS, buildPath } from '@/app/routes/routePaths';
 
 const ExamExportPage = () => {
   const navigate = useNavigate();
@@ -122,10 +123,10 @@ const ExamExportPage = () => {
           <Button variant="outline" onClick={() => navigate(-1)} className="gap-2">
             <ArrowLeft className="w-4 h-4" /> Back to Preview
           </Button>
-          <Button variant="outline" onClick={() => navigate(`/teacher/online-test-results/${examId}`)}>
+          <Button variant="outline" onClick={() => navigate(buildPath.teacherOnlineTestResults(examId))}>
             View Results
           </Button>
-          <Button variant="secondary" onClick={() => navigate('/teacher/dashboard')} className="gap-2">
+          <Button variant="secondary" onClick={() => navigate(ROUTE_PATHS.TEACHER_DASHBOARD)} className="gap-2">
             <Home className="w-4 h-4" /> Go to Dashboard
           </Button>
         </div>

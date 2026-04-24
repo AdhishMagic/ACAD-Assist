@@ -6,6 +6,62 @@ from db_design.base import AuditModel
 from db_design.constants import SubmissionStatus
 
 
+class ExamTemplate(models.Model):
+	class Meta:
+		ordering = ["-created_at"]
+		verbose_name = "Exam Template"
+		verbose_name_plural = "Exam Templates"
+
+	title = models.CharField(max_length=255)
+	pattern_json = models.JSONField(default=dict, blank=True)
+	created_by = models.ForeignKey(
+		settings.AUTH_USER_MODEL,
+		on_delete=models.CASCADE,
+		related_name="exam_templates",
+	)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.title
+
+
+class ExamPaper(models.Model):
+	class Status(models.TextChoices):
+		DRAFT = "draft", "Draft"
+		PUBLISHED = "published", "Published"
+
+	class Meta:
+		ordering = ["-created_at"]
+		verbose_name = "Exam Paper"
+		verbose_name_plural = "Exam Papers"
+
+	title = models.CharField(max_length=255, default="Question Paper Draft")
+	subject = models.CharField(max_length=255)
+	subject_ref = models.ForeignKey(
+		Subject,
+		on_delete=models.SET_NULL,
+		null=True,
+		blank=True,
+		related_name="generated_exam_papers",
+	)
+	lesson_range = models.JSONField(default=dict, blank=True)
+	difficulty = models.CharField(max_length=50)
+	template = models.ForeignKey(ExamTemplate, on_delete=models.CASCADE, related_name="exam_papers")
+	exam_json = models.JSONField(default=dict, blank=True)
+	status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT, db_index=True)
+	created_by = models.ForeignKey(
+		settings.AUTH_USER_MODEL,
+		on_delete=models.CASCADE,
+		related_name="exam_papers",
+	)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.title
+
+
 class Exam(AuditModel):
 	subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="exams")
 	title = models.CharField(max_length=255)

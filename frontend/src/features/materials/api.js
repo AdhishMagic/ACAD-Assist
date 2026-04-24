@@ -159,6 +159,69 @@ export async function publishMaterial(id) {
   return normalizeNote(data);
 }
 
+function normalizeTemplate(item = {}) {
+  return {
+    id: item.id,
+    title: item.title || "",
+    pattern_json: item.pattern_json || { sections: [] },
+    created_at: item.created_at,
+  };
+}
+
+function normalizeExam(item = {}) {
+  const lessonRangeValue = item.lesson_range;
+  const normalizedLessonRange =
+    lessonRangeValue && typeof lessonRangeValue === "object"
+      ? lessonRangeValue.legacy_text
+        || (Array.isArray(lessonRangeValue.selected_units) ? lessonRangeValue.selected_units.join(" -> ") : "")
+        || `${lessonRangeValue.start_unit || ""}${lessonRangeValue.end_unit ? ` -> ${lessonRangeValue.end_unit}` : ""}`.trim()
+      : (item.lesson_range ?? "");
+
+  return {
+    id: item.id ?? item.exam_id ?? null,
+    title: item.title || item.exam_json?.title || "",
+    subject: item.subject || "",
+    lesson_range: normalizedLessonRange,
+    difficulty: item.difficulty || "",
+    template: item.template?.id ?? item.template ?? null,
+    exam_json: item.exam_json || { sections: [] },
+    status: item.status || "draft",
+    created_at: item.created_at,
+  };
+}
+
+export async function createTemplate(payload) {
+  const { data } = await apiClient.post("/api/exam/templates/", payload);
+  return normalizeTemplate(data);
+}
+
+export const createExamTemplate = createTemplate;
+
+export async function generateExam(payload) {
+  const { data } = await apiClient.post("/api/exam/generate/", payload);
+  return {
+    exam_id: data?.exam_id ?? data?.id ?? null,
+    exam_json: data?.exam_json || { sections: [] },
+  };
+}
+
+export async function getExam(id) {
+  const { data } = await apiClient.get(`/api/exam/${id}/`);
+  return normalizeExam(data);
+}
+
+export async function updateExam(id, payload) {
+  const { data } = await apiClient.put(`/api/exam/${id}/`, payload);
+  return normalizeExam(data);
+}
+
+export async function publishExam(id) {
+  const { data } = await apiClient.post(`/api/exam/${id}/publish/`);
+  return {
+    status: data?.status || "published",
+  };
+}
+
 export async function getPublicMaterials() {
   const { data } = await apiClient.get("/api/notes/");
   return (Array.isArray(data) ? data : []).map(normalizeNote);
