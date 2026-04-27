@@ -1,11 +1,82 @@
-"""PDF Processing Service using PyMuPDF (fitz) - efficient streaming and chunking."""
+"""PDF processing utilities for extraction, streaming, and chunking."""
 
 import fitz  # PyMuPDF
+import config.logging  # noqa: F401
 from pathlib import Path
 from typing import Optional, Generator, Dict, Any
 import logging
+from PyPDF2 import PdfReader
+
+from utils.text_processing import clean_text
 
 logger = logging.getLogger(__name__)
+
+
+def extract_pdf(file_path: str) -> str:
+    """
+    Extract and clean text from a PDF file.
+
+    Returns an empty string when extraction fails so downstream ingestion can
+    continue without crashing.
+    """
+    file_name = Path(file_path).name
+    logger.info("Processing file: %s", file_name)
+
+    try:
+        with open(file_path, "rb") as pdf_file:
+            reader = PdfReader(pdf_file)
+            page_count = len(reader.pages)
+            logger.info("Pages: %s", page_count)
+
+            if page_count == 0:
+                logger.warning("Empty text extracted")
+                return ""
+
+            extracted_pages = []
+            for page_number, page in enumerate(reader.pages, start=1):
+                try:
+                    page_text = page.extract_text() or ""
+                    if page_text:
+                        extracted_pages.append(page_text)
+                except Exception as exc:
+                    logger.warning(
+                        "Failed to extract text from page %s in %s: %s",
+                        page_number,
+                        file_name,
+                        exc,
+                    )
+
+        cleaned_text = clean_text(
+            "\n".join(extracted_pages),
+            remove_urls=False,
+            remove_emails=False,
+        )
+        logger.info("Extracted characters: %s", len(cleaned_text))
+
+        if not cleaned_text:
+            logger.warning("Empty text extracted")
+
+        return cleaned_text
+    except Exception as exc:
+        logger.error("Failed to extract text from %s: %s", file_name, exc)
+        return ""
+
+
+def extract_text(file_path: str) -> str:
+    """
+    Route document extraction based on file extension.
+
+    Currently supports PDF files and is intentionally structured for easy
+    extension to DOCX and TXT extractors later.
+    """
+    try:
+        if file_path.lower().endswith(".pdf"):
+            return extract_pdf(file_path)
+
+        raise ValueError(f"Unsupported file type: {Path(file_path).suffix or 'unknown'}")
+    except Exception as exc:
+        logger.error("Text extraction failed for %s: %s", file_path, exc)
+        return ""
 
 
 class PDFProcessor:

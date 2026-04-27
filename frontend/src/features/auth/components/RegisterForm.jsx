@@ -6,7 +6,6 @@ import { Loader2, Mail, Lock, User } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ROUTE_PATHS } from '@/app/routes/routePaths';
 import { authAPI } from '../services/authAPI';
@@ -17,7 +16,6 @@ export const RegisterForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    termsAccepted: false
   });
   const [validationError, setValidationError] = useState('');
   const navigate = useNavigate();
@@ -34,10 +32,6 @@ export const RegisterForm = () => {
     setFormData(prev => ({ ...prev, [id]: value }));
   };
 
-  const handleCheckboxChange = (checked) => {
-    setFormData(prev => ({ ...prev, termsAccepted: checked }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setValidationError('');
@@ -48,10 +42,6 @@ export const RegisterForm = () => {
 
     if (formData.password !== formData.confirmPassword) {
       setValidationError('Passwords do not match');
-      return;
-    }
-    if (!formData.termsAccepted) {
-      setValidationError('You must accept the terms and conditions');
       return;
     }
 
@@ -148,21 +138,6 @@ export const RegisterForm = () => {
               />
             </div>
           </div>
-        </div>
-
-        <div className="flex items-start space-x-3 pt-4 pb-2">
-          <Checkbox 
-            id="terms" 
-            checked={formData.termsAccepted}
-            onCheckedChange={handleCheckboxChange}
-            className="mt-1 flex-shrink-0"
-          />
-          <Label htmlFor="terms" className="text-sm text-muted-foreground font-normal leading-relaxed peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            By creating an account, you agree to our{' '}
-            <a href="#" className="font-medium text-primary hover:underline">Terms of Service</a>{' '}
-            and{' '}
-            <a href="#" className="font-medium text-primary hover:underline">Privacy Policy</a>.
-          </Label>
         </div>
 
         <Button 

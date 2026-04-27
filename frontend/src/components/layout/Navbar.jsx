@@ -1,10 +1,21 @@
 import React from 'react';
 import { Menu, Bell, Moon, Sun, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '@/features/auth/store/authSlice';
+import { useNotificationSummary } from '@/features/system/hooks/useNotifications';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
 
 const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const { data } = useNotificationSummary({
+    pageSize: 5,
+    refetchInterval: 12000,
+    enabled: isAuthenticated,
+  });
+  const unreadCount = data?.unreadCount ?? 0;
+
   const handleThemeToggle = () => {
     toggleTheme();
   };
@@ -45,7 +56,11 @@ const Navbar = ({ toggleSidebar, toggleRightPanel, isDark, toggleTheme }) => {
           className="relative rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-surface-hover dark:hover:text-white"
         >
           <Bell className="h-5 w-5" />
-          <span className="absolute right-1 top-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-background"></span>
+          {unreadCount > 0 ? (
+            <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-white dark:ring-background">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          ) : null}
         </Link>
 
         <button

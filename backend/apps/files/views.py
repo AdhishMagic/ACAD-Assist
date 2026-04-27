@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.notifications.utils import create_notification
+from db_design.constants import NotificationType
 from .models import File
 from .serializers import FileSerializer, FileUploadSerializer
 
@@ -39,6 +41,15 @@ class FileUploadView(APIView):
 			f"[UPLOAD] Response prepared. Extracted content length: {len(response_data.get('extracted_content', ''))}"
 		)
 		logger.info(f"[UPLOAD] Title suggestion: {response_data.get('title_suggestion', 'N/A')}")
+
+		create_notification(
+			user=request.user,
+			title="File Uploaded",
+			message=f"Your file '{file_instance.original_name}' was uploaded successfully.",
+			notification_type=NotificationType.SUCCESS,
+			metadata={"file_id": str(file_instance.id), "action": "file_uploaded", "file_type": file_instance.file_type},
+			created_by=request.user,
+		)
 
 		return Response(response_data, status=status.HTTP_201_CREATED)
 

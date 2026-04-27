@@ -1,9 +1,82 @@
 """Local Embedding Client - Production-ready offline embeddings using sentence-transformers."""
 
 import logging
-from typing import List
+import os
+import threading
+from typing import List, Optional
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+MODEL_CACHE_DIR = "models/embedding"
+
+
+def get_embedding_model(model_name: str = DEFAULT_EMBEDDING_MODEL):
+    """
+    Lazily load and cache the sentence-transformers embedding model.
+
+    Args:
+        model_name: HuggingFace/SentenceTransformers model name
+
+    Returns:
+        Loaded SentenceTransformer instance
+    """
+    if (
+        LocalEmbeddingClient._model is None
+        or LocalEmbeddingClient._model_name != model_name
+    ):
+        with LocalEmbeddingClient._model_lock:
+            if (
+                LocalEmbeddingClient._model is None
+                or LocalEmbeddingClient._model_name != model_name
+            ):
+                try:
+                    from sentence_transformers import SentenceTransformer
+
+                    os.makedirs(MODEL_CACHE_DIR, exist_ok=True)
+
+                    try:
+                        logger.info("Loading embedding model from local cache")
+                        LocalEmbeddingClient._model = SentenceTransformer(
+                            model_name,
+                            cache_folder=MODEL_CACHE_DIR,
+                            local_files_only=True,
+                        )
+                    except Exception:
+                        logger.warning(
+                            "Embedding model not found locally. Downloading model: %s",
+                            model_name,
+                        )
+                        LocalEmbeddingClient._model = SentenceTransformer(
+                            model_name,
+                            cache_folder=MODEL_CACHE_DIR,
+                        )
+
+                    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+                    os.environ["HF_HUB_OFFLINE"] = "1"
+                    LocalEmbeddingClient._model_name = model_name
+
+                    model_dim = LocalEmbeddingClient._model.get_sentence_embedding_dimension()
+                    logger.info("Embedding model loaded successfully")
+                    logger.info("Model loaded: %s (%s dimensions)", model_name, model_dim)
+
+                except ImportError:
+                    logger.error(
+                        "sentence-transformers not installed. Install with: "
+                        "pip install sentence-transformers"
+                    )
+                    raise
+                except Exception as e:
+                    logger.error(f"Embedding model load failed for {model_name}: {e}")
+                    raise RuntimeError(
+                        "Embedding model load failed: "
+                        f"{e}. Ensure network access is available for the first download "
+                        f"or the model is cached in '{MODEL_CACHE_DIR}'."
+                    ) from e
+
+    return LocalEmbeddingClient._model
 
 
 class LocalEmbeddingClient:
@@ -28,8 +101,10 @@ class LocalEmbeddingClient:
     # Class-level model cache (loaded once, shared across instances)
     _model = None
     _model_name = None
+    _model_lock = threading.Lock()
+    DEFAULT_BATCH_SIZE = 32
     
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, model_name: str = DEFAULT_EMBEDDING_MODEL):
         """
         Initialize LocalEmbeddingClient.
         
@@ -44,28 +119,11 @@ class LocalEmbeddingClient:
     
     def _ensure_model_loaded(self):
         """Ensure model is loaded before use (lazy initialization)."""
-        if LocalEmbeddingClient._model is None or LocalEmbeddingClient._model_name != self.model_name:
-            self._load_model()
+        get_embedding_model(self.model_name)
     
     def _load_model(self):
         """Load SentenceTransformer model (once per process)."""
-        try:
-            from sentence_transformers import SentenceTransformer
-            
-            logger.info(f"Loading embedding model: {self.model_name}")
-            LocalEmbeddingClient._model = SentenceTransformer(self.model_name)
-            LocalEmbeddingClient._model_name = self.model_name
-            
-            # Log model info
-            model_dim = LocalEmbeddingClient._model.get_sentence_embedding_dimension()
-            logger.info(f"Model loaded: {self.model_name} ({model_dim} dimensions)")
-            
-        except ImportError:
-            logger.error("sentence-transformers not installed. Install with: pip install sentence-transformers")
-            raise
-        except Exception as e:
-            logger.error(f"Failed to load embedding model {self.model_name}: {e}")
-            raise
+        get_embedding_model(self.model_name)
     
     def embed(self, text: str) -> List[float]:
         """
@@ -87,7 +145,11 @@ class LocalEmbeddingClient:
         embeddings = self.embed_batch([text])
         return embeddings[0]
     
-    def embed_batch(self, texts: List[str]) -> List[List[float]]:
+    def embed_batch(
+        self,
+        texts: List[str],
+        batch_size: int = DEFAULT_BATCH_SIZE,
+    ) -> List[Optional[List[float]]]:
         """
         Generate embeddings for multiple texts (optimized for batch).
         
@@ -115,22 +177,27 @@ class LocalEmbeddingClient:
         
         if not non_empty:
             logger.warning("All input texts are empty")
-            raise ValueError("No non-empty texts to embed")
+            return [None] * len(texts)
         
+        texts_to_embed = [text for _, text in non_empty]
+
         try:
             # Ensure model is loaded before use
             self._ensure_model_loaded()
-            
+
             # Generate embeddings for non-empty texts only
-            texts_to_embed = [text for _, text in non_empty]
             embeddings_array = LocalEmbeddingClient._model.encode(
                 texts_to_embed,
+                batch_size=batch_size,
                 convert_to_numpy=True,
                 show_progress_bar=False,
             )
             
-            # Convert numpy array to list of lists
-            embeddings_list = embeddings_array.astype(float).tolist()
+            # Normalize embeddings for vector DB compatibility.
+            embeddings_list = [
+                self._normalize_embedding(embedding)
+                for embedding in embeddings_array
+            ]
             
             # Reconstruct full result maintaining input order
             # Empty texts get None, preserving exact 1:1 correspondence
@@ -143,6 +210,25 @@ class LocalEmbeddingClient:
         except Exception as e:
             logger.error(f"Error generating embeddings for {len(texts_to_embed)} texts: {e}")
             raise
+
+    @staticmethod
+    def _normalize_embedding(embedding) -> List[float]:
+        """
+        Normalize an embedding vector and convert it to a Python list.
+
+        Args:
+            embedding: Numpy-compatible embedding vector
+
+        Returns:
+            Normalized embedding as list of floats
+        """
+        embedding_array = np.array(embedding, dtype=float)
+        norm = np.linalg.norm(embedding_array)
+
+        if norm > 0:
+            embedding_array = embedding_array / norm
+
+        return [float(value) for value in embedding_array.tolist()]
     
     def get_embedding_dimension(self) -> int:
         """

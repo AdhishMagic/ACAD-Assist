@@ -4,6 +4,7 @@ import { AppRoutes } from "@/routes";
 import { authAPI } from "@/features/auth/services/authAPI";
 import { logout, setActiveRole, syncAuthFromStorage, updateCurrentUser } from "@/features/auth/store/authSlice";
 import { normalizeRole } from "@/features/auth/utils/role";
+import { NotificationWatcher } from "@/features/system/components/NotificationWatcher";
 import { queryClient } from "@/shared/lib/query/queryClient";
 
 function AuthBootstrap({ children }) {
@@ -61,6 +62,7 @@ function AuthBootstrap({ children }) {
 function App() {
   return (
     <AuthBootstrap>
+      <NotificationWatcher />
       <AppRoutes />
     </AuthBootstrap>
   );

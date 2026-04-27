@@ -1,14 +1,39 @@
 """Document Service - document processing with PDF support."""
 
-from typing import Optional, Generator, Dict, Any
+from typing import Optional, Generator, Dict, Any, List
 import logging
+import hashlib
+import os
 from pathlib import Path
 
-from .pdf_processor import PDFProcessor
+import config.logging  # noqa: F401
 from models.file_metadata_models import FileMetadata
+from utils.file_handler import extract_metadata_from_path, scan_directory
 from utils.text_processing import clean_text
 
 logger = logging.getLogger(__name__)
+
+
+def normalize_path(path: str) -> Path:
+    """Resolve and normalize paths consistently for relative comparisons."""
+    resolved_path = Path(path).expanduser().resolve()
+    path_str = str(resolved_path)
+
+    if os.name != "nt":
+        return resolved_path
+
+    if path_str.startswith("\\\\?\\UNC\\"):
+        path_str = f"\\\\{path_str[8:]}"
+    elif path_str.startswith("\\\\?\\"):
+        path_str = path_str[4:]
+
+    if path_str.startswith("\\\\"):
+        unc_path = path_str.lstrip("\\")
+        path_str = f"\\\\?\\UNC\\{unc_path}"
+    else:
+        path_str = f"\\\\?\\{path_str}"
+
+    return Path(path_str)
 
 
 class DocumentService:
@@ -21,7 +46,75 @@ class DocumentService:
         Args:
             max_pdf_size_mb: Maximum allowed PDF file size in MB
         """
-        self.pdf_processor = PDFProcessor(max_file_size_mb=max_pdf_size_mb)
+        self.max_pdf_size_mb = max_pdf_size_mb
+        self.pdf_processor = None
+
+    def _get_pdf_processor(self):
+        """Initialize the PDF processor only when PDF features are used."""
+        if self.pdf_processor is None:
+            from .pdf_processor import PDFProcessor
+
+            self.pdf_processor = PDFProcessor(max_file_size_mb=self.max_pdf_size_mb)
+        return self.pdf_processor
+
+    def load_documents_from_folder(self, folder_path: str) -> List[Dict[str, Any]]:
+        """
+        Scan a folder and build structured document records for ingestion.
+
+        This stage only prepares metadata and file references. It does not read
+        file content, generate embeddings, or connect to a vector database.
+        """
+        documents: List[Dict[str, Any]] = []
+        departments_detected = set()
+
+        try:
+            root_path = normalize_path(folder_path)
+            file_paths = sorted(scan_directory(str(root_path)), key=lambda path: str(path))
+        except Exception as exc:
+            logger.error("Error scanning folder %s: %s", folder_path, exc)
+            raise
+
+        for file_path in file_paths:
+            try:
+                path_obj = normalize_path(file_path)
+                root = normalize_path(str(root_path))
+                logger.debug(f"Normalized file path: {path_obj}")
+                logger.debug(f"Normalized root path: {root}")
+                metadata = extract_metadata_from_path(str(path_obj), str(root_path))
+                try:
+                    relative_path = path_obj.relative_to(root)
+                except Exception:
+                    logger.error(f"Path mismatch: {path_obj} not under {root}")
+                    continue
+                stable_file_id = hashlib.sha256(
+                    str(relative_path).replace("\\", "/").encode("utf-8")
+                ).hexdigest()
+                departments_detected.add(str(metadata["department"]))
+                documents.append(
+                    {
+                        "file_id": stable_file_id,
+                        "file_name": path_obj.name,
+                        "file_path": str(path_obj),
+                        "file_type": path_obj.suffix.lower().lstrip("."),
+                        "metadata": {
+                            "department": str(metadata["department"]),
+                            "semester": str(metadata["semester"]),
+                            "subject": str(metadata["subject"]),
+                            "unit": str(metadata["unit"]),
+                            "relative_path": str(relative_path).replace("\\", "/"),
+                        },
+                    }
+                )
+            except Exception as exc:
+                logger.error("Failed processing: %s (%s)", file_path, exc)
+                continue
+
+        logger.info(
+            "Departments detected: %s",
+            ", ".join(sorted(departments_detected)) if departments_detected else "None",
+        )
+        logger.info("Total documents found: %s", len(documents))
+        return documents
     
     def process_document(self, filename: str, content: str = None, file_path: str = None) -> dict:
         """
@@ -49,7 +142,7 @@ class DocumentService:
     def _process_pdf(self, file_path: str) -> dict:
         """Process PDF and extract metadata."""
         try:
-            metadata = self.pdf_processor.get_metadata(file_path)
+            metadata = self._get_pdf_processor().get_metadata(file_path)
             if not metadata:
                 return {"status": "error", "message": "Could not read PDF"}
             
@@ -125,7 +218,7 @@ class DocumentService:
             ... ):
             ...     save(page)
         """
-        return self.pdf_processor.extract_text_streaming(file_path, page_range)
+        return self._get_pdf_processor().extract_text_streaming(file_path, page_range)
     
     def extract_pdf_text_chunked(
         self, 
@@ -205,7 +298,7 @@ class DocumentService:
             ... ):
             ...     response = llm.call(f"Summarize: {chunk['text']}")
         """
-        return self.pdf_processor.extract_text_chunked(file_path, chunk_size, page_range)
+        return self._get_pdf_processor().extract_text_chunked(file_path, chunk_size, page_range)
     
     def get_pdf_metadata(self, file_path: str) -> Optional[Dict[str, Any]]:
         """
@@ -217,7 +310,7 @@ class DocumentService:
         Returns:
             Metadata dictionary
         """
-        return self.pdf_processor.get_metadata(file_path)
+        return self._get_pdf_processor().get_metadata(file_path)
     
     def extract_pdf_with_metadata(
         self,
@@ -348,6 +441,7 @@ class DocumentService:
                         "department": file_metadata.department,
                         "semester": file_metadata.semester,
                         "subject": file_metadata.subject,
+                        "unit": file_metadata.unit,
                         "file_size": file_metadata.file_size,
                         "extension": file_metadata.extension,
                         "created_at": file_metadata.created_at,
@@ -370,6 +464,7 @@ class DocumentService:
                     "department": file_metadata.department,
                     "semester": file_metadata.semester,
                     "subject": file_metadata.subject,
+                    "unit": file_metadata.unit,
                     "file_size": file_metadata.file_size,
                     "extension": file_metadata.extension,
                     "created_at": file_metadata.created_at,
@@ -427,7 +522,12 @@ class DocumentService:
         Yields:
             Search results per page
         """
-        return self.pdf_processor.search_text(file_path, search_term, case_sensitive)
+        return self._get_pdf_processor().search_text(file_path, search_term, case_sensitive)
 
 
 document_service = DocumentService()
+
+
+def load_documents_from_folder(folder_path: str) -> List[Dict[str, Any]]:
+    """Module-level wrapper for folder ingestion."""
+    return document_service.load_documents_from_folder(folder_path)

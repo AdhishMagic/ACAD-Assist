@@ -19,6 +19,7 @@ urlpatterns = [
 	path("api/v1/ai/", include("apps.queries.urls")),
 	path("api/materials/", include("materials.urls")),
 	path("api/projects/", include("projects.urls")),
+	path("api/notifications/", include("apps.notifications.urls")),
 	path("health/", lambda request: JsonResponse({"status": "ok"})),
 ]
 

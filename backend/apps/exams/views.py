@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 
 from apps.academics.models import Subject, Unit
 
+from apps.notifications.utils import create_notification
+from db_design.constants import NotificationType
 from .models import ExamPaper, ExamTemplate
 from .serializers import (
 	ExamPaperSerializer,
@@ -116,6 +118,14 @@ class ExamTemplateListCreateView(APIView):
 		serializer = ExamTemplateWriteSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		exam_template = serializer.save(created_by=request.user)
+		create_notification(
+			user=request.user,
+			title="Exam Template Created",
+			message=f"Exam template '{exam_template.title}' was created successfully.",
+			notification_type=NotificationType.SUCCESS,
+			metadata={"template_id": str(exam_template.id), "action": "exam_template_created"},
+			created_by=request.user,
+		)
 		return Response(ExamTemplateSerializer(exam_template).data, status=status.HTTP_201_CREATED)
 
 
@@ -158,6 +168,14 @@ class GenerateExamView(APIView):
 			template=template,
 			exam_json=exam_json,
 			status=ExamPaper.Status.DRAFT,
+			created_by=request.user,
+		)
+		create_notification(
+			user=request.user,
+			title="Exam Draft Generated",
+			message=f"A new exam draft '{exam_paper.title}' was generated successfully.",
+			notification_type=NotificationType.SUCCESS,
+			metadata={"exam_id": str(exam_paper.id), "action": "exam_draft_generated"},
 			created_by=request.user,
 		)
 		return Response(ExamPaperSerializer(exam_paper).data, status=status.HTTP_201_CREATED)
@@ -204,4 +222,12 @@ class PublishExamView(APIView):
 
 		exam_paper.status = ExamPaper.Status.PUBLISHED
 		exam_paper.save(update_fields=["status", "updated_at"])
+		create_notification(
+			user=request.user,
+			title="Exam Published",
+			message=f"Exam '{exam_paper.title}' was published successfully.",
+			notification_type=NotificationType.SUCCESS,
+			metadata={"exam_id": str(exam_paper.id), "action": "exam_published"},
+			created_by=request.user,
+		)
 		return Response(ExamPaperSerializer(exam_paper).data, status=status.HTTP_200_OK)

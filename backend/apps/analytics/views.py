@@ -16,6 +16,7 @@ from apps.exams.models import Exam, Submission
 from apps.files.models import File
 from apps.notes.models import Note
 from apps.queries.models import Query, Response as QueryResponseModel
+from apps.analytics.utils import record_activity
 from materials.models import StudyMaterial
 from projects.models import Project
 from db_design.constants import SubmissionStatus
@@ -158,14 +159,19 @@ def _infer_module(action, entity_type):
 
     if any(token in text for token in ["login", "logout", "auth", "password", "token"]):
         return "Authentication"
-    if any(token in text for token in ["note", "query", "knowledge", "material", "project"]):
-        return "Knowledge Repo"
     if any(token in text for token in ["ai", "llm", "model", "prompt"]):
         return "AI Assistant"
+    if any(token in text for token in ["note", "query", "knowledge", "material", "project", "file", "upload", "storage", "exam", "submission"]):
+        return "Knowledge Repo"
     if any(token in text for token in ["user", "role", "admin"]):
         return "User Management"
 
     return "User Management"
+
+
+def _humanize_action(action):
+    label = str(action or "Activity").replace("_", " ").strip()
+    return label[:1].upper() + label[1:] if label else "Activity"
 
 
 def _infer_status(metadata):
@@ -1258,7 +1264,7 @@ class AdminActivityLogsView(APIView):
                 {
                     "id": str(log.id),
                     "user": _display_user_name(log.user),
-                    "action": log.action or "Activity",
+                    "action": _humanize_action(log.action),
                     "module": _infer_module(log.action, log.entity_type),
                     "timestamp": log.created_at.isoformat(),
                     "status": _infer_status(log.metadata),
@@ -1410,21 +1416,67 @@ class AdminStorageFileDeleteView(APIView):
         if source == "file":
             file_obj = File.objects.filter(id=raw_id).first()
             if not file_obj:
+                record_activity(
+                    user=request.user,
+                    action="storage_item_deleted",
+                    entity_type="file",
+                    entity_id=raw_id,
+                    status="error",
+                    metadata={"error": "File not found.", "source": source},
+                )
                 return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+            item_name = file_obj.original_name
+            entity_id = file_obj.id
             file_obj.delete()
         elif source == "material":
             material = StudyMaterial.objects.filter(id=raw_id).first()
             if not material:
+                record_activity(
+                    user=request.user,
+                    action="storage_item_deleted",
+                    entity_type="material",
+                    entity_id=raw_id,
+                    status="error",
+                    metadata={"error": "File not found.", "source": source},
+                )
                 return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+            item_name = material.title
+            entity_id = material.id
             material.delete()
         elif source == "project":
             project = Project.objects.filter(id=raw_id).first()
             if not project:
+                record_activity(
+                    user=request.user,
+                    action="storage_item_deleted",
+                    entity_type="project",
+                    entity_id=raw_id,
+                    status="error",
+                    metadata={"error": "File not found.", "source": source},
+                )
                 return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+            item_name = project.title
+            entity_id = project.id
             project.delete()
         else:
+            record_activity(
+                user=request.user,
+                action="storage_item_deleted",
+                entity_type="storage",
+                entity_id=raw_id,
+                status="warning",
+                metadata={"error": "Unsupported storage source.", "source": source},
+            )
             return Response({"detail": "Unsupported storage source."}, status=status.HTTP_400_BAD_REQUEST)
 
+        record_activity(
+            user=request.user,
+            action="storage_item_deleted",
+            entity_type=source,
+            entity_id=entity_id,
+            status="success",
+            metadata={"source": source, "name": item_name},
+        )
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

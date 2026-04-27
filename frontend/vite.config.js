@@ -8,6 +8,8 @@ export default defineConfig(({ command, mode }) => {
   // For dev server: use VITE_PROXY_API_TARGET (points to actual backend service)
   // For browser runtime: use VITE_API_BASE_URL (what browser can access)
   const apiProxyTarget = env.VITE_PROXY_API_TARGET || env.VITE_API_BASE_URL || "http://localhost:8000";
+  const aiProxyTarget = env.VITE_PROXY_AI_TARGET || "http://localhost:8001";
+  const ragProxyTarget = env.VITE_PROXY_RAG_TARGET || "http://localhost:8002";
 
   return {
     plugins: [react()],
@@ -32,11 +34,11 @@ export default defineConfig(({ command, mode }) => {
           changeOrigin: true,
         },
         "/ai": {
-          target: env.VITE_AI_SERVICE_URL || "http://localhost:8001",
+          target: aiProxyTarget,
           changeOrigin: true,
         },
         "/rag": {
-          target: env.VITE_RAG_SERVICE_URL || "http://localhost:8002",
+          target: ragProxyTarget,
           changeOrigin: true,
         },
       },

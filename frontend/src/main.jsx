@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { store } from "@/store/store";
 import { queryClient } from "@/shared/lib/query/queryClient";
 import { ErrorBoundary, ThemeProvider, hydrateTheme } from "@/app/providers";
+import { NotificationToastViewport } from "@/features/system/components/NotificationToastViewport";
 import App from "./App";
 import "./styles/index.css";
 
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")).render(
         <BrowserRouter>
           <ErrorBoundary>
             <ThemeProvider>
+              <NotificationToastViewport />
               <App />
             </ThemeProvider>
           </ErrorBoundary>

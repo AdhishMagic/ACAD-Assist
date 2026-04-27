@@ -1,338 +1,331 @@
-"""FAISS-based Vector Database Client - Local, in-memory vector storage."""
+"""FAISS client for document chunk storage and retrieval."""
 
 import logging
-import numpy as np
-from pathlib import Path
-from typing import List, Dict, Optional
+import os
+import pickle
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-try:
-    import faiss
-except ImportError:
-    raise ImportError("FAISS not installed. Install with: pip install faiss-cpu")
+import faiss
+import numpy as np
+
+from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+FAISS_INDEX_PATH = os.path.join(DATA_DIR, "faiss_index.bin")
+METADATA_PATH = os.path.join(DATA_DIR, "metadata.pkl")
+
 
 class VectorDBClient:
-    """
-    FAISS-based vector database client.
-    
-    Features:
-    - In-memory vector storage with FAISS
-    - Local persistence to disk
-    - Similarity search using L2 distance
-    - Metadata storage parallel to embeddings
-    """
-    
-    def __init__(self, dim: int = 384):
-        """
-        Initialize FAISS Vector DB Client.
-        
-        Args:
-            dim: Embedding dimension (default: 384 for all-MiniLM-L6-v2)
-        """
-        self.dim = dim
-        self.index = faiss.IndexFlatL2(dim)
-        self.metadata = []  # Parallel list to store metadata
-        self.chunk_ids = []  # Parallel list to store chunk_ids
-        logger.info(f"VectorDBClient initialized with dimension {dim}")
-    
-    def add_embeddings(self, items: List[Dict]) -> None:
-        """
-        Add embeddings to the FAISS index.
-        
-        Args:
-            items: List of dicts with format:
-                {
-                    "chunk_id": str,
-                    "embedding": List[float],
-                    "text": str,
-                    "metadata": dict (optional)
-                }
-        """
-        if not items:
-            logger.warning("No items to add")
+    """Reusable FAISS + pickle-backed vector client."""
+
+    def __init__(self, dim: Optional[int] = None):
+        self.dim = dim or settings.VECTOR_DB_DIM
+        logger.info(
+            "VectorDBClient configured for FAISS "
+            f"(dim={self.dim}, index_path={FAISS_INDEX_PATH})"
+        )
+
+    def _ensure_storage_dir(self) -> None:
+        """Create the local data directory when missing."""
+        os.makedirs(DATA_DIR, exist_ok=True)
+
+    def _normalize_vector(self, vector: Sequence[float]) -> np.ndarray:
+        """Normalize a vector for cosine similarity search via inner product."""
+        normalized_vector = np.array(vector, dtype="float32")
+        norm = np.linalg.norm(normalized_vector)
+        return normalized_vector / norm if norm > 0 else normalized_vector
+
+    def _validate_alignment(
+        self, index: Optional[faiss.Index], metadata_list: List[Dict[str, Any]]
+    ) -> bool:
+        """Verify the FAISS index and metadata list remain aligned."""
+        index_size = int(index.ntotal) if index is not None else 0
+        metadata_size = len(metadata_list)
+
+        if index_size != metadata_size:
+            logger.error(
+                "FAISS index and metadata are out of sync "
+                f"(index={index_size}, metadata={metadata_size})"
+            )
+            return False
+
+        return True
+
+    def _load_index_and_metadata(self) -> Tuple[Optional[faiss.Index], List[Dict[str, Any]]]:
+        """Load persisted FAISS index and aligned metadata."""
+        self._ensure_storage_dir()
+
+        try:
+            metadata_list = []
+            if os.path.exists(METADATA_PATH):
+                with open(METADATA_PATH, "rb") as metadata_file:
+                    metadata_list = pickle.load(metadata_file)
+
+            index = None
+            if os.path.exists(FAISS_INDEX_PATH):
+                index = faiss.read_index(FAISS_INDEX_PATH)
+
+            if not self._validate_alignment(index, metadata_list):
+                return None, []
+
+            if index is not None:
+                self.dim = index.d
+
+            return index, metadata_list
+        except Exception as exc:
+            logger.error(f"Failed to load FAISS storage: {exc}")
+            return None, []
+
+    def _save_index_and_metadata(
+        self, index: faiss.Index, metadata_list: List[Dict[str, Any]]
+    ) -> None:
+        """Persist FAISS index and aligned metadata."""
+        self._ensure_storage_dir()
+
+        if not self._validate_alignment(index, metadata_list):
+            raise ValueError("Cannot persist misaligned FAISS index and metadata")
+
+        temp_index_path = f"{FAISS_INDEX_PATH}.tmp"
+        temp_metadata_path = f"{METADATA_PATH}.tmp"
+
+        try:
+            faiss.write_index(index, temp_index_path)
+            with open(temp_metadata_path, "wb") as metadata_file:
+                pickle.dump(metadata_list, metadata_file)
+
+            os.replace(temp_index_path, FAISS_INDEX_PATH)
+            os.replace(temp_metadata_path, METADATA_PATH)
+        except Exception:
+            for temp_path in (temp_index_path, temp_metadata_path):
+                if os.path.exists(temp_path):
+                    try:
+                        os.remove(temp_path)
+                    except OSError:
+                        logger.warning(f"Failed to remove temp file: {temp_path}")
+            raise
+
+    def _normalize_chunk(
+        self, chunk: Dict[str, Any], expected_dim: Optional[int]
+    ) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+        """Validate and normalize a chunk for insertion."""
+        content = chunk.get("content", chunk.get("text", ""))
+        embedding = chunk.get("embedding")
+        metadata = chunk.get("metadata") or {}
+        chunk_id = chunk.get("chunk_id")
+
+        if embedding is None:
+            return None, "missing embedding"
+        if not isinstance(content, str) or not content.strip():
+            return None, "empty content"
+        if not chunk_id:
+            return None, "missing chunk_id"
+        if not isinstance(embedding, Sequence) or isinstance(embedding, (str, bytes)):
+            return None, "invalid embedding"
+
+        try:
+            normalized_embedding = self._normalize_vector(embedding)
+        except (TypeError, ValueError):
+            return None, "invalid embedding values"
+
+        if normalized_embedding.size == 0:
+            return None, "empty embedding"
+
+        embedding_dim = len(normalized_embedding)
+        if expected_dim is not None and embedding_dim != expected_dim:
+            return None, (
+                f"embedding dimension mismatch "
+                f"(expected {expected_dim}, got {embedding_dim})"
+            )
+
+        return {
+            "chunk_id": chunk_id,
+            "content": content,
+            "embedding": normalized_embedding,
+            "metadata": metadata,
+        }, None
+
+    def insert_embeddings(self, chunks: List[Dict[str, Any]]) -> None:
+        """Append embedded chunks into the FAISS index and metadata store."""
+        total_chunks = len(chunks or [])
+        logger.info(f"Inserting {total_chunks} chunks into FAISS")
+
+        if not chunks:
+            logger.info("Inserted: 0")
+            logger.warning("Skipped: 0 invalid chunks")
             return
-        
-        # Collect embeddings
-        embeddings = []
-        for item in items:
-            embedding = np.array(item["embedding"], dtype=np.float32)
-            if embedding.shape[0] != self.dim:
+
+        try:
+            index, metadata_list = self._load_index_and_metadata()
+            existing_dim = index.d if index is not None else None
+            expected_dim = existing_dim
+            index_size_before = int(index.ntotal) if index is not None else 0
+            existing_chunk_ids = {
+                item.get("chunk_id")
+                for item in metadata_list
+                if item.get("chunk_id")
+            }
+
+            valid_chunks: List[Dict[str, Any]] = []
+            skipped_chunks = 0
+            skipped_duplicates = 0
+
+            for chunk in chunks:
+                normalized_chunk, reason = self._normalize_chunk(chunk, expected_dim)
+                if normalized_chunk is None:
+                    skipped_chunks += 1
+                    logger.warning(f"Skipped chunk: {reason}")
+                    continue
+                if normalized_chunk["chunk_id"] in existing_chunk_ids:
+                    skipped_duplicates += 1
+                    continue
+                valid_chunks.append(normalized_chunk)
+                existing_chunk_ids.add(normalized_chunk["chunk_id"])
+
+            logger.info(f"Index size before: {index_size_before}")
+
+            if not valid_chunks:
+                logger.info("Inserted: 0")
+                logger.info(f"Skipped duplicates: {skipped_duplicates}")
+                logger.warning(f"Skipped: {skipped_chunks} invalid chunks")
+                logger.info(f"Index size after: {index_size_before}")
+                return
+
+            inferred_dim = len(valid_chunks[0]["embedding"])
+            if index is None:
+                index = faiss.IndexFlatIP(inferred_dim)
+                self.dim = inferred_dim
+            elif index.d != inferred_dim:
                 raise ValueError(
-                    f"Embedding dimension mismatch: expected {self.dim}, got {embedding.shape[0]}"
+                    f"Embedding dimension mismatch: index={index.d}, batch={inferred_dim}"
                 )
-            embeddings.append(embedding)
-        
-        # Convert to numpy array and add to FAISS index
-        embeddings_array = np.array(embeddings, dtype=np.float32)
-        self.index.add(embeddings_array)
-        
-        # Store metadata and chunk_ids in parallel
-        for item in items:
-            self.chunk_ids.append(item["chunk_id"])
-            self.metadata.append({
-                "chunk_id": item["chunk_id"],
-                "text": item["text"],
-                "metadata": item.get("metadata", {})
-            })
-        
-        logger.info(f"Added {len(items)} embeddings to FAISS index. Index size: {self.index.ntotal}")
-    
-    def _matches_filters(self, metadata: Dict, filters: Dict[str, str]) -> bool:
-        """
-        Check if metadata matches all provided filters.
-        
-        Args:
-            metadata: Metadata dict from chunk
-            filters: Dict with optional keys: department, semester, subject
-            
-        Returns:
-            True if metadata matches all filters, False otherwise
-        """
-        for key, value in filters.items():
+
+            vectors = np.array(
+                [chunk["embedding"] for chunk in valid_chunks], dtype="float32"
+            )
+            index.add(vectors)
+
+            metadata_list.extend(
+                {
+                    "chunk_id": chunk["chunk_id"],
+                    "content": chunk["content"],
+                    "metadata": chunk["metadata"],
+                }
+                for chunk in valid_chunks
+            )
+
+            self._save_index_and_metadata(index, metadata_list)
+            index_size_after = int(index.ntotal)
+
+            if not self._validate_alignment(index, metadata_list):
+                logger.error("Post-insert alignment check failed")
+
+            logger.info(f"Inserted: {len(valid_chunks)}")
+            logger.info(f"Skipped duplicates: {skipped_duplicates}")
+            logger.warning(f"Skipped: {skipped_chunks} invalid chunks")
+            logger.info(f"Index size after: {index_size_after}")
+        except Exception as exc:
+            logger.error(f"Failed to insert embeddings batch: {exc}")
+
+    def add_embeddings(self, items: List[Dict[str, Any]]) -> None:
+        """Backward-compatible alias used by existing pipeline code."""
+        self.insert_embeddings(items)
+
+    def _matches_filters(
+        self, item_metadata: Dict[str, Any], filters: Optional[Dict[str, str]]
+    ) -> bool:
+        """Check whether a metadata record satisfies the provided filters."""
+        if not filters:
+            return True
+
+        for field, value in filters.items():
             if value is None:
                 continue
-            # Check metadata for the filter key
-            if metadata.get(key) != value:
+            if item_metadata.get(field) != value:
                 return False
+
         return True
-    
-    def search(self, query_embedding: List[float], top_k: int = 5, filters: Optional[Dict[str, str]] = None) -> List[Dict]:
-        """
-        Search for similar embeddings with optional metadata filtering.
-        
-        Args:
-            query_embedding: Query embedding vector
-            top_k: Number of top results to return
-            filters: Optional dict with keys: department, semester, subject
-                     Only results matching ALL filters are returned
-                     Example: {"department": "Computer Science", "semester": "Spring 2024"}
-            
-        Returns:
-            List of dicts with format:
-                {
-                    "chunk_id": str,
-                    "text": str,
-                    "metadata": dict,
-                    "score": float (L2 distance)
-                }
-        """
-        if self.index.ntotal == 0:
-            logger.warning("Search requested on empty index")
+
+    def search(
+        self,
+        query_embedding: List[float],
+        top_k: int = 5,
+        filters: Optional[Dict[str, str]] = None,
+    ) -> List[Dict[str, Any]]:
+        """Run similarity search against stored vectors."""
+        if not query_embedding:
+            logger.warning("Search requested with empty query embedding")
             return []
-        
-        filters = filters or {}
-        
-        # When filtering, retrieve more results to ensure we get enough filtered results
-        # Strategy: Get 3x more results, then filter and return top_k
-        search_k = min(top_k * 3 if filters else top_k, self.index.ntotal)
-        
-        # Convert query to numpy array and reshape
-        query_array = np.array([query_embedding], dtype=np.float32)
-        
-        # Search FAISS index
-        distances, indices = self.index.search(query_array, search_k)
-        
-        # Compile results with optional filtering
-        results = []
-        for idx, distance in zip(indices[0], distances[0]):
-            if idx >= 0:  # FAISS returns -1 for invalid results
-                metadata_entry = self.metadata[idx]
-                
-                # Apply filters if provided
-                if filters and not self._matches_filters(metadata_entry["metadata"], filters):
+
+        try:
+            index, metadata_list = self._load_index_and_metadata()
+            if index is None or index.ntotal == 0 or not metadata_list:
+                return []
+
+            if not self._validate_alignment(index, metadata_list):
+                return []
+
+            if index.d != len(query_embedding):
+                raise ValueError(
+                    f"Embedding dimension mismatch: index={index.d}, query={len(query_embedding)}"
+                )
+
+            query_vector = np.array(
+                [self._normalize_vector(query_embedding)], dtype="float32"
+            )
+            effective_top_k = max(1, min(top_k, len(metadata_list)))
+
+            if filters:
+                matching_ids = [
+                    idx
+                    for idx, item in enumerate(metadata_list)
+                    if self._matches_filters(item.get("metadata", {}), filters)
+                ]
+
+                if not matching_ids:
+                    return []
+
+                all_vectors = index.reconstruct_n(0, index.ntotal)
+                filtered_vectors = np.array(
+                    [all_vectors[idx] for idx in matching_ids], dtype="float32"
+                )
+                scores = np.dot(filtered_vectors, query_vector[0])
+                ranked_positions = np.argsort(-scores)[: min(top_k, len(matching_ids))]
+
+                return [
+                    {
+                        "chunk_id": metadata_list[matching_ids[pos]]["chunk_id"],
+                        "content": metadata_list[matching_ids[pos]]["content"],
+                        "metadata": metadata_list[matching_ids[pos]]["metadata"],
+                        "score": float(scores[pos]),
+                    }
+                    for pos in ranked_positions
+                ]
+
+            scores, indices = index.search(query_vector, effective_top_k)
+            results: List[Dict[str, Any]] = []
+
+            for score, idx in zip(scores[0], indices[0]):
+                if idx < 0 or idx >= len(metadata_list):
                     continue
-                
-                results.append({
-                    "chunk_id": metadata_entry["chunk_id"],
-                    "text": metadata_entry["text"],
-                    "metadata": metadata_entry["metadata"],
-                    "score": float(distance)
-                })
-                
-                # Stop when we have enough results
-                if len(results) >= top_k:
-                    break
-        
-        if filters and len(results) < top_k:
-            logger.debug(
-                f"Filtering reduced results from {search_k} to {len(results)} "
-                f"(requested {top_k} with filters: {filters})"
-            )
-        
-        return results
-    
-    def save(self, path: str) -> None:
-        """
-        Save FAISS index and metadata to disk.
-        
-        Persists:
-        - FAISS index as binary file (index.faiss)
-        - Metadata, chunk_ids, and config as JSON (metadata.json)
-        
-        Args:
-            path: Directory path to save index and metadata
-            
-        Raises:
-            OSError: If directory cannot be created or files cannot be written
-            RuntimeError: If index-metadata alignment is invalid
-        """
-        save_path = Path(path)
-        
-        try:
-            # Create directory
-            save_path.mkdir(parents=True, exist_ok=True)
-            
-            # Validate alignment: check index and metadata are in sync
-            if len(self.metadata) != self.index.ntotal:
-                raise RuntimeError(
-                    f"Index-metadata misalignment: index has {self.index.ntotal} vectors "
-                    f"but metadata has {len(self.metadata)} entries"
+
+                item = metadata_list[idx]
+                results.append(
+                    {
+                        "chunk_id": item["chunk_id"],
+                        "content": item["content"],
+                        "metadata": item["metadata"],
+                        "score": float(score),
+                    }
                 )
-            
-            # Save FAISS index as binary
-            index_path = save_path / "index.faiss"
-            faiss.write_index(self.index, str(index_path))
-            logger.debug(f"Saved FAISS index to {index_path}")
-            
-            # Save metadata and config as JSON (human-readable, portable)
-            import json
-            metadata_path = save_path / "metadata.json"
-            metadata_config = {
-                "dim": self.dim,
-                "index_size": self.index.ntotal,
-                "metadata": self.metadata,
-                "chunk_ids": self.chunk_ids
-            }
-            
-            with open(metadata_path, "w", encoding="utf-8") as f:
-                json.dump(metadata_config, f, indent=2, ensure_ascii=False)
-            logger.debug(f"Saved metadata to {metadata_path}")
-            
-            logger.info(
-                f"FAISS index persisted: {index_path.name} ({self.index.ntotal} vectors), "
-                f"{metadata_path.name}"
-            )
-        
-        except OSError as e:
-            logger.error(f"File system error during save: {e}")
-            raise
-        except RuntimeError as e:
-            logger.error(f"Index validation error: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Failed to save FAISS index: {e}")
-            raise
-    
-    def load(self, path: str) -> None:
-        """
-        Load FAISS index and metadata from disk.
-        
-        Restores:
-        - FAISS index from binary file (index.faiss)
-        - Metadata, chunk_ids, and config from JSON (metadata.json)
-        
-        Validates index-metadata alignment during load.
-        
-        Args:
-            path: Directory path containing index and metadata files
-            
-        Raises:
-            FileNotFoundError: If index or metadata files are missing
-            ValueError: If files exist but cannot be parsed or are misaligned
-            RuntimeError: If index-metadata alignment is invalid
-        """
-        load_path = Path(path)
-        
-        try:
-            # Check directory exists
-            if not load_path.exists():
-                raise FileNotFoundError(f"Persistence directory not found: {load_path}")
-            
-            # Check FAISS index file exists
-            index_path = load_path / "index.faiss"
-            if not index_path.exists():
-                raise FileNotFoundError(
-                    f"FAISS index file not found: {index_path}. "
-                    f"Please ensure {index_path.name} exists in {load_path}"
-                )
-            
-            # Check metadata file exists
-            metadata_path = load_path / "metadata.json"
-            if not metadata_path.exists():
-                raise FileNotFoundError(
-                    f"Metadata file not found: {metadata_path}. "
-                    f"Please ensure {metadata_path.name} exists in {load_path}"
-                )
-            
-            # Load FAISS index
-            logger.debug(f"Loading FAISS index from {index_path}")
-            self.index = faiss.read_index(str(index_path))
-            
-            # Load metadata and config from JSON
-            import json
-            logger.debug(f"Loading metadata from {metadata_path}")
-            with open(metadata_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self.dim = data["dim"]
-                self.metadata = data["metadata"]
-                self.chunk_ids = data["chunk_ids"]
-                stored_index_size = data.get("index_size", len(self.metadata))
-            
-            # Validate alignment
-            if self.index.ntotal != len(self.metadata):
-                raise RuntimeError(
-                    f"Index-metadata misalignment detected: index has {self.index.ntotal} vectors "
-                    f"but metadata has {len(self.metadata)} entries. "
-                    f"This may indicate corrupted persistence files."
-                )
-            
-            if self.index.ntotal != stored_index_size:
-                logger.warning(
-                    f"Stored index size ({stored_index_size}) differs from actual index size "
-                    f"({self.index.ntotal}). This may indicate partial persistence."
-                )
-            
-            logger.info(
-                f"FAISS index restored from {load_path}: "
-                f"{self.index.ntotal} vectors, dimension={self.dim}"
-            )
-        
-        except FileNotFoundError as e:
-            logger.error(f"Missing persistence file: {e}")
-            raise
-        except json.JSONDecodeError as e:
-            logger.error(f"Invalid JSON metadata: {e}")
-            raise ValueError(f"Cannot parse metadata.json: {e}")
-        except RuntimeError as e:
-            logger.error(f"Index validation error: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Failed to load FAISS index: {e}")
-            raise
-    
-    def clear(self) -> None:
-        """
-        Clear the FAISS index and metadata.
-        
-        Resets index, metadata, and chunk_ids to empty state.
-        Dimension is preserved from initialization.
-        """
-        self.index = faiss.IndexFlatL2(self.dim)
-        self.metadata = []
-        self.chunk_ids = []
-        logger.info("FAISS index and metadata cleared")
-    
-    def get_index_size(self) -> int:
-        """
-        Get the number of embeddings in the index.
-        
-        Returns:
-            Number of embeddings stored
-        """
-        return self.index.ntotal
-    
+
+            return results
+        except Exception as exc:
+            logger.error(f"Vector search failed: {exc}")
+            return []
+
     def retrieve(
         self,
         query: str,
@@ -340,99 +333,116 @@ class VectorDBClient:
         department: Optional[str] = None,
         semester: Optional[str] = None,
         subject: Optional[str] = None,
-    ) -> List[Dict]:
-        """
-        Retrieve relevant documents using semantic search with optional metadata filtering.
-        
-        Complete retrieval flow:
-        1. Convert query text to embedding
-        2. Search FAISS index for similar embeddings
-        3. Filter by department, semester, subject if provided
-        4. Return ranked results with scores
-        
-        Args:
-            query: User query text (any language, will be embedded)
-            top_k: Number of top results to return (default: 5)
-            department: Optional department filter (e.g., "Computer Science")
-            semester: Optional semester filter (e.g., "Spring 2024")
-            subject: Optional subject filter (e.g., "Algorithms")
-            
-        Returns:
-            List of dicts with format:
-                {
-                    "text": str (chunk text),
-                    "metadata": dict (chunk metadata),
-                    "score": float (L2 distance - lower is better)
-                }
-            
-        Raises:
-            ValueError: If query is empty or index is empty
-            
-        Example:
-            >>> from integrations.vector_db_client import vector_db_client
-            >>> # Without filters
-            >>> results = vector_db_client.retrieve(
-            ...     query="What is machine learning?",
-            ...     top_k=5
-            ... )
-            >>> 
-            >>> # With filters
-            >>> results = vector_db_client.retrieve(
-            ...     query="Explain algorithms",
-            ...     top_k=5,
-            ...     department="Computer Science",
-            ...     semester="Spring 2024",
-            ...     subject="Algorithms"
-            ... )
-            >>> for result in results:
-            ...     print(f"{result['text'][:100]}... (score: {result['score']:.4f})")
-        """
+    ) -> List[Dict[str, Any]]:
+        """Embed a query and retrieve the nearest stored chunks."""
         if not query or not query.strip():
             raise ValueError("Query cannot be empty")
-        
-        if self.index.ntotal == 0:
-            logger.warning("Retrieve requested on empty index")
-            raise ValueError("Vector database is empty. No embeddings to search.")
-        
+
         try:
-            # Step 1: Import here to avoid circular imports
             from services.embedding_service import embedding_service
-            
-            # Step 2: Convert query to embedding
-            logger.debug(f"Embedding query: {query[:100]}...")
+
             query_embedding = embedding_service.embed(query)
-            
-            # Step 3: Build filters dict
-            filters = {}
-            if department is not None:
-                filters["department"] = department
-            if semester is not None:
-                filters["semester"] = semester
-            if subject is not None:
-                filters["subject"] = subject
-            
-            # Step 4: Search FAISS index with filters
-            if filters:
-                logger.debug(f"Searching FAISS index with filters: {filters}")
-            logger.debug(f"Searching FAISS index for top {top_k} results")
-            results = self.search(query_embedding, top_k=top_k, filters=filters if filters else None)
-            
-            # Step 5: Format results (remove chunk_id for clean output)
-            formatted_results = [
-                {
-                    "text": result["text"],
-                    "metadata": result["metadata"],
-                    "score": result["score"]
-                }
-                for result in results
-            ]
-            
-            logger.info(f"Retrieved {len(formatted_results)} results for query")
-            return formatted_results
-        
-        except Exception as e:
-            logger.error(f"Error during retrieval: {e}")
+            filters = {
+                "department": department,
+                "semester": semester,
+                "subject": subject,
+            }
+            results = self.search(query_embedding=query_embedding, top_k=top_k, filters=filters)
+            logger.info(f"Retrieved {len(results)} results for query")
+            return results
+        except Exception as exc:
+            logger.error(f"Error during retrieval: {exc}")
             raise
+
+    def get_index_size(self) -> int:
+        """Return the number of stored chunks."""
+        try:
+            index, metadata_list = self._load_index_and_metadata()
+            if index is None:
+                return 0
+
+            if not self._validate_alignment(index, metadata_list):
+                return 0
+
+            return int(index.ntotal)
+        except Exception as exc:
+            logger.error(f"Failed to count vector rows: {exc}")
+            return 0
+
+    def inspect_data(self, limit: int = 5) -> List[Dict[str, Any]]:
+        """Return a lightweight preview of stored metadata entries for debugging."""
+        try:
+            self._ensure_storage_dir()
+
+            if not os.path.exists(METADATA_PATH):
+                return []
+
+            with open(METADATA_PATH, "rb") as metadata_file:
+                metadata_list = pickle.load(metadata_file)
+
+            if not isinstance(metadata_list, list):
+                logger.error("Metadata store is not a list")
+                return []
+
+            logger.info(f"Loaded metadata entries: {len(metadata_list)}")
+
+            effective_limit = max(0, limit)
+            preview_items = metadata_list[:effective_limit]
+
+            logger.info(f"Showing first {len(preview_items)} entries")
+
+            return [
+                {
+                    "chunk_id": item.get("chunk_id", ""),
+                    "content_preview": str(item.get("content", ""))[:200],
+                    "metadata": item.get("metadata", {}),
+                }
+                for item in preview_items
+            ]
+        except Exception as exc:
+            logger.error(f"Failed to inspect stored metadata: {exc}")
+            return []
+
+    def get_indexed_metadata_values(self, field: str) -> set[str]:
+        """Return unique non-empty metadata values for a stored field."""
+        if not field:
+            return set()
+
+        try:
+            _, metadata_list = self._load_index_and_metadata()
+            values = {
+                str(item.get("metadata", {}).get(field)).strip()
+                for item in metadata_list
+                if str(item.get("metadata", {}).get(field, "")).strip()
+            }
+            logger.info("Indexed metadata values for %s: %s", field, len(values))
+            return values
+        except Exception as exc:
+            logger.error(f"Failed to read indexed metadata values for {field}: {exc}")
+            return set()
+
+    def clear(self) -> None:
+        """Delete all stored document chunks."""
+        try:
+            self._ensure_storage_dir()
+
+            if os.path.exists(FAISS_INDEX_PATH):
+                os.remove(FAISS_INDEX_PATH)
+            if os.path.exists(METADATA_PATH):
+                os.remove(METADATA_PATH)
+
+            logger.info("Cleared stored document chunks")
+        except Exception as exc:
+            logger.error(f"Failed to clear vector storage: {exc}")
+
+    def close(self) -> None:
+        """No-op hook for interface compatibility."""
+        logger.info("Closed FAISS vector client")
 
 
 vector_db_client = VectorDBClient()
+
+
+def insert_embeddings(chunks: List[Dict[str, Any]]) -> None:
+    """Module-level helper for batch vector insertion."""
+    vector_db_client.insert_embeddings(chunks)

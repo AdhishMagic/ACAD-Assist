@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from .models import User, UserRole
 from .serializers import LoginSerializer, RegisterSerializer, RoleRequestSerializer, UserSerializer
 from .services import authenticate_user, generate_tokens_for_user
+from apps.analytics.utils import record_activity
 
 
 class RegisterView(APIView):
@@ -66,18 +67,13 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         update_last_login(None, user)
-        try:
-            from apps.analytics.models import ActivityLog
-
-            ActivityLog.objects.create(
-                user=user,
-                action="login",
-                entity_type="auth",
-                entity_id=user.id,
-                metadata={"status": "success"},
-            )
-        except Exception:
-            pass
+        record_activity(
+            user=user,
+            action="login",
+            entity_type="auth",
+            entity_id=user.id,
+            status="success",
+        )
         tokens = generate_tokens_for_user(user)
         return Response(
             {
@@ -196,6 +192,14 @@ class AdminUsersView(APIView):
 
         response_payload = _serialize_user_management_item(user)
         response_payload["generatedPassword"] = password
+        record_activity(
+            user=request.user,
+            action="user_created",
+            entity_type="user",
+            entity_id=user.id,
+            status="success",
+            metadata={"targetEmail": user.email, "targetRole": user.role},
+        )
         return Response(response_payload, status=status.HTTP_201_CREATED)
 
 
@@ -466,6 +470,14 @@ class AdminUserRoleUpdateView(APIView):
         _ensure_admin(request.user)
         target_user = User.objects.filter(id=user_id).first()
         if not target_user:
+            record_activity(
+                user=request.user,
+                action="user_role_update",
+                entity_type="user",
+                entity_id=user_id,
+                status="error",
+                metadata={"error": "User not found."},
+            )
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         role_input = request.data.get("role")
@@ -475,6 +487,14 @@ class AdminUserRoleUpdateView(APIView):
         target_user.is_staff = is_staff
         target_user.is_superuser = is_superuser
         target_user.save(update_fields=["role", "is_staff", "is_superuser"])
+        record_activity(
+            user=request.user,
+            action="user_role_updated",
+            entity_type="user",
+            entity_id=target_user.id,
+            status="success",
+            metadata={"targetEmail": target_user.email, "role": role_value},
+        )
 
         return Response(_serialize_user_management_item(target_user), status=status.HTTP_200_OK)
 
@@ -486,14 +506,38 @@ class AdminUserStatusUpdateView(APIView):
         _ensure_admin(request.user)
         target_user = User.objects.filter(id=user_id).first()
         if not target_user:
+            record_activity(
+                user=request.user,
+                action="user_status_update",
+                entity_type="user",
+                entity_id=user_id,
+                status="error",
+                metadata={"error": "User not found."},
+            )
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         status_value = (request.data.get("status") or "").strip().lower()
         if status_value not in {"active", "suspended"}:
+            record_activity(
+                user=request.user,
+                action="user_status_update",
+                entity_type="user",
+                entity_id=target_user.id,
+                status="warning",
+                metadata={"error": "Invalid status value.", "submittedStatus": status_value},
+            )
             raise ValidationError({"status": "Invalid status. Allowed values: Active, Suspended."})
 
         target_user.is_active = status_value == "active"
         target_user.save(update_fields=["is_active"])
+        record_activity(
+            user=request.user,
+            action="user_status_updated",
+            entity_type="user",
+            entity_id=target_user.id,
+            status="success",
+            metadata={"targetEmail": target_user.email, "status": status_value},
+        )
         return Response(_serialize_user_management_item(target_user), status=status.HTTP_200_OK)
 
 
@@ -504,13 +548,37 @@ class AdminUserResetPasswordView(APIView):
         _ensure_admin(request.user)
         target_user = User.objects.filter(id=user_id).first()
         if not target_user:
+            record_activity(
+                user=request.user,
+                action="user_password_reset",
+                entity_type="user",
+                entity_id=user_id,
+                status="error",
+                metadata={"error": "User not found."},
+            )
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         new_password = request.data.get("new_password") or secrets.token_urlsafe(12)
         if len(new_password) < 8:
+            record_activity(
+                user=request.user,
+                action="user_password_reset",
+                entity_type="user",
+                entity_id=target_user.id,
+                status="warning",
+                metadata={"error": "Password must be at least 8 characters long."},
+            )
             raise ValidationError({"new_password": "Password must be at least 8 characters long."})
         target_user.set_password(new_password)
         target_user.save(update_fields=["password"])
+        record_activity(
+            user=request.user,
+            action="user_password_reset",
+            entity_type="user",
+            entity_id=target_user.id,
+            status="success",
+            metadata={"targetEmail": target_user.email},
+        )
 
         return Response(
             {
@@ -528,10 +596,35 @@ class AdminUserDeleteView(APIView):
         _ensure_admin(request.user)
         target_user = User.objects.filter(id=user_id).first()
         if not target_user:
+            record_activity(
+                user=request.user,
+                action="user_deleted",
+                entity_type="user",
+                entity_id=user_id,
+                status="error",
+                metadata={"error": "User not found."},
+            )
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         if target_user.id == request.user.id:
+            record_activity(
+                user=request.user,
+                action="user_deleted",
+                entity_type="user",
+                entity_id=target_user.id,
+                status="warning",
+                metadata={"error": "Attempted self-delete."},
+            )
             raise ValidationError({"detail": "You cannot delete your own account."})
 
+        deleted_email = target_user.email
         target_user.delete()
+        record_activity(
+            user=request.user,
+            action="user_deleted",
+            entity_type="user",
+            entity_id=user_id,
+            status="success",
+            metadata={"targetEmail": deleted_email},
+        )
         return Response(status=status.HTTP_204_NO_CONTENT)

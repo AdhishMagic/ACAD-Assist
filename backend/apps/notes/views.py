@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.notifications.utils import create_notification
+from db_design.constants import NotificationType
 from .models import Note
 from .serializers import NoteSerializer, NoteWriteSerializer, get_note_approval_status
 
@@ -104,6 +106,14 @@ class NotesListCreateView(ListCreateAPIView):
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		note = serializer.save()
+		create_notification(
+			user=request.user,
+			title="Note Created",
+			message=f"Your note '{note.title}' was created successfully.",
+			notification_type=NotificationType.SUCCESS,
+			metadata={"note_id": str(note.id), "action": "note_created"},
+			created_by=request.user,
+		)
 		response = NoteSerializer(note, context={"request": request}).data
 		return Response(response, status=status.HTTP_201_CREATED)
 
@@ -188,6 +198,14 @@ class NoteDetailView(RetrieveUpdateAPIView):
 		serializer = self.get_serializer(note, data=request.data, partial=True)
 		serializer.is_valid(raise_exception=True)
 		note = serializer.save()
+		create_notification(
+			user=request.user,
+			title="Note Updated",
+			message=f"Your note '{note.title}' was updated successfully.",
+			notification_type=NotificationType.INFO,
+			metadata={"note_id": str(note.id), "action": "note_updated"},
+			created_by=request.user,
+		)
 		return Response(NoteSerializer(note, context={"request": request}).data)
 
 	def get_serializer_context(self):
@@ -224,6 +242,44 @@ class NotePublishView(APIView):
 			_set_approval_status(note, "pending", published=False, reviewer=request.user)
 
 		note.save(update_fields=["metadata", "is_published", "updated_at"])
+		# Notify the note creator about the review outcome
+		if is_reviewer and note.created_by_id != request.user.id:
+			if action == "reject":
+				create_notification(
+					user=note.created_by,
+					title="Note Rejected",
+					message=f"Your note '{note.title}' was rejected by a reviewer.",
+					notification_type=NotificationType.WARNING,
+					metadata={"note_id": str(note.id), "action": "note_rejected"},
+					created_by=request.user,
+				)
+			elif action in {"revision", "request_revision", "request-revision", "revision_requested"}:
+				create_notification(
+					user=note.created_by,
+					title="Revision Requested",
+					message=f"Your note '{note.title}' requires revision before it can be published.",
+					notification_type=NotificationType.WARNING,
+					metadata={"note_id": str(note.id), "action": "note_revision_requested"},
+					created_by=request.user,
+				)
+			else:
+				create_notification(
+					user=note.created_by,
+					title="Note Approved",
+					message=f"Your note '{note.title}' was approved and published.",
+					notification_type=NotificationType.SUCCESS,
+					metadata={"note_id": str(note.id), "action": "note_approved"},
+					created_by=request.user,
+				)
+		else:
+			create_notification(
+				user=request.user,
+				title="Note Submitted for Review",
+				message=f"Your note '{note.title}' has been submitted for review.",
+				notification_type=NotificationType.INFO,
+				metadata={"note_id": str(note.id), "action": "note_submitted_for_review"},
+				created_by=request.user,
+			)
 		return Response(NoteSerializer(note, context={"request": request}).data, status=status.HTTP_200_OK)
 
 
@@ -286,4 +342,13 @@ class BookmarkNoteView(APIView):
 		# Return updated note with bookmark status
 		serialized = NoteSerializer(note, context={"request": request}).data
 		serialized['is_bookmarked'] = not is_bookmarked  # Return new state
+		if not is_bookmarked:
+			create_notification(
+				user=request.user,
+				title="Note Bookmarked",
+				message=f"You bookmarked '{note.title}'.",
+				notification_type=NotificationType.INFO,
+				metadata={"note_id": str(note.id), "action": "note_bookmarked"},
+				created_by=request.user,
+			)
 		return Response(serialized, status=status.HTTP_200_OK)
