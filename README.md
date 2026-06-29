@@ -102,12 +102,3 @@ make lint-fix
 make migrate
 make seed
 ```
-
-## Notes
-
-- The old `docs/` and `envs/` top-level folders have been consolidated into the root README and root environment files.
-- Root Compose now references only the root `.env` file and the three application directories.
-
-## License
-
-MIT. See LICENSE for details.
