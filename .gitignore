@@ -20,7 +20,7 @@ pip-delete-this-directory.txt
 *.spec
 .installed.cfg
 develop-eggs/
-lib/
+/lib/
 lib64/
 parts/
 sdist/

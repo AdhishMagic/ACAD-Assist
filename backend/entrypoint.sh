@@ -75,7 +75,7 @@ seed_accounts = [
 		'role': 'hod',
 		'first_name': 'HOD',
 		'last_name': 'User',
-		'is_staff': True,
+		'is_staff': False,
 		'is_superuser': False,
 	},
 	{
